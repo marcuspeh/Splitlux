@@ -1,14 +1,37 @@
-# Splitlux
+# Splitlux Backend
 
-## Introduction
-Hello, we are Marcus and Chrus. This repo is used for our HackNRoll 2022 submission. When we go on trips in groups, expenses are often paid by one (or two) person. Our project is on splitting expenses within the group at the end of the trip. It will provide a clear breakdown of the expenses as well as reduces the effort required to decide on how the payment works.
+### To run the app
+1. Install the dependencies in requirement.txt (Tip: create a virtual environment before hand)
+2. Make migrations with - `python manage.py makemigrations`
+3. Migrate with - `python manage.py migrate`
+4. Run server with - `python manage.py runserver`
 
-## Backend
-Branch: XXX
+### Create a superuser
+Run `python manage.py createsuperuser`
 
-Our backend is based on Python using Django. Using Django, we used the REST framework to create the api endpoints in order for the frontend to query. Refer to the branch for more info.
+### Creating a virtual environment
+Requirements: virtualenv
+Installation: `pip install virtualenv`
 
-## Frontend
-Branch: 
+1. Create the environment - `python -m venv env`
+2. Activate the environment - `env/Scripts/activate`
+3. Deactivate the environment - `env/Scripts/deactivate`
 
-Since almost everyone will have their phones with them whatever they go, our frontend will be based on Flutter, which supports both Android and iOS devices. Refer to the branch for more info.
+### Class diagram
+![class diagram](docs/images/models.png)
+
+### End Points
+| ENDPOINT | HTTPS METHODS | DESCRIPTION | 
+| /auth/users | POST | Create/login a new user |
+| /auth/users | GET | Retrieves user data |
+| | | |
+| /group/list/ | GET | Returns a simplified list of groups |
+| /group/create/ | POST | Creates a new group |
+| /group/join/ | PUT | Join a group with group_id |
+| /group/<int:id>/ | GET | Retrieves the data of a group |
+| /group/calculatepayment/<int:id>/ | GET | Gets the payments and closes the group (Calculating payment not done) |
+|  |  |  |
+| /transaction/create | POST | Creates a new transaction |
+| /transaction/<int:id> | GET | Gets the specified transaction |
+| /transaction/delete/<int:id> | DELETE | Delete the specified transaction |
+
