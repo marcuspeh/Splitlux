@@ -1,1 +1,1 @@
-# Splitlux
+# Splitlux Frontend
