@@ -165,7 +165,7 @@ class AddTravelGroup extends StatelessWidget {
         ),
       ),
     ));
-  
+  }
 
   Widget groupNameAndBack(BuildContext context) {
     return RichText(
@@ -181,7 +181,7 @@ class AddTravelGroup extends StatelessWidget {
             child: GestureDetector(
                 onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => AddTravelGroup(),
+                        builder: (_) => HomePage(jwt, payload),
                       ),
                     ),
                 child: Icon(Icons.arrow_back)),
@@ -192,4 +192,3 @@ class AddTravelGroup extends StatelessWidget {
     );
   }
   }
-}
