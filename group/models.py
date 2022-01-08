@@ -26,7 +26,7 @@ class Group(models.Model):
     name = models.CharField(max_length=CHAR_LENGTH)
     members = models.ManyToManyField(User, related_name="group_members")
 
-    transaction_list = models.ManyToManyField(Transaction)
+    transactions = models.ManyToManyField(Transaction)
     to_pay_list = models.ManyToManyField(Payment)
 
     is_closed = models.BooleanField(default=False)
@@ -93,7 +93,7 @@ class Group(models.Model):
     def get_total_surplus(self):
         surplus = {}
 
-        for transaction in self.transaction_list.all():
+        for transaction in self.transactions.all():
             temp_surplus = transaction.get_surplus()
 
             for user, amount in temp_surplus.items():

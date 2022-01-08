@@ -17,7 +17,7 @@ class Group {
     name = models.CharField(max_length=CHAR_LENGTH)
     members = models.ManyToManyField(User, related_name="group_members")
 
-    transaction_list = models.ManyToManyField(Transaction)
+    transactions = models.ManyToManyField(Transaction)
     to_pay_list = models.ManyToManyField(Payment)
 
     is_closed = models.BooleanField(default=False)

@@ -9,3 +9,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
         email = models.EmailField(max_length=CHAR_LENGTH, unique=True)
         fields = ('id', 'email', 'is_admin', 'created_at')
+
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'name')

@@ -69,7 +69,7 @@ class CreateTransaction(APIView):
                 return Response({"error": "Amount expense does not tally to total"}, status=status.HTTP_400_BAD_REQUEST)
 
             transaction = Transaction.create(title=data['title'], amount=data['amount'], payers=payers, expenses=expenses)
-            group.transaction_list.add(transaction)
+            group.transactions.add(transaction)
 
             return Response(data=TransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
         
@@ -83,7 +83,7 @@ class GetTransaction(APIView):
 
         try:
             transaction = Transaction.objects.get(id=kwargs['id'])
-            group = Group.objects.get(transaction_list__in=[transaction])
+            group = Group.objects.get(transactions__in=[transaction])
         except Exception as e:
             return Response(e.args, status=status.HTTP_400_BAD_REQUEST)
 
@@ -100,7 +100,7 @@ class DeleteTransaction(APIView):
 
         try:
             transaction = Transaction.objects.get(id=kwargs['id'])
-            group = Group.objects.get(transaction_list__in=[transaction])
+            group = Group.objects.get(transactions__in=[transaction])
         except Exception as e:
             return Response(e.args, status=status.HTTP_400_BAD_REQUEST)
         
