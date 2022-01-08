@@ -60,16 +60,16 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
           fontSize: 30,
         ),
         children: [
-          WidgetSpan(
-              child: Container(
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => GroupView(),
-                      ),
-                    ),
-                child: Icon(Icons.arrow_back)),
-          )),
+          // WidgetSpan(
+          //     child: Container(
+          //   child: GestureDetector(
+          //       onTap: () => Navigator.of(context).push(
+          //             MaterialPageRoute(
+          //               builder: (_) => GroupView(),
+          //             ),
+          //           ),
+          //       child: Icon(Icons.arrow_back)),
+          // )),
           TextSpan(text: 'Transactions'),
         ],
       ),
@@ -89,10 +89,16 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
               Padding(
                 padding: const EdgeInsets.only(right: 32.0),
                 child: TextFormField(
-                  style: TextStyle(color: orange),
+                  style: TextStyle(color: Colors.white),
                   controller: _nameController,
                   decoration: InputDecoration(
-                      hintText: 'Enter transaction description'),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                      hintText: 'Enter transaction description',
+                      hintStyle: TextStyle(color: Colors.white24)),
                   validator: (v) {
                     if (v!.trim().isEmpty) return 'Please enter something';
                     return null;
@@ -105,10 +111,17 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
               Padding(
                 padding: const EdgeInsets.only(right: 32.0),
                 child: TextFormField(
-                  style: TextStyle(color: orange),
+                  style: TextStyle(color: Colors.white),
                   controller: _amountController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(hintText: 'Enter amount'),
+                  decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                      hintText: 'Enter amount',
+                      hintStyle: TextStyle(color: Colors.white24)),
                   validator: (v) {
                     if (v!.trim().isEmpty) return 'Please enter something';
                     return null;
@@ -120,12 +133,18 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
               ),
               Text(
                 'Add Payers',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: Colors.white),
               ),
               ..._getPayers(),
               Text(
                 'Add Payees',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: Colors.white),
               ),
               ..._getPayees(),
               SizedBox(
@@ -270,10 +289,18 @@ class _PayerTextFieldsState extends State<PayerTextFields> {
     });
 
     return TextFormField(
-      style: TextStyle(color: orange),
+      style: TextStyle(color: Colors.white),
+      maxLength: 20,
       controller: _nameController,
       onChanged: (v) => _GroupTransactionViewState.payerList[widget.index] = v,
-      decoration: InputDecoration(hintText: 'Enter payer\'s name'),
+      decoration: InputDecoration(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder:
+              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          hintText: 'Enter payer\'s name',
+          hintStyle: TextStyle(color: Colors.white24)),
       validator: (v) {
         if (v!.trim().isEmpty) return 'Please enter something';
         return null;
@@ -312,16 +339,17 @@ class _PayeeTextFieldsState extends State<PayeeTextFields> {
     });
 
     return TextFormField(
-      style: TextStyle(color: orange),
+      style: TextStyle(color: Colors.white),
       controller: _nameController,
       onChanged: (v) => _GroupTransactionViewState.payeeList[widget.index] = v,
       decoration: InputDecoration(
           enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: orange),
+            borderSide: BorderSide(color: Colors.white),
           ),
           focusedBorder:
-              UnderlineInputBorder(borderSide: BorderSide(color: orange)),
-          hintText: 'Enter payee\'s name'),
+              UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          hintText: 'Enter payee\'s name',
+          hintStyle: TextStyle(color: Colors.white24)),
       validator: (v) {
         if (v!.trim().isEmpty) return 'Please enter something';
         return null;

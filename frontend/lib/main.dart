@@ -6,6 +6,7 @@ import 'package:frontend/HomePage.dart';
 import 'package:frontend/api/api.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 final storage = FlutterSecureStorage();
 
 void main() {
@@ -15,7 +16,7 @@ void main() {
 class MyApp extends StatelessWidget {
   Future<String> get jwtOrEmpty async {
     var jwt = await storage.read(key: "jwt");
-    if(jwt == null) return "";
+    if (jwt == null) return "";
     return jwt;
   }
 
@@ -27,28 +28,29 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: FutureBuilder(
-        future: jwtOrEmpty,            
-        builder: (context, snapshot) {
-          if(!snapshot.hasData) return CircularProgressIndicator();
-          if(snapshot.data != "") {
-            var str = snapshot.data.toString();
-            var jwt = str.split(".");
+          future: jwtOrEmpty,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return CircularProgressIndicator();
+            if (snapshot.data != "") {
+              var str = snapshot.data.toString();
+              var jwt = str.split(".");
 
-            if(jwt.length !=3) {
-              return SignIn();
-            } else {
-              var payload = json.decode(ascii.decode(base64.decode(base64.normalize(jwt[1]))));
-              if(DateTime.fromMillisecondsSinceEpoch(payload["exp"]*1000).isAfter(DateTime.now())) {
-                return HomePage(str, payload);
-              } else {
+              if (jwt.length != 3) {
                 return SignIn();
+              } else {
+                var payload = json.decode(
+                    ascii.decode(base64.decode(base64.normalize(jwt[1]))));
+                if (DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000)
+                    .isAfter(DateTime.now())) {
+                  return HomePage(str, payload);
+                } else {
+                  return SignIn();
+                }
               }
+            } else {
+              return SignIn();
             }
-          } else {
-            return SignIn();
-          }
-        }
-      ),
+          }),
     );
   }
 }
