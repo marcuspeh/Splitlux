@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/GroupView.dart';
 import 'package:frontend/constants.dart';
 
@@ -12,21 +13,22 @@ class GroupTransactionView extends StatefulWidget {
 class _GroupTransactionViewState extends State<GroupTransactionView> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
-  late TextEditingController _amountController;
+  late TextEditingController _totalAmountController;
   static List<String?> payerList = [null];
+  static List<double?> payerAmount = [null];
   static List<String?> payeeList = [null];
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
-    _amountController = TextEditingController();
+    _totalAmountController = TextEditingController();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _amountController.dispose();
+        _totalAmountController.dispose();
     super.dispose();
   }
 
@@ -112,7 +114,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                 padding: const EdgeInsets.only(right: 32.0),
                 child: TextFormField(
                   style: TextStyle(color: Colors.white),
-                  controller: _amountController,
+                  controller: _totalAmountController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
@@ -178,6 +180,8 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
             SizedBox(
               width: 16,
             ),
+            Expanded(child: PayerTextFieldsAmount(i)
+              ),
             // we need add button at last payer row
             _addRemovePayerButton(i == payerList.length - 1, i),
           ],
@@ -294,6 +298,7 @@ class _PayerTextFieldsState extends State<PayerTextFields> {
       controller: _nameController,
       onChanged: (v) => _GroupTransactionViewState.payerList[widget.index] = v,
       decoration: InputDecoration(
+        counterText: "",
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
           ),
@@ -306,6 +311,55 @@ class _PayerTextFieldsState extends State<PayerTextFields> {
         return null;
       },
     );
+  }
+}
+
+class PayerTextFieldsAmount extends StatefulWidget {
+  final int index;
+  PayerTextFieldsAmount(this.index);
+  @override
+  _PayerTextFieldsAmountState createState() => _PayerTextFieldsAmountState();
+}
+
+class _PayerTextFieldsAmountState extends State<PayerTextFieldsAmount> {
+  late TextEditingController _payerAmountController;
+
+  @override
+  void initState() {
+    super.initState();
+    _payerAmountController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _payerAmountController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      _payerAmountController.text =
+          (_GroupTransactionViewState.payerAmount[widget.index] ?? 0.0).toString();
+    });
+
+    return TextFormField(
+                  style: TextStyle(color: Colors.white),
+                  controller: _payerAmountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                      hintText: 'Enter amount',
+                      hintStyle: TextStyle(color: Colors.white24)),
+                  validator: (v) {
+                    if (v!.trim().isEmpty) return 'Please enter something';
+                    return null;
+                  },
+                );
   }
 }
 
