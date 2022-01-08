@@ -4,7 +4,7 @@ import 'package:frontend/api/api.dart';
 import 'package:frontend/screens/SignInView.dart';
 import 'package:frontend/GroupView.dart';
 
-import 'package:frontend/model/group_list_model.dart';
+import 'package:frontend/model/groupListModel.dart';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
@@ -44,9 +44,9 @@ class HomePage extends StatelessWidget {
       body: FutureBuilder(
           future: http.read(Uri.parse(GROUPLIST), headers: {"Authorization": "Bearer " + jwt}),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            final jsonResponse = json.decode(snapshot.data);
-            GroupsList groupsList = GroupsList.fromJson(jsonResponse);
             if (snapshot.hasData) {
+              final jsonResponse = json.decode(snapshot.data);
+              GroupsList groupsList = GroupsList.fromJson(jsonResponse);
               return Stack(
                 children: [
                   Positioned(
@@ -140,7 +140,7 @@ class HomePage extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => GroupView.fromBase64(jwt, groupsList.groups[index].id)
+                    builder: (context) => GroupView.fromBase64(jwt, groupsList.groups[index].id, groupsList.groups[index].code, groupsList.groups[index].name)
                   )
                 ),
               child: Material(

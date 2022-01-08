@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/HomePage.dart';
 import 'package:frontend/api/api.dart';
 import 'package:frontend/constants.dart';
+import 'package:frontend/model/groupDetailsModel.dart';
 import 'package:http/http.dart' as http;
 
 var exampleData = [
@@ -21,9 +22,9 @@ var exampleData = [
 ];
 
 class GroupView extends StatelessWidget {
-  GroupView(this.jwt, this.payload, this.groupId);
+  GroupView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
 
-  factory GroupView.fromBase64(String jwt, String groupId) =>
+  factory GroupView.fromBase64(String jwt, String groupId, String groupCode, String groupName) =>
     GroupView(
       jwt,
       json.decode(
@@ -31,12 +32,16 @@ class GroupView extends StatelessWidget {
           base64.decode(base64.normalize(jwt.split(".")[1]))
         )
       ),
-      groupId
+      groupId,
+      groupCode,
+      groupName
     );
 
   final String jwt;
   final Map<String, dynamic> payload;
   final String groupId;
+  final String groupCode;
+  final String groupName;
 
   @override
   Widget build(BuildContext context) {
@@ -46,26 +51,26 @@ class GroupView extends StatelessWidget {
       backgroundColor: purple,
       body: FutureBuilder(
         future: http.read(Uri.parse(GROUPDETAILS + this.groupId + "/"), headers: {"Authorization": "Bearer " + jwt}),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          final jsonResponse = json.decode(snapshot.data);
-          print(snapshot.data);
+        builder: (BuildContext context, AsyncSnapshot snapshot) {          
           if (snapshot.hasData) {
+            final jsonResponse = json.decode(snapshot.data);
+            GroupDetails groupDetails = new GroupDetails.fromJson(jsonResponse);
             return Stack(
               children: [
                 Positioned(
                   top: 50,
                   left: 10,
-                  child: groupNameAndBack(context),
+                  child: groupNameAndBack(context, groupName),
                 ),
                 Positioned(
                   top: 30,
                   right: 10,
-                  child: membershipStatus(),
+                  child: membershipStatus(context, groupDetails.transactions),
                 ),
                 Positioned(
                   top: 90,
                   left: 30,
-                  child: groupCode(),
+                  child: groupCodeText(groupCode),
                 ),
                 Positioned(
                   top: 120,
@@ -133,7 +138,7 @@ class GroupView extends StatelessWidget {
     );
   }
 
-  Widget groupNameAndBack(BuildContext context) {
+  Widget groupNameAndBack(BuildContext context, String groupName) {
     return RichText(
       text: TextSpan(
         style: TextStyle(
@@ -153,13 +158,13 @@ class GroupView extends StatelessWidget {
                 ),
                 child: Icon(Icons.arrow_back)),
           )),
-          TextSpan(text: 'Germany'),
+          TextSpan(text: groupName),
         ],
       ),
     );
   }
 
-  Widget membershipStatus() {
+  Widget membershipStatus(BuildContext context, List<Transaction> transactions) {
     return Container(
         height: 80.0,
         width: 80.0,
@@ -173,8 +178,8 @@ class GroupView extends StatelessWidget {
 
   String placeholderText = "aowd495";
 
-  Widget groupCode() {
-    return Text("Group code ${placeholderText}",
+  Widget groupCodeText(String groupCode) {
+    return Text("Group code ${groupCode}",
         style: TextStyle(
           color: orange,
           fontWeight: FontWeight.normal,
@@ -193,7 +198,7 @@ class GroupView extends StatelessWidget {
             child: GestureDetector(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => GroupView(this.jwt, this.payload, "3"),
+                  builder: (_) => HomePage(this.jwt, this.payload),
                 ),
               ),
               child: Material(
