@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:frontend/AddTravelGroup.dart';
+import 'package:frontend/JoinTravelGroup.dart';
+
 import 'package:frontend/api/api.dart';
 import 'package:frontend/screens/SignInView.dart';
 import 'package:frontend/GroupView.dart';
@@ -69,7 +72,7 @@ class HomePage extends StatelessWidget {
                   Positioned(
                     top: 155,
                     left: 21,
-                    child: billedContainer(size, groupsList),
+                    child: billedContainer(context, size, groupsList),
                   ),
                 ]); 
             } else if (snapshot.hasError) {
@@ -111,7 +114,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget billedContainer(Size size, GroupsList groupsList) {
+  Widget billedContainer(BuildContext context, Size size, GroupsList groupsList) {
     return Container(
       height: size.height / 1.35,
       width: size.width / 1.11,
@@ -122,7 +125,7 @@ class HomePage extends StatelessWidget {
       child: Stack(
         children: [
           travelGroupEntries(size, groupsList),
-          Positioned(bottom: 10, right: 30, child: actionButtons())
+          Positioned(bottom: 10, right: 30, child: actionButtons(context))
         ],
       ),
     );
@@ -166,37 +169,47 @@ class HomePage extends StatelessWidget {
         });
   }
 
-  Widget actionButtons() {
+  Widget actionButtons(BuildContext context) {
     return Container(
         height: 150,
         child: Column(
           children: [
-            createButton(),
-            joinButton(),
+            createButton(context),
+            joinButton(context),
           ],
         ));
   }
 
-  Widget createButton() {
+  Widget createButton(BuildContext context) {
     return Container(
         height: 80.0,
         width: 80.0,
         child: FittedBox(
             child: FloatingActionButton.extended(
               heroTag: "createGroup",
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => AddTravelGroup(this.jwt, this.payload),
+                          ));
+                },
           label: Text("Create"),
         )));
   }
 
-  Widget joinButton() {
+  Widget joinButton(BuildContext context) {
     return Container(
         height: 70.0,
         width: 70.0,
         child: FittedBox(
             child: FloatingActionButton.extended(
               heroTag: "joinGroupBtn",
-          onPressed: () {},
+          onPressed: () {
+             Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => JoinTravelGroup(this.jwt, this.payload),
+                          ));
+          },
           label: Text("Join"),
         )));
   }

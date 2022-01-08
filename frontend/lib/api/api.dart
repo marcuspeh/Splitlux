@@ -5,3 +5,4 @@ const String USERDETAIL="$ROOT/auth/users/me";
 const String GROUPLIST="$ROOT/group/list/";
 const String GROUPDETAILS = "$ROOT/group/";
 const String CREATEGROUP = "$ROOT/group/create/";
+const String JOINGROUP = "$ROOT/group/join/";

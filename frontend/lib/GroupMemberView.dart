@@ -60,7 +60,7 @@ class GroupMemberView extends StatelessWidget {
           Positioned(
             top: 90,
             left: 30,
-            child: groupCodeText(groupId),
+            child: groupCodeText(),
           ),
           Positioned(
             top: 120,
@@ -111,7 +111,7 @@ class GroupMemberView extends StatelessWidget {
     );
   }
 
-  Widget groupCodeText(String groupCode) {
+  Widget groupCodeText() {
     return Text("Group code ${groupCode}",
         style: TextStyle(
           color: orange,

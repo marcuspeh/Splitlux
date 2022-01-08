@@ -44,9 +44,10 @@ class AddTravelGroup extends StatelessWidget {
       Uri.parse(CREATEGROUP),
       body: {
         "name": name
-      }
+      },
+      headers: {"Authorization": "Bearer " + jwt}
     );
-    if(res.statusCode == 200) return res.body;
+    if(res.statusCode == 201) return res.body;
     return null;
   }
 
