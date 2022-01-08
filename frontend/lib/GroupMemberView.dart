@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/GroupView.dart';
+import 'package:frontend/model/groupDetailsModel.dart';
 import 'package:frontend/constants.dart';
 
 var exampleData = [
@@ -15,12 +19,31 @@ var exampleData = [
   'Arabelle Chua',
 ];
 
-class GroupMemberView extends StatefulWidget {
-  @override
-  _GroupMemberViewState createState() => _GroupMemberViewState();
-}
+class GroupMemberView extends StatelessWidget {
+  GroupMemberView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.members);
 
-class _GroupMemberViewState extends State<GroupMemberView> {
+  factory GroupMemberView.fromBase64(String jwt, String groupId, String groupCode, String groupName, List<Member> members) =>
+    GroupMemberView(
+      jwt,
+      json.decode(
+        ascii.decode(
+          base64.decode(base64.normalize(jwt.split(".")[1]))
+        )
+      ),
+      groupId,
+      groupCode,
+      groupName,
+      members
+    );
+
+  final String jwt;
+  final Map<String, dynamic> payload;
+  final String groupId;
+  final String groupCode;
+  final String groupName;
+  final List<Member> members;
+
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -32,12 +55,12 @@ class _GroupMemberViewState extends State<GroupMemberView> {
           Positioned(
             top: 50,
             left: 10,
-            child: groupNameAndBack(),
+            child: groupNameAndBack(context),
           ),
           Positioned(
             top: 90,
             left: 30,
-            child: groupCode(),
+            child: groupCodeText(groupId),
           ),
           Positioned(
             top: 120,
@@ -58,12 +81,12 @@ class _GroupMemberViewState extends State<GroupMemberView> {
         color: orange,
       ),
       child: Stack(
-        children: [travelGroupEntries(size)],
+        children: [memberEntries(size)],
       ),
     );
   }
 
-  Widget groupNameAndBack() {
+  Widget groupNameAndBack(BuildContext context) {
     return RichText(
       text: TextSpan(
         style: TextStyle(
@@ -77,7 +100,7 @@ class _GroupMemberViewState extends State<GroupMemberView> {
             child: GestureDetector(
                 onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => GroupMemberView(),
+                        builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName),
                       ),
                     ),
                 child: Icon(Icons.arrow_back)),
@@ -88,10 +111,8 @@ class _GroupMemberViewState extends State<GroupMemberView> {
     );
   }
 
-  String placeholderText = "aowd495";
-
-  Widget groupCode() {
-    return Text("Group code ${placeholderText}",
+  Widget groupCodeText(String groupCode) {
+    return Text("Group code ${groupCode}",
         style: TextStyle(
           color: orange,
           fontWeight: FontWeight.normal,
@@ -99,20 +120,17 @@ class _GroupMemberViewState extends State<GroupMemberView> {
         ));
   }
 
-  Widget travelGroupEntries(Size size) {
+  Widget memberEntries(Size size) {
     return ListView.builder(
         padding: const EdgeInsets.all(8),
-        itemCount: exampleData.length,
+        itemCount: members.length,
         itemBuilder: (BuildContext context, int index) {
+          Member member = members[index];
           return Container(
             height: 50,
             margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => GroupMemberView(),
-                ),
-              ),
+              onTap: () => {},
               child: Material(
                 color: purple,
                 borderRadius: BorderRadius.circular(20),
@@ -122,7 +140,7 @@ class _GroupMemberViewState extends State<GroupMemberView> {
                   width: size.width / 1.5,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    exampleData[index],
+                    member.name,
                     style: TextStyle(
                       color: orange,
                       fontSize: 16,

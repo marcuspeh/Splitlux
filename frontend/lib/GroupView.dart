@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/HomePage.dart';
+import 'package:frontend/GroupMemberView.dart';
 import 'package:frontend/api/api.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/model/groupDetailsModel.dart';
@@ -171,12 +172,14 @@ class GroupView extends StatelessWidget {
         child: FittedBox(
             child: FloatingActionButton.extended(
           heroTag: "membershipBtn",
-          onPressed: () {},
-          label: Text("3 members"),
+          onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => GroupMemberView(jwt, payload, groupId, groupCode, groupName, members),
+              ),
+            ),
+          label: Text("${members.length} members"),
         )));
   }
-
-  String placeholderText = "aowd495";
 
   Widget groupCodeText(String groupCode) {
     return Text("Group code ${groupCode}",
