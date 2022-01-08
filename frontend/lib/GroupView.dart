@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/HomePage.dart';
+import 'package:frontend/api/api.dart';
 import 'package:frontend/constants.dart';
+import 'package:http/http.dart' as http;
 
 var exampleData = [
   'Munich',
@@ -15,43 +20,93 @@ var exampleData = [
   'Saitama',
 ];
 
-class GroupView extends StatefulWidget {
-  @override
-  _GroupViewState createState() => _GroupViewState();
-}
+class GroupView extends StatelessWidget {
+  GroupView(this.jwt, this.payload, this.groupId);
 
-class _GroupViewState extends State<GroupView> {
+  factory GroupView.fromBase64(String jwt, String groupId) =>
+    GroupView(
+      jwt,
+      json.decode(
+        ascii.decode(
+          base64.decode(base64.normalize(jwt.split(".")[1]))
+        )
+      ),
+      groupId
+    );
+
+  final String jwt;
+  final Map<String, dynamic> payload;
+  final String groupId;
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: purple,
-      body: Stack(
-        children: [
-          Positioned(
-            top: 50,
-            left: 10,
-            child: groupNameAndBack(),
-          ),
-          Positioned(
-            top: 30,
-            right: 10,
-            child: membershipStatus(),
-          ),
-          Positioned(
-            top: 90,
-            left: 30,
-            child: groupCode(),
-          ),
-          Positioned(
-            top: 120,
-            left: 21,
-            child: billedContainer(size),
-          ),
-        ],
-      ),
-    );
+      body: FutureBuilder(
+        future: http.read(Uri.parse(GROUPDETAILS + this.groupId + "/"), headers: {"Authorization": "Bearer " + jwt}),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          final jsonResponse = json.decode(snapshot.data);
+          print(snapshot.data);
+          if (snapshot.hasData) {
+            return Stack(
+              children: [
+                Positioned(
+                  top: 50,
+                  left: 10,
+                  child: groupNameAndBack(context),
+                ),
+                Positioned(
+                  top: 30,
+                  right: 10,
+                  child: membershipStatus(),
+                ),
+                Positioned(
+                  top: 90,
+                  left: 30,
+                  child: groupCode(),
+                ),
+                Positioned(
+                  top: 120,
+                  left: 21,
+                  child: billedContainer(size),
+                ),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Stack(
+              children: [
+                Center(child:Container(
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 100),
+                  child:Text("An error occurred",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        letterSpacing: 1,
+                        fontSize: 23,
+                      ),
+                  ))),
+              
+                Center(child:Container(
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child:FittedBox(
+                        child: FloatingActionButton.extended(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => HomePage(this.jwt, this.payload),
+                          ));
+                      },
+                      backgroundColor: orange,
+                      label: Text("Continue"),
+                    )))),
+                ]);
+            } else {
+              return CircularProgressIndicator();
+            }
+    }));
   }
 
   Widget billedContainer(Size size) {
@@ -70,7 +125,7 @@ class _GroupViewState extends State<GroupView> {
             child: transactions(),
           ),
           Container(
-            child: travelGroupEntries(size),
+            child: transactionEntries(size),
             margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
           )
         ],
@@ -78,7 +133,7 @@ class _GroupViewState extends State<GroupView> {
     );
   }
 
-  Widget groupNameAndBack() {
+  Widget groupNameAndBack(BuildContext context) {
     return RichText(
       text: TextSpan(
         style: TextStyle(
@@ -90,11 +145,12 @@ class _GroupViewState extends State<GroupView> {
           WidgetSpan(
               child: Container(
             child: GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => GroupView(),
-                      ),
-                    ),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage.fromBase64(jwt)
+                  )
+                ),
                 child: Icon(Icons.arrow_back)),
           )),
           TextSpan(text: 'Germany'),
@@ -126,7 +182,7 @@ class _GroupViewState extends State<GroupView> {
         ));
   }
 
-  Widget travelGroupEntries(Size size) {
+  Widget transactionEntries(Size size) {
     return ListView.builder(
         padding: const EdgeInsets.all(8),
         itemCount: exampleData.length,
@@ -137,7 +193,7 @@ class _GroupViewState extends State<GroupView> {
             child: GestureDetector(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => GroupView(),
+                  builder: (_) => GroupView(this.jwt, this.payload, "3"),
                 ),
               ),
               child: Material(

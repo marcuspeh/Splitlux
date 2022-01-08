@@ -1,14 +1,27 @@
 import 'dart:convert';
 
 import 'package:frontend/api/api.dart';
+import 'package:frontend/screens/SignInView.dart';
+import 'package:frontend/GroupView.dart';
+
+import 'package:frontend/model/group_list_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/constants.dart';
 import 'package:http/http.dart' as http;
 
-var exampleData = ['Munich', 'Prague', 'London'];
 
 class HomePage extends StatelessWidget {
   HomePage(this.jwt, this.payload);
+
+  void displayDialog(context, title, text) => showDialog(
+    context: context,
+    builder: (context) =>
+      AlertDialog(
+        title: Text(title),
+        content: Text(text)
+      ),
+  );
 
   factory HomePage.fromBase64(String jwt) =>
     HomePage(
@@ -26,44 +39,78 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    print(jwt);
     return Scaffold(
       backgroundColor: purple,
       body: FutureBuilder(
           future: http.read(Uri.parse(GROUPLIST), headers: {"Authorization": "Bearer " + jwt}),
-          builder: (context, snapshot) =>
-            snapshot.hasData ? Stack(
-        children: [
-          Positioned(
-            top: 70,
-            left: 30,
-            child: Text(
-              "SplitLux",
-              style: TextStyle(
-                color: orange,
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 50,
-            right: 30,
-            child: profilePicture(size),
-          ),
-          Positioned(
-            top: 155,
-            left: 21,
-            child: billedContainer(size),
-          ),
-        ],
-      ):
-            snapshot.hasError ? Text("An error occurred") : CircularProgressIndicator()
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            final jsonResponse = json.decode(snapshot.data);
+            GroupsList groupsList = GroupsList.fromJson(jsonResponse);
+            if (snapshot.hasData) {
+              return Stack(
+                children: [
+                  Positioned(
+                    top: 70,
+                    left: 30,
+                    child: Text(
+                      "SplitLux",
+                      style: TextStyle(
+                        color: orange,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 50,
+                    right: 30,
+                    child: profilePicture(size),
+                  ),
+                  Positioned(
+                    top: 155,
+                    left: 21,
+                    child: billedContainer(size, groupsList),
+                  ),
+                ]); 
+            } else if (snapshot.hasError) {
+              return Stack(
+                children: [
+                
+                  Center(child:Container(
+                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 100),
+                    child:Text("Please sign in again",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          letterSpacing: 1,
+                          fontSize: 23,
+                        ),
+                    ))),
+                
+                  Center(child:Container(
+                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    child:FittedBox(
+                          child: FloatingActionButton.extended(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => SignIn(),
+                            ));
+                        },
+                        backgroundColor: orange,
+                        label: Text("Continue"),
+                      )))),
+                  ]);
+            } else {
+              return CircularProgressIndicator();
+            }
+          }
         ),
     );
   }
 
-  Widget billedContainer(Size size) {
+  Widget billedContainer(Size size, GroupsList groupsList) {
     return Container(
       height: size.height / 1.35,
       width: size.width / 1.11,
@@ -73,27 +120,29 @@ class HomePage extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          travelGroupEntries(size),
+          travelGroupEntries(size, groupsList),
           Positioned(bottom: 10, right: 30, child: actionButtons())
         ],
       ),
     );
   }
 
-  Widget travelGroupEntries(Size size) {
+  Widget travelGroupEntries(Size size, GroupsList groupsList) {
     return ListView.builder(
         padding: const EdgeInsets.all(8),
-        itemCount: exampleData.length,
+        itemCount:  groupsList.groups.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
             height: 50,
             margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => HomePage(this.jwt, this.payload),
+              onTap: () => 
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GroupView.fromBase64(jwt, groupsList.groups[index].id)
+                  )
                 ),
-              ),
               child: Material(
                 color: purple,
                 borderRadius: BorderRadius.circular(20),
@@ -103,7 +152,7 @@ class HomePage extends StatelessWidget {
                   width: size.width / 1.5,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    exampleData[index],
+                    "(" + groupsList.groups[index].code + ") " + groupsList.groups[index].name,
                     style: TextStyle(
                       color: orange,
                       fontSize: 16,
