@@ -215,34 +215,65 @@ class HomePage extends StatelessWidget {
   }
 
   Widget profilePicture(Size size) {
-    return Container(
-      height: size.height / 9.5,
-      width: size.width / 4.5,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: darkPurple,
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              height: size.height / 19,
-              width: size.width / 5,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("resources/images/chatbot.png"))),
-            ),
-          ),
-          Text(
-            "User 1",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: orange,
-            ),
-          )
-        ],
-      ),
-    );
+    return FutureBuilder(
+          future: http.read(Uri.parse(USERDETAIL), headers: {"Authorization": "Bearer " + jwt}),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              Map<String,dynamic> response = jsonDecode(snapshot.data);
+              return Container(
+                height: size.height / 9.5,
+                width: size.width / 4.5,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: darkPurple,
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        height: size.height / 19,
+                        width: size.width / 5,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage("resources/images/chatbot.png"))),
+                      ),
+                    ),
+                    Text(
+                      response["name"],
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: orange,
+                      ),
+                    )
+                  ],
+                ),
+              );
+            } else {
+              return Container(
+                height: size.height / 9.5,
+                width: size.width / 4.5,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: darkPurple,
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        height: size.height / 19,
+                        width: size.width / 5,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage("resources/images/chatbot.png"))),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }}
+        );
+        
   }
 }
