@@ -92,6 +92,7 @@ class HomePage extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                     child:FittedBox(
                           child: FloatingActionButton.extended(
+                            heroTag: "backToSignInButton",
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -137,12 +138,11 @@ class HomePage extends StatelessWidget {
             margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: GestureDetector(
               onTap: () => 
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GroupView.fromBase64(jwt, groupsList.groups[index].id, groupsList.groups[index].code, groupsList.groups[index].name)
-                  )
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => GroupView(this.jwt, this.payload, groupsList.groups[index].id, groupsList.groups[index].code, groupsList.groups[index].name),
                 ),
+              ),
               child: Material(
                 color: purple,
                 borderRadius: BorderRadius.circular(20),
@@ -183,6 +183,7 @@ class HomePage extends StatelessWidget {
         width: 80.0,
         child: FittedBox(
             child: FloatingActionButton.extended(
+              heroTag: "createGroup",
           onPressed: () {},
           label: Text("Create"),
         )));
@@ -194,6 +195,7 @@ class HomePage extends StatelessWidget {
         width: 70.0,
         child: FittedBox(
             child: FloatingActionButton.extended(
+              heroTag: "joinGroupBtn",
           onPressed: () {},
           label: Text("Join"),
         )));

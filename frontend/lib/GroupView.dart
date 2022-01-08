@@ -65,7 +65,7 @@ class GroupView extends StatelessWidget {
                 Positioned(
                   top: 30,
                   right: 10,
-                  child: membershipStatus(context, groupDetails.transactions),
+                  child: membershipStatus(context, groupDetails.members),
                 ),
                 Positioned(
                   top: 90,
@@ -75,7 +75,7 @@ class GroupView extends StatelessWidget {
                 Positioned(
                   top: 120,
                   left: 21,
-                  child: billedContainer(size),
+                  child: billedContainer(size, groupDetails.transactions),
                 ),
               ],
             );
@@ -98,6 +98,7 @@ class GroupView extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                   child:FittedBox(
                         child: FloatingActionButton.extended(
+                          heroTag: "returnHomePageBtn",
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -114,7 +115,7 @@ class GroupView extends StatelessWidget {
     }));
   }
 
-  Widget billedContainer(Size size) {
+  Widget billedContainer(Size size, List<Transaction> transactions) {
     return Container(
       height: size.height / 1.28,
       width: size.width / 1.11,
@@ -127,10 +128,10 @@ class GroupView extends StatelessWidget {
           Positioned(
             top: 10,
             left: 11,
-            child: transactions(),
+            child: addTransactions(),
           ),
           Container(
-            child: transactionEntries(size),
+            child: transactionEntries(size, transactions),
             margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
           )
         ],
@@ -150,12 +151,11 @@ class GroupView extends StatelessWidget {
           WidgetSpan(
               child: Container(
             child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage.fromBase64(jwt)
-                  )
-                ),
+                onTap: () => 
+                Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => HomePage(this.jwt, this.payload),
+                )),
                 child: Icon(Icons.arrow_back)),
           )),
           TextSpan(text: groupName),
@@ -164,7 +164,7 @@ class GroupView extends StatelessWidget {
     );
   }
 
-  Widget membershipStatus(BuildContext context, List<Transaction> transactions) {
+  Widget membershipStatus(BuildContext context, List<Member> members) {
     return Container(
         height: 80.0,
         width: 80.0,
@@ -187,11 +187,12 @@ class GroupView extends StatelessWidget {
         ));
   }
 
-  Widget transactionEntries(Size size) {
+  Widget transactionEntries(Size size, List<Transaction> transactions) {
     return ListView.builder(
         padding: const EdgeInsets.all(8),
-        itemCount: exampleData.length,
+        itemCount: transactions.length,
         itemBuilder: (BuildContext context, int index) {
+          Transaction transaction = transactions[index];
           return Container(
             height: 50,
             margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -210,7 +211,7 @@ class GroupView extends StatelessWidget {
                   width: size.width / 1.5,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    exampleData[index],
+                    "(\$${transaction.amount}) ${transaction.title}",
                     style: TextStyle(
                       color: orange,
                       fontSize: 16,
@@ -224,7 +225,7 @@ class GroupView extends StatelessWidget {
         });
   }
 
-  Widget transactions() {
+  Widget addTransactions() {
     return Row(children: [transactionsText(), addButton()]);
   }
 
@@ -243,6 +244,7 @@ class GroupView extends StatelessWidget {
         width: 30.0,
         child: FittedBox(
             child: FloatingActionButton(
+              heroTag: "addGroupBtn",
           onPressed: () {},
           child: Icon(Icons.add),
         )));

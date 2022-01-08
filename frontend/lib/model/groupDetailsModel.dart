@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 class GroupDetails {
-  final int id;
+  final String id;
   final String name;
   final List<Member> members;
   final List<Transaction> transactions;
@@ -21,7 +21,7 @@ class GroupDetails {
 
 
     return GroupDetails(
-      id: parsedJson['id'],
+      id: parsedJson['id'].toString(),
       name: parsedJson['name'],
       members: membersList,
       transactions: transactionsList
@@ -39,7 +39,7 @@ class Member {
 
   factory Member.fromJson(Map<String, dynamic> parsedJson){
    return Member(
-     id:parsedJson['id'],
+     id:parsedJson['id'].toString(),
      name:parsedJson['name']
    );
   }
@@ -48,7 +48,7 @@ class Member {
 class Transaction {
   final String id;
   final String title;
-  final Double amount;
+  final String amount;
 
   Transaction({
     required this.id, 
@@ -57,9 +57,9 @@ class Transaction {
 
   factory Transaction.fromJson(Map<String, dynamic> parsedJson){
    return Transaction(
-     id: parsedJson['id'],
+     id: parsedJson['id'].toString(),
      title: parsedJson['title'],
-     amount: parsedJson["amount"]
+     amount: parsedJson["amount"].toString()
    );
   }
 }
