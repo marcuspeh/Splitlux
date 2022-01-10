@@ -39,16 +39,15 @@ class JoinTravelGroup extends StatelessWidget {
   final String jwt;
   final Map<String, dynamic> payload;
 
-    Future<String?> attemptCreate(String groupCode) async {
-    var res = await http.post(
-      Uri.parse(CREATEGROUP),
+    Future<String?> attemptJoin(String groupCode) async {
+    var res = await http.put(
+      Uri.parse(JOINGROUP),
       body: {
         "group_id": groupCode
       },
       headers: {"Authorization": "Bearer " + jwt}
     );
-    if(res.statusCode == 201) return res.body;
-    return null;
+    return "${res.statusCode} ${res.body}";
   }
 
 
@@ -70,11 +69,7 @@ class JoinTravelGroup extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Positioned(
-                      top: 50,
-                      left: 10,
-                      child: groupNameAndBack(context),
-                    ),
+                    groupNameAndBack(context),
                     SizedBox(
                       height: 8,
                     ),
@@ -118,15 +113,23 @@ class JoinTravelGroup extends StatelessWidget {
                                       return;
                                     }
                                     var groupCode = _groupCodeContoller.text;
-                                    var responseBody = await attemptCreate(groupCode);
-                                    if (responseBody != null) {
-                                      Map<String,dynamic> response = jsonDecode(responseBody);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => HomePage(jwt, payload)
-                                        )
-                                      );
+                                    var response = await attemptJoin(groupCode);
+                                    if (response != null) {
+                                      var responseHeader = response.substring(0, 3);
+                                      if (responseHeader == "201") {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => HomePage(jwt, payload)
+                                          ));
+                                      } else if (responseHeader == "404") {
+                                        displayDialog(context, "An Error Occurred", "Group cannot be found");
+                                      } else {
+                                        var responseBody = response.substring(4);
+                                        Map<String,dynamic> responseMap = jsonDecode(responseBody);
+                                        displayDialog(context, "An Error Occurred", (responseMap["error"] != null) ? responseMap['error'] : "Please try again");
+                                        
+                                      }
                                     } else {
                                       displayDialog(context, "An Error Occurred", "Please try again");
                                     }

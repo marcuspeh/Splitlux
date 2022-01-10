@@ -205,7 +205,8 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                     var responseHeader = response.substring(0, 3);
                     if (responseHeader == "400") {
                       var responseBody = response.substring(4);
-                      Map<String,dynamic> rsponseMap = jsonDecode(responseBody);
+                      Map<String,dynamic> responseMap = jsonDecode(responseBody);
+                      displayDialog(context, "An Error Occurred", responseMap);
                     } else {
                       Navigator.push(
                         context,

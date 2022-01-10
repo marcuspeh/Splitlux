@@ -7,3 +7,4 @@ const String GROUPDETAILS = "$ROOT/group/";
 const String CREATEGROUP = "$ROOT/group/create/";
 const String JOINGROUP = "$ROOT/group/join/";
 const String CREATETRANSACTION = "$ROOT/transaction/create/";
+const String DELETETRANSACTION = "$ROOT/transaction/delete/";

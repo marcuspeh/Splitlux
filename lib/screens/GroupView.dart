@@ -30,6 +30,24 @@ class GroupView extends StatelessWidget {
   final String groupCode;
   final String groupName;
 
+  void displayDialog(context, title, text) => showDialog(
+    context: context,
+    builder: (context) =>
+      AlertDialog(
+        title: Text(title),
+        content: Text(text)
+      ),
+  );
+
+  Future<String?> attemptDeleteTransaction(String id) async {
+    var res = await http.delete(
+      Uri.parse(DELETETRANSACTION + "${id}/"),
+      headers: {"Authorization": "Bearer " + jwt}
+    );
+    if(res.statusCode == 200) return res.body;
+    return "${res.statusCode} ${res.body}";
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -218,7 +236,22 @@ class GroupView extends StatelessWidget {
                               child: FloatingActionButton(
                             heroTag: "removeTransactionBtn" + transaction.id,
                             backgroundColor: Colors.red,
-                            onPressed: () {},
+                            onPressed: () async {
+                              var response = await attemptDeleteTransaction(transaction.id);
+                              if (response != null) {
+                                var responseHeader = response.substring(0, 3);
+                                if (responseHeader == "400") {
+                                  var responseBody = response.substring(4);
+                                  Map<String,dynamic> responseMap = jsonDecode(responseBody);
+                                  displayDialog(context, "An Error Occurred", responseMap["error"]);
+                                } else {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName)));
+                                }
+                              } else {
+                                displayDialog(context, "An Error Occurred", "Please try again");
+                              }
+                            },
                             child: Icon(Icons.remove),
                           ))),
                     ])),

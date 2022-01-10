@@ -70,11 +70,7 @@ class AddTravelGroup extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Positioned(
-                      top: 50,
-                      left: 10,
-                      child: groupNameAndBack(context),
-                    ),
+                    groupNameAndBack(context),
                     SizedBox(
                       height: 8,
                     ),
