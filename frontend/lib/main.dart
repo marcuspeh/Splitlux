@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
                     ascii.decode(base64.decode(base64.normalize(jwt[1]))));
                 if (DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000)
                     .isAfter(DateTime.now())) {
-                  return GroupTransactionView();
+                  return HomePage(str, payload);
                 } else {
                   return SignIn();
                 }

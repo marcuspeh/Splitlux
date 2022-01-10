@@ -1,22 +1,45 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/GroupMemberView.dart';
+import 'package:frontend/api/api.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/GroupView.dart';
 import 'package:frontend/constants.dart';
 
 class GroupTransactionView extends StatefulWidget {
+  GroupTransactionView(
+      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
+
+  final String jwt;
+  final Map<String, dynamic> payload;
+  final String groupId;
+  final String groupCode;
+  final String groupName;
+
   @override
-  _GroupTransactionViewState createState() => _GroupTransactionViewState();
+  _GroupTransactionViewState createState() => _GroupTransactionViewState(jwt, payload, groupId, groupCode, groupName);
 }
 
 class _GroupTransactionViewState extends State<GroupTransactionView> {
+    _GroupTransactionViewState(
+      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
+
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _totalAmountController;
   static List<String?> payerList = [null];
   static List<double?> payerAmount = [null];
   static List<String?> payeeList = [null];
+
+  final String jwt;
+  final Map<String, dynamic> payload;
+  final String groupId;
+  final String groupCode;
+  final String groupName;
+
+  get http => null;
 
   @override
   void initState() {
@@ -30,6 +53,26 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
     _nameController.dispose();
         _totalAmountController.dispose();
     super.dispose();
+  }
+
+  void displayDialog(context, title, text) => showDialog(
+    context: context,
+    builder: (context) =>
+      AlertDialog(
+        title: Text(title),
+        content: Text(text)
+      ),
+  );
+
+  Future<String?> attemptCreateTransaction() async {
+    var res = await http.post(
+      Uri.parse(CREATETRANSACTION),
+      body: {
+        "name": "Hello"
+      },
+      headers: {"Authorization": "Bearer " + jwt}
+    );
+    return "${res.statusCode} ${res.body}";
   }
 
   @override
@@ -62,16 +105,16 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
           fontSize: 30,
         ),
         children: [
-          // WidgetSpan(
-          //     child: Container(
-          //   child: GestureDetector(
-          //       onTap: () => Navigator.of(context).push(
-          //             MaterialPageRoute(
-          //               builder: (_) => GroupView(),
-          //             ),
-          //           ),
-          //       child: Icon(Icons.arrow_back)),
-          // )),
+          WidgetSpan(
+              child: Container(
+            child: GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName),
+                      ),
+                    ),
+                child: Icon(Icons.arrow_back)),
+          )),
           TextSpan(text: 'Transactions'),
         ],
       ),
@@ -153,9 +196,28 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                 height: 40,
               ),
               FlatButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
+                  }
+                  var response = await attemptCreateTransaction();
+                  if (response != null) {
+                    var responseHeader = response.substring(0, 3);
+                    if (responseHeader == "400") {
+                      var responseBody = response.substring(4);
+                      Map<String,dynamic> rsponseMap = jsonDecode(responseBody);
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GroupView(jwt, payload, groupId, groupCode, groupName)
+                        )
+                      );
+                    }
+                    
+                   
+                  } else {
+                    displayDialog(context, "An Error Occurred", "Please try again");
                   }
                 },
                 child: Text('Submit'),

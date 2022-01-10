@@ -3,24 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/HomePage.dart';
 import 'package:frontend/GroupMemberView.dart';
+import 'package:frontend/GroupTransactionView.dart';
 import 'package:frontend/api/api.dart';
 import 'package:frontend/constants.dart';
 import 'package:frontend/model/groupDetailsModel.dart';
 import 'package:http/http.dart' as http;
 
-var exampleData = [
-  'Munich',
-  'Prague',
-  'London',
-  'Czech Republic',
-  'Paris',
-  'France',
-  'Dominican Republic',
-  'Tokyo',
-  'Osaka',
-  'Kyoto',
-  'Saitama',
-];
 
 class GroupView extends StatelessWidget {
   GroupView(
@@ -76,7 +64,7 @@ class GroupView extends StatelessWidget {
                     Positioned(
                       top: 120,
                       left: 21,
-                      child: billedContainer(size, groupDetails.transactions),
+                      child: billedContainer(context, size, groupDetails.transactions),
                     ),
                   ],
                 );
@@ -117,7 +105,7 @@ class GroupView extends StatelessWidget {
             }));
   }
 
-  Widget billedContainer(Size size, List<Transaction> transactions) {
+  Widget billedContainer(BuildContext context, Size size, List<Transaction> transactions) {
     return Container(
       height: size.height / 1.28,
       width: size.width / 1.11,
@@ -130,7 +118,7 @@ class GroupView extends StatelessWidget {
           Positioned(
             top: 10,
             left: 11,
-            child: addTransactions(),
+            child: addTransactions(context),
           ),
           Container(
             child: transactionEntries(size, transactions),
@@ -228,7 +216,7 @@ class GroupView extends StatelessWidget {
                           margin: EdgeInsets.fromLTRB(200, 0, 0, 0),
                           child: FittedBox(
                               child: FloatingActionButton(
-                            heroTag: "removeTransactionBtn" + transaction.title,
+                            heroTag: "removeTransactionBtn" + transaction.id,
                             backgroundColor: Colors.red,
                             onPressed: () {},
                             child: Icon(Icons.remove),
@@ -240,8 +228,8 @@ class GroupView extends StatelessWidget {
         });
   }
 
-  Widget addTransactions() {
-    return Row(children: [transactionsText(), addButton()]);
+  Widget addTransactions(BuildContext context) {
+    return Row(children: [transactionsText(), addButton(context)]);
   }
 
   Widget transactionsText() {
@@ -253,14 +241,18 @@ class GroupView extends StatelessWidget {
         ));
   }
 
-  Widget addButton() {
+  Widget addButton(BuildContext context) {
     return Container(
         height: 30.0,
         width: 30.0,
         child: FittedBox(
             child: FloatingActionButton(
           heroTag: "addGroupBtn",
-          onPressed: () {},
+          onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => GroupTransactionView(jwt, payload, groupId, groupCode, groupName),
+                      ),
+                    ),
           child: Icon(Icons.add),
         )));
   }
