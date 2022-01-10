@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/GroupMemberView.dart';
-import 'package:frontend/api/api.dart';
+import 'package:Splitlux/GroupMemberView.dart';
+import 'package:Splitlux/api/api.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/GroupView.dart';
-import 'package:frontend/constants.dart';
+import 'package:Splitlux/GroupView.dart';
+import 'package:Splitlux/constants.dart';
 
 class GroupTransactionView extends StatefulWidget {
   GroupTransactionView(

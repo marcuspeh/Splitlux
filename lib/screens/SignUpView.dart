@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/api/api.dart';
-import 'package:frontend/screens/SignInView.dart';
+import 'package:Splitlux/api/api.dart';
+import 'package:Splitlux/screens/SignInView.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'package:frontend/HomePage.dart';
+import 'package:Splitlux/HomePage.dart';
 
 import '../constants.dart';
 

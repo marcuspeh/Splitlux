@@ -1,21 +1,21 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/HomePage.dart';
-import 'package:frontend/api/api.dart';
+import 'package:Splitlux/HomePage.dart';
+import 'package:Splitlux/api/api.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/constants.dart';
+import 'package:Splitlux/constants.dart';
 
-class JoinTravelGroup extends StatelessWidget {
+class AddTravelGroup extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  late String groupCode;
+  late String name;
 
   bool isLoading=false;
-  TextEditingController _groupCodeContoller=new TextEditingController();
+  TextEditingController _nameContoller=new TextEditingController();
   GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey();
   late ScaffoldMessengerState scaffoldMessenger ;
 
-  JoinTravelGroup(this.jwt, this.payload);
+  AddTravelGroup(this.jwt, this.payload);
 
   void displayDialog(context, title, text) => showDialog(
     context: context,
@@ -26,8 +26,8 @@ class JoinTravelGroup extends StatelessWidget {
       ),
   );
 
-  factory JoinTravelGroup.fromBase64(String jwt) =>
-    JoinTravelGroup(
+  factory AddTravelGroup.fromBase64(String jwt) =>
+    AddTravelGroup(
       jwt,
       json.decode(
         ascii.decode(
@@ -39,11 +39,11 @@ class JoinTravelGroup extends StatelessWidget {
   final String jwt;
   final Map<String, dynamic> payload;
 
-    Future<String?> attemptCreate(String groupCode) async {
+    Future<String?> attemptCreate(String name) async {
     var res = await http.post(
       Uri.parse(CREATEGROUP),
       body: {
-        "group_id": groupCode
+        "name": name
       },
       headers: {"Authorization": "Bearer " + jwt}
     );
@@ -89,16 +89,16 @@ class JoinTravelGroup extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.white,
                               ),
-                              controller: _groupCodeContoller,
+                              controller: _nameContoller,
                               decoration: InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.white)),
-                                hintText: "Group Code",
+                                hintText: "Group Name",
                                 hintStyle: TextStyle(
                                     color: Colors.white70, fontSize: 15),
                               ),
                               onSaved: (val) {
-                                groupCode = val!;
+                                name = val!;
                               },
                             ),
                             SizedBox(
@@ -112,13 +112,13 @@ class JoinTravelGroup extends StatelessWidget {
                                       {
                                         return;
                                       }
-                                    if(_groupCodeContoller.text.isEmpty)
+                                    if(_nameContoller.text.isEmpty)
                                     {
-                                      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please fill in the group groupCode")));
+                                      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please fill in the group name")));
                                       return;
                                     }
-                                    var groupCode = _groupCodeContoller.text;
-                                    var responseBody = await attemptCreate(groupCode);
+                                    var name = _nameContoller.text;
+                                    var responseBody = await attemptCreate(name);
                                     if (responseBody != null) {
                                       Map<String,dynamic> response = jsonDecode(responseBody);
                                       Navigator.push(
@@ -187,7 +187,7 @@ class JoinTravelGroup extends StatelessWidget {
                     ),
                 child: Icon(Icons.arrow_back)),
           )),
-          TextSpan(text: 'Join a Travel Group'),
+          TextSpan(text: 'Create a Travel Group'),
         ],
       ),
     );

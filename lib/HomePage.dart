@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-import 'package:frontend/AddTravelGroup.dart';
-import 'package:frontend/JoinTravelGroup.dart';
+import 'package:Splitlux/AddTravelGroup.dart';
+import 'package:Splitlux/JoinTravelGroup.dart';
 
-import 'package:frontend/api/api.dart';
-import 'package:frontend/screens/SignInView.dart';
-import 'package:frontend/GroupView.dart';
+import 'package:Splitlux/api/api.dart';
+import 'package:Splitlux/screens/SignInView.dart';
+import 'package:Splitlux/GroupView.dart';
 
-import 'package:frontend/model/groupListModel.dart';
+import 'package:Splitlux/model/groupListModel.dart';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/constants.dart';
+import 'package:Splitlux/constants.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -182,7 +182,7 @@ class HomePage extends StatelessWidget {
 
   Widget createButton(BuildContext context) {
     return Container(
-        height: 80.0,
+        height: 70.0,
         width: 80.0,
         child: FittedBox(
             child: FloatingActionButton.extended(
@@ -200,7 +200,7 @@ class HomePage extends StatelessWidget {
   Widget joinButton(BuildContext context) {
     return Container(
         height: 70.0,
-        width: 70.0,
+        width: 80.0,
         child: FittedBox(
             child: FloatingActionButton.extended(
               heroTag: "joinGroupBtn",

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/GroupTransactionView.dart';
-import 'package:frontend/screens/SignInView.dart';
-import 'package:frontend/HomePage.dart';
-import 'package:frontend/api/api.dart';
+import 'package:Splitlux/GroupTransactionView.dart';
+import 'package:Splitlux/screens/SignInView.dart';
+import 'package:Splitlux/HomePage.dart';
+import 'package:Splitlux/api/api.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

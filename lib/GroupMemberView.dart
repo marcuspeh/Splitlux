@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/GroupView.dart';
-import 'package:frontend/model/groupDetailsModel.dart';
-import 'package:frontend/constants.dart';
+import 'package:Splitlux/GroupView.dart';
+import 'package:Splitlux/model/groupDetailsModel.dart';
+import 'package:Splitlux/constants.dart';
 
 var exampleData = [
   'Tom Jeffrey',

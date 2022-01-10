@@ -1,50 +1,61 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/api/api.dart';
-import 'package:frontend/constants.dart';
-import 'package:frontend/main.dart';
-import 'package:frontend/screens/SignUpView.dart';
+import 'package:Splitlux/HomePage.dart';
+import 'package:Splitlux/api/api.dart';
 import 'package:http/http.dart' as http;
+import 'package:Splitlux/constants.dart';
 
-import 'package:frontend/HomePage.dart';
-
-class SignIn extends StatelessWidget {
+class JoinTravelGroup extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  late String email, password;
+  late String groupCode;
 
   bool isLoading=false;
-  TextEditingController _emailController=new TextEditingController();
-  TextEditingController _passwordController=new TextEditingController();
+  TextEditingController _groupCodeContoller=new TextEditingController();
   GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey();
   late ScaffoldMessengerState scaffoldMessenger ;
 
+  JoinTravelGroup(this.jwt, this.payload);
+
   void displayDialog(context, title, text) => showDialog(
-      context: context,
-      builder: (context) =>
-        AlertDialog(
-          title: Text(title),
-          content: Text(text)
-        ),
+    context: context,
+    builder: (context) =>
+      AlertDialog(
+        title: Text(title),
+        content: Text(text)
+      ),
+  );
+
+  factory JoinTravelGroup.fromBase64(String jwt) =>
+    JoinTravelGroup(
+      jwt,
+      json.decode(
+        ascii.decode(
+          base64.decode(base64.normalize(jwt.split(".")[1]))
+        )
+      )
     );
 
-  Future<String?> attemptLogIn(String username, String password) async {
+  final String jwt;
+  final Map<String, dynamic> payload;
+
+    Future<String?> attemptCreate(String groupCode) async {
     var res = await http.post(
-      Uri.parse(LOGIN),
+      Uri.parse(CREATEGROUP),
       body: {
-        "email": username,
-        "password": password
-      }
+        "group_id": groupCode
+      },
+      headers: {"Authorization": "Bearer " + jwt}
     );
-    if(res.statusCode == 200) return res.body;
+    if(res.statusCode == 201) return res.body;
     return null;
   }
 
 
   @override
   Widget build(BuildContext context) {
-    scaffoldMessenger = ScaffoldMessenger.of(context);
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: purple,
       key: _scaffoldKey,
@@ -54,33 +65,15 @@ class SignIn extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: <Widget>[
-              
               Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Center(
-                      child: Text(
-                        "SplitLux",
-                        style: TextStyle(
-                          color: orange,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Text(
-                      "Sign In",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          letterSpacing: 1,
-                          fontSize: 23,
-                        ),
+                    Positioned(
+                      top: 50,
+                      left: 10,
+                      child: groupNameAndBack(context),
                     ),
                     SizedBox(
                       height: 8,
@@ -96,35 +89,16 @@ class SignIn extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.white,
                               ),
-                              controller: _emailController,
+                              controller: _groupCodeContoller,
                               decoration: InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.white)),
-                                hintText: "Email",
+                                hintText: "Group Code",
                                 hintStyle: TextStyle(
                                     color: Colors.white70, fontSize: 15),
                               ),
                               onSaved: (val) {
-                                email = val!;
-                              },
-                            ),
-                            SizedBox(
-                              height: 16,
-                            ),
-                            TextFormField(
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                              controller: _passwordController,
-                              decoration: InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white)),
-                                hintText: "Password",
-                                hintStyle: TextStyle(
-                                    color: Colors.white70, fontSize: 15),
-                              ),
-                              onSaved: (val) {
-                                email = val!;
+                                groupCode = val!;
                               },
                             ),
                             SizedBox(
@@ -138,28 +112,23 @@ class SignIn extends StatelessWidget {
                                       {
                                         return;
                                       }
-                                    if(_emailController.text.isEmpty||_passwordController.text.isEmpty)
+                                    if(_groupCodeContoller.text.isEmpty)
                                     {
-                                      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please Fill all fileds")));
+                                      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please fill in the group groupCode")));
                                       return;
                                     }
-                                    var username = _emailController.text;
-                                    var password = _passwordController.text;
-                                    var responseBody = await attemptLogIn(username, password);
+                                    var groupCode = _groupCodeContoller.text;
+                                    var responseBody = await attemptCreate(groupCode);
                                     if (responseBody != null) {
                                       Map<String,dynamic> response = jsonDecode(responseBody);
-                                      var jwt = response['access'];
-                                      var refresh = response['refresg'];
-                                      storage.write(key: "jwt", value: jwt);
-                                      storage.write(key: "refresh_token", value: refresh);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => HomePage.fromBase64(jwt)
+                                          builder: (context) => HomePage(jwt, payload)
                                         )
                                       );
                                     } else {
-                                      displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
+                                      displayDialog(context, "An Error Occurred", "Please try again");
                                     }
                                   },
                                   child: Container(
@@ -190,30 +159,6 @@ class SignIn extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "OR",
-                      style: TextStyle(fontSize: 14, color: Colors.white60),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => SignUp(),
-                        ),
-                      ),                      
-                      child: Text(
-                        "Don't have an account?",
-                        style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 13,
-                                decoration: TextDecoration.underline,
-                                letterSpacing: 0.5)),
-                      ),
                   ],
                 ),
               ),
@@ -222,5 +167,29 @@ class SignIn extends StatelessWidget {
       ),
     ));
   }
-}
 
+  Widget groupNameAndBack(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(
+          color: orange,
+          fontWeight: FontWeight.bold,
+          fontSize: 30,
+        ),
+        children: [
+          WidgetSpan(
+              child: Container(
+            child: GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => HomePage(jwt, payload),
+                      ),
+                    ),
+                child: Icon(Icons.arrow_back)),
+          )),
+          TextSpan(text: 'Join a Travel Group'),
+        ],
+      ),
+    );
+  }
+  }

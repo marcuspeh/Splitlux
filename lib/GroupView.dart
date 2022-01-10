@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/HomePage.dart';
-import 'package:frontend/GroupMemberView.dart';
-import 'package:frontend/GroupTransactionView.dart';
-import 'package:frontend/api/api.dart';
-import 'package:frontend/constants.dart';
-import 'package:frontend/model/groupDetailsModel.dart';
+import 'package:Splitlux/HomePage.dart';
+import 'package:Splitlux/GroupMemberView.dart';
+import 'package:Splitlux/GroupTransactionView.dart';
+import 'package:Splitlux/api/api.dart';
+import 'package:Splitlux/constants.dart';
+import 'package:Splitlux/model/groupDetailsModel.dart';
 import 'package:http/http.dart' as http;
 
 
