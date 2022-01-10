@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:Splitlux/HomePage.dart';
+import 'package:Splitlux/screens/HomePage.dart';
 import 'package:Splitlux/api/api.dart';
 import 'package:http/http.dart' as http;
 import 'package:Splitlux/constants.dart';

@@ -8,7 +8,7 @@ import 'package:Splitlux/main.dart';
 import 'package:Splitlux/screens/SignUpView.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:Splitlux/HomePage.dart';
+import 'package:Splitlux/screens/HomePage.dart';
 
 class SignIn extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();

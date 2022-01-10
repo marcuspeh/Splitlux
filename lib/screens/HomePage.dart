@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:Splitlux/AddTravelGroup.dart';
-import 'package:Splitlux/JoinTravelGroup.dart';
+import 'package:Splitlux/screens/AddTravelGroup.dart';
+import 'package:Splitlux/screens/JoinTravelGroup.dart';
 
 import 'package:Splitlux/api/api.dart';
 import 'package:Splitlux/screens/SignInView.dart';
-import 'package:Splitlux/GroupView.dart';
+import 'package:Splitlux/screens/GroupView.dart';
 
 import 'package:Splitlux/model/groupListModel.dart';
 

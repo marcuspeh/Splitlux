@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:Splitlux/GroupView.dart';
+import 'package:Splitlux/screens/GroupView.dart';
 import 'package:Splitlux/model/groupDetailsModel.dart';
 import 'package:Splitlux/constants.dart';
 

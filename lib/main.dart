@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:Splitlux/GroupTransactionView.dart';
+import 'package:Splitlux/screens/GroupTransactionView.dart';
 import 'package:Splitlux/screens/SignInView.dart';
-import 'package:Splitlux/HomePage.dart';
+import 'package:Splitlux/screens/HomePage.dart';
 import 'package:Splitlux/api/api.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

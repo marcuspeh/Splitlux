@@ -7,7 +7,7 @@ import 'package:Splitlux/screens/SignInView.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'package:Splitlux/HomePage.dart';
+import 'package:Splitlux/screens/HomePage.dart';
 
 import '../constants.dart';
 
