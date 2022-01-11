@@ -21,17 +21,18 @@ Installation: `pip install virtualenv`
 ![class diagram](docs/images/models.png)
 
 ### End Points
-| ENDPOINT | HTTPS METHODS | DESCRIPTION | 
-| /auth/users | POST | Create/login a new user |
-| /auth/users | GET | Retrieves user data |
+|ENDPOINT | HTTPS METHODS | DESCRIPTION | 
+| ------------- |:-------------:| ------------- |
+|/auth/users | POST | Create/login a new user |
+|/auth/users | GET | Retrieves user data |
 | | | |
-| /group/list/ | GET | Returns a simplified list of groups |
-| /group/create/ | POST | Creates a new group |
-| /group/join/ | PUT | Join a group with group_id |
-| /group/<int:id>/ | GET | Retrieves the data of a group |
-| /group/calculatepayment/<int:id>/ | GET | Gets the payments and closes the group (Calculating payment not done) |
+|/group/list/ | GET | Returns a simplified list of groups |
+|/group/create/ | POST | Creates a new group |
+|/group/join/ | PUT | Join a group with group_id |
+|/group/<int:id>/ | GET | Retrieves the data of a group |
+|/group/calculatepayment/<int:id>/ | GET | Gets the payments and closes the group (Calculating payment not done) |
 |  |  |  |
-| /transaction/create/ | POST | Creates a new transaction |
-| /transaction/<int:id>/ | GET | Gets the specified transaction |
-| /transaction/delete/<int:id>/ | DELETE | Delete the specified transaction |
+|/transaction/create | POST | Creates a new transaction |
+|/transaction/<int:id> | GET | Gets the specified transaction |
+|/transaction/delete/<int:id> | DELETE | Delete the specified transaction |
 
