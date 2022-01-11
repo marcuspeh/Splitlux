@@ -31,7 +31,7 @@ Installation: `pip install virtualenv`
 | /group/<int:id>/ | GET | Retrieves the data of a group |
 | /group/calculatepayment/<int:id>/ | GET | Gets the payments and closes the group (Calculating payment not done) |
 |  |  |  |
-| /transaction/create | POST | Creates a new transaction |
-| /transaction/<int:id> | GET | Gets the specified transaction |
-| /transaction/delete/<int:id> | DELETE | Delete the specified transaction |
+| /transaction/create/ | POST | Creates a new transaction |
+| /transaction/<int:id>/ | GET | Gets the specified transaction |
+| /transaction/delete/<int:id>/ | DELETE | Delete the specified transaction |
 

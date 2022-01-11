@@ -71,7 +71,7 @@ class CreateTransaction(APIView):
             transaction = Transaction.create(title=data['title'], amount=data['amount'], payers=payers, expenses=expenses)
             group.transactions.add(transaction)
 
-            return Response(data=TransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
+            return Response(data={"success": "Transaction created successfully"}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
