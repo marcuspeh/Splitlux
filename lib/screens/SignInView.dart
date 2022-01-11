@@ -51,7 +51,7 @@ class SignIn extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Center(
+                    const Center(
                       child: Text(
                         "SplitLux",
                         style: TextStyle(
@@ -61,10 +61,10 @@ class SignIn extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 40,
                     ),
-                    Text(
+                    const Text(
                       "Sign In",
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -73,22 +73,22 @@ class SignIn extends StatelessWidget {
                           fontSize: 23,
                         ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     Form(
                       key: _formKey,
                       child: Container(
                         margin:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 45),
+                            const EdgeInsets.symmetric(vertical: 10, horizontal: 45),
                         child: Column(
                           children: <Widget>[
                             TextFormField(
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                               controller: _emailController,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.white)),
                                 hintText: "Email",
@@ -99,15 +99,15 @@ class SignIn extends StatelessWidget {
                                 email = val!;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 16,
                             ),
                             TextFormField(
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                               controller: _passwordController,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.white)),
                                 hintText: "Password",
@@ -118,7 +118,7 @@ class SignIn extends StatelessWidget {
                                 email = val!;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 30,
                             ),
                             Stack(
@@ -131,7 +131,7 @@ class SignIn extends StatelessWidget {
                                       }
                                     if(_emailController.text.isEmpty||_passwordController.text.isEmpty)
                                     {
-                                      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please Fill all fileds")));
+                                      scaffoldMessenger.showSnackBar(const SnackBar(content:const Text("Please Fill all fileds")));
                                       return;
                                     }
                                     var username = _emailController.text;
@@ -163,14 +163,14 @@ class SignIn extends StatelessWidget {
                                   child: Container(
                                     alignment: Alignment.center,
                                     width: double.infinity,
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 0),
                                     height: 50,
                                     decoration: BoxDecoration(
                                       border: Border.all(color: Colors.white),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       "SUBMIT",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -179,7 +179,7 @@ class SignIn extends StatelessWidget {
                                               letterSpacing: 1)),
                                   ),
                                 ),
-                                Positioned(child: (isLoading)?Center(child: Container(height:26,width: 26,child: CircularProgressIndicator(backgroundColor: Colors.green,))):Container(),right: 30,bottom: 0,top: 0,)
+                                Positioned(child: (isLoading)?Center(child: Container(height:26,width: 26,child: const CircularProgressIndicator(backgroundColor: Colors.green,))):Container(),right: 30,bottom: 0,top: 0,)
 
                               ],
                             )
@@ -188,14 +188,14 @@ class SignIn extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    Text(
+                    const Text(
                       "OR",
                       style: TextStyle(fontSize: 14, color: Colors.white60),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     GestureDetector(
@@ -204,7 +204,7 @@ class SignIn extends StatelessWidget {
                           builder: (_) => SignUp(),
                         ),
                       ),                      
-                      child: Text(
+                      child: const Text(
                         "Don't have an account?",
                         style: TextStyle(
                                 color: Colors.white70,

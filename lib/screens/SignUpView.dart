@@ -1,16 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:Splitlux/api/api.dart';
-import 'package:Splitlux/screens/SignInView.dart';
-import 'package:Splitlux/utils.dart';
-
 import 'package:http/http.dart' as http;
 
-import 'package:Splitlux/screens/HomePage.dart';
-
-import '../constants.dart';
+import 'package:Splitlux/api/api.dart';
+import 'package:Splitlux/constants.dart';
+import 'package:Splitlux/screens/SignInView.dart';
+import 'package:Splitlux/utils.dart';
 
 class SignUp extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();

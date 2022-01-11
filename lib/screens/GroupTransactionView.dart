@@ -11,16 +11,17 @@ import 'package:Splitlux/screens/GroupView.dart';
 import 'package:Splitlux/utils.dart';
 
 class GroupTransactionView extends StatefulWidget {
-  GroupTransactionView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
+  GroupTransactionView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.isClosed);
 
   final String jwt;
   final Map<String, dynamic> payload;
   final String groupId;
   final String groupCode;
   final String groupName;
+  final bool isClosed;
 
   @override
-  _GroupTransactionViewState createState() => _GroupTransactionViewState(jwt, payload, groupId, groupCode, groupName);
+  _GroupTransactionViewState createState() => _GroupTransactionViewState(jwt, payload, groupId, groupCode, groupName, isClosed);
 }
 
 class _GroupTransactionViewState extends State<GroupTransactionView> {
@@ -36,10 +37,11 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
   final String groupId;
   final String groupCode;
   final String groupName;
+  final bool isClosed;
 
   get http => null;
     _GroupTransactionViewState(
-      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
+      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.isClosed);
 
   @override
   void initState() {
@@ -77,7 +79,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
             top: 50,
             left: 10,
             child: returnBackButton(context, "Transactions", () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName))
+              MaterialPageRoute(builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName, isClosed))
             )),
           ),
           Container(
@@ -179,7 +181,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => GroupView(jwt, payload, groupId, groupCode, groupName)
+                          builder: (context) => GroupView(jwt, payload, groupId, groupCode, groupName, isClosed)
                         )
                       );
                     }

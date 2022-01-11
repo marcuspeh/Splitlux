@@ -8,9 +8,9 @@ import 'package:Splitlux/screens/GroupView.dart';
 import 'package:Splitlux/utils.dart';
 
 class GroupMemberView extends StatelessWidget {
-  GroupMemberView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.members);
+  GroupMemberView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.members, this.isClosed);
 
-  factory GroupMemberView.fromBase64(String jwt, String groupId, String groupCode, String groupName, List<Member> members) =>
+  factory GroupMemberView.fromBase64(String jwt, String groupId, String groupCode, String groupName, List<Member> members, bool isClosed) =>
     GroupMemberView(
       jwt,
       json.decode(
@@ -21,7 +21,8 @@ class GroupMemberView extends StatelessWidget {
       groupId,
       groupCode,
       groupName,
-      members
+      members,
+      isClosed
     );
 
   final String jwt;
@@ -30,7 +31,7 @@ class GroupMemberView extends StatelessWidget {
   final String groupCode;
   final String groupName;
   final List<Member> members;
-
+  final bool isClosed;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class GroupMemberView extends StatelessWidget {
             top: 50,
             left: 10,
             child: returnBackButton(context, "Members", () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName)),
+                MaterialPageRoute(builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName, isClosed)),
               )
             ),
           ),

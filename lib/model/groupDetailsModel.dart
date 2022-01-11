@@ -3,6 +3,7 @@ import 'dart:ffi';
 class GroupDetails {
   final String id;
   final String name;
+  final bool isClosed;
   final List<Member> members;
   final List<Transaction> transactions;
 
@@ -10,19 +11,21 @@ class GroupDetails {
     required this.id, 
     required this.name, 
     required this.members,
-    required this.transactions});
+    required this.transactions, 
+    required this.isClosed});
 
   factory GroupDetails.fromJson(Map<String, dynamic> parsedJson){
 
     var memberList = parsedJson['members'] as List;
     var transactionList = parsedJson['transactions'] as List;
+    var isClosed = parsedJson['is_closed'] as bool;
     List<Member> membersList = memberList.map((i) => Member.fromJson(i)).toList();
     List<Transaction> transactionsList = transactionList.map((i) => Transaction.fromJson(i)).toList();
-
 
     return GroupDetails(
       id: parsedJson['id'].toString(),
       name: parsedJson['name'],
+      isClosed: parsedJson['is_closed'],
       members: membersList,
       transactions: transactionsList
     );

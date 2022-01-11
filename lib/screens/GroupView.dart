@@ -18,18 +18,21 @@ class GroupView extends StatelessWidget {
   final String groupId;
   final String groupCode;
   final String groupName;
+  final bool isClosed;
 
-  GroupView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
+  GroupView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.isClosed);
 
   factory GroupView.fromBase64(
-          String jwt, String groupId, String groupCode, String groupName) =>
+          String jwt, String groupId, String groupCode, String groupName, bool isClosed) =>
       GroupView(
           jwt,
           json.decode(
               ascii.decode(base64.decode(base64.normalize(jwt.split(".")[1])))),
           groupId,
           groupCode,
-          groupName);
+          groupName,
+          isClosed
+          );
 
   Future<String?> attemptDeleteTransaction(String id) async {
     var res = await http.delete(
@@ -60,7 +63,8 @@ class GroupView extends StatelessWidget {
           })
     );
   }
-   Widget successRequest(BuildContext context, String data) {
+
+  Widget successRequest(BuildContext context, String data) {
     final Size size = MediaQuery.of(context).size;
 
     final jsonResponse = json.decode(data);
@@ -77,7 +81,7 @@ class GroupView extends StatelessWidget {
             )),
           ),
           Positioned(
-            top: 30,
+            top: 50,
             right: 10,
             child: membershipStatus(context, groupDetails.members),
           ),
@@ -121,32 +125,39 @@ class GroupView extends StatelessWidget {
   }
 
   Widget membershipStatus(BuildContext context, List<Member> members) {
-    return Container(
-        height: 80.0,
-        width: 80.0,
-        child: FittedBox(
-            child: FloatingActionButton.extended(
-          heroTag: "membershipBtn",
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => GroupMemberView(
-                  jwt, payload, groupId, groupCode, groupName, members),
-            ),
-          ),
-          label: Text(
-            "${members.length} members",
-            style: TextStyle(fontSize: 16),
-          ),
-        )));
+    return ElevatedButton.icon(
+      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(darkPurple)),      
+      onPressed: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => GroupMemberView(
+              jwt, payload, groupId, groupCode, groupName, members, isClosed),
+        ),
+      ),
+      icon: Icon(Icons.face_sharp, size: 16),
+      label: Text(
+        "${members.length} members",
+        style: TextStyle(fontSize: 16),
+      ),
+    );
   }
 
   Widget groupCodeText(String groupCode) {
-    return Text("Group code $groupCode",
+    if (isClosed) {
+      return Text("Group closed",
         style: const TextStyle(
           color: orange,
           fontWeight: FontWeight.normal,
-          fontSize: 15,
+          fontSize: 18,
         ));
+    } else {
+      return Text("Group code $groupCode",
+        style: const TextStyle(
+          color: orange,
+          fontWeight: FontWeight.normal,
+          fontSize: 18,
+        ));
+    }
+    
   }
 
   Widget transactionEntries(Size size, List<Transaction> transactions) {
@@ -172,50 +183,70 @@ class GroupView extends StatelessWidget {
                     height: size.height / 14,
                     width: size.width / 1.5,
                     alignment: Alignment.centerLeft,
-                    child: Row(children: [
-                      Text(
-                        "(\$${transaction.amount}) ${transaction.title}",
-                        style: const TextStyle(
-                          color: orange,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Container(
-                          height: 20.0,
-                          width: 20.0,
-                          margin: const EdgeInsets.fromLTRB(200, 0, 0, 0),
-                          child: FittedBox(
-                              child: FloatingActionButton(
-                            heroTag: "removeTransactionBtn" + transaction.id,
-                            backgroundColor: Colors.red,
-                            onPressed: () async {
-                              var response = await attemptDeleteTransaction(transaction.id);
-                              if (response != null) {
-                                var responseHeader = response.substring(0, 3);
-                                if (responseHeader == "400") {
-                                  var responseBody = response.substring(4);
-                                  Map<String,dynamic> responseMap = jsonDecode(responseBody);
-                                  displayDialog(context, "An Error Occurred", responseMap["error"]);
-                                } else {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName)));
-                                }
-                              } else {
-                                displayDialog(context, "An Error Occurred", "Please try again");
-                              }
-                            },
-                            child: const Icon(Icons.remove),
-                          ))),
-                    ])),
+                    child: listEntry(context, transaction)
+                    ),
               ),
             ),
           );
         });
   }
 
+  Widget listEntry(BuildContext context, Transaction transaction) {
+    if (isClosed) {
+      return Text(
+          "(\$${transaction.amount}) ${transaction.title}",
+          style: const TextStyle(
+            color: orange,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+    } else {
+      return Row(children: [
+        Text(
+          "(\$${transaction.amount}) ${transaction.title}",
+          style: const TextStyle(
+            color: orange,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Container(
+            height: 20.0,
+            width: 20.0,
+            margin: const EdgeInsets.fromLTRB(200, 0, 0, 0),
+            child: FittedBox(
+                child: FloatingActionButton(
+              heroTag: "removeTransactionBtn" + transaction.id,
+              backgroundColor: Colors.red,
+              onPressed: () async {
+                var response = await attemptDeleteTransaction(transaction.id);
+                if (response != null) {
+                  var responseHeader = response.substring(0, 3);
+                  if (responseHeader == "400") {
+                    var responseBody = response.substring(4);
+                    Map<String,dynamic> responseMap = jsonDecode(responseBody);
+                    displayDialog(context, "An Error Occurred", responseMap["error"]);
+                  } else {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName, isClosed)));
+                  }
+                } else {
+                  displayDialog(context, "An Error Occurred", "Please try again");
+                }
+              },
+              child: const Icon(Icons.remove),
+            ))),
+      ]);
+    }
+  }
+
   Widget addTransactions(BuildContext context) {
-    return Row(children: [transactionsText(), addButton(context)]);
+    if (isClosed) {
+      return transactionsText();
+    } else {
+      return Row(children: [transactionsText(), addButton(context)]);
+    }  
   }
 
   Widget transactionsText() {
@@ -236,7 +267,7 @@ class GroupView extends StatelessWidget {
           heroTag: "addGroupBtn",
           onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => GroupTransactionView(jwt, payload, groupId, groupCode, groupName),
+                        builder: (_) => GroupTransactionView(jwt, payload, groupId, groupCode, groupName, isClosed),
                       ),
                     ),
           child: const Icon(Icons.add),

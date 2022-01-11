@@ -14,8 +14,6 @@ import 'package:Splitlux/screens/JoinTravelGroup.dart';
 import 'package:Splitlux/screens/SignInView.dart';
 import 'package:Splitlux/utils.dart';
 
-
-
 class HomePage extends StatelessWidget {
   final String jwt;
   final Map<String, dynamic> payload;
@@ -122,7 +120,8 @@ class HomePage extends StatelessWidget {
               onTap: () => 
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => GroupView(this.jwt, this.payload, groupsList.groups[index].id, groupsList.groups[index].code, groupsList.groups[index].name),
+                  builder: (_) => GroupView(this.jwt, this.payload, groupsList.groups[index].id, 
+                    groupsList.groups[index].code, groupsList.groups[index].name, groupsList.groups[index].isClosed),
                 ),
               ),
               child: Material(

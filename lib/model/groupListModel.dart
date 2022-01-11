@@ -20,11 +20,13 @@ class Group{
   final String id;
   final String name;
   final String code;
+  final bool isClosed;
 
   Group({
     required this.id,
     required this.name,
-    required this.code
+    required this.code,
+    required this.isClosed
 }) ;
 
   factory Group.fromJson(Map<String, dynamic> json){
@@ -32,6 +34,7 @@ class Group{
       id: json['id'].toString(),
       name: json['name'],
       code: json['code_id'],
+      isClosed: json['is_closed']
     );
   }
 }
