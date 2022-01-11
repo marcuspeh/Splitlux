@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:Splitlux/api/api.dart';
 import 'package:Splitlux/screens/SignInView.dart';
+import 'package:Splitlux/utils.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -13,7 +14,6 @@ import '../constants.dart';
 
 class SignUp extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-
   late String name, email, password, password2;
   bool isLoading=false;
   GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey();
@@ -24,15 +24,6 @@ class SignUp extends StatelessWidget {
   TextEditingController _emailController=new TextEditingController();
   TextEditingController _passwordController=new TextEditingController();
   TextEditingController _passwordController2=new TextEditingController();
-
-  void displayDialog(context, title, text) => showDialog(
-      context: context,
-      builder: (context) =>
-        AlertDialog(
-          title: Text(title),
-          content: Text(text)
-        ),
-    );
 
   Future<int> attemptSignUp(String username, String email, String password, String password2) async {
     var res = await http.post(

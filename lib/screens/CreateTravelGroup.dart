@@ -1,30 +1,24 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:Splitlux/screens/HomePage.dart';
-import 'package:Splitlux/api/api.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+
+import 'package:Splitlux/api/api.dart';
 import 'package:Splitlux/constants.dart';
+import 'package:Splitlux/utils.dart';
+import 'package:Splitlux/screens/HomePage.dart';
 
 class AddTravelGroup extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   late String name;
-
+  final String jwt;
+  final Map<String, dynamic> payload;
   bool isLoading=false;
   TextEditingController _nameContoller=new TextEditingController();
   GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey();
   late ScaffoldMessengerState scaffoldMessenger ;
 
   AddTravelGroup(this.jwt, this.payload);
-
-  void displayDialog(context, title, text) => showDialog(
-    context: context,
-    builder: (context) =>
-      AlertDialog(
-        title: Text(title),
-        content: Text(text)
-      ),
-  );
 
   factory AddTravelGroup.fromBase64(String jwt) =>
     AddTravelGroup(
@@ -35,9 +29,6 @@ class AddTravelGroup extends StatelessWidget {
         )
       )
     );
-
-  final String jwt;
-  final Map<String, dynamic> payload;
 
     Future<String?> attemptCreate(String name) async {
     var res = await http.post(
@@ -70,7 +61,9 @@ class AddTravelGroup extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    groupNameAndBack(context),
+                    returnBackButton(context, "Create Travel Group", () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) =>  HomePage(jwt, payload))
+                    )),
                     SizedBox(
                       height: 8,
                     ),
@@ -163,29 +156,4 @@ class AddTravelGroup extends StatelessWidget {
       ),
     ));
   }
-
-  Widget groupNameAndBack(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: TextStyle(
-          color: orange,
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
-        ),
-        children: [
-          WidgetSpan(
-              child: Container(
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => HomePage(jwt, payload),
-                      ),
-                    ),
-                child: Icon(Icons.arrow_back)),
-          )),
-          TextSpan(text: 'Create a Travel Group'),
-        ],
-      ),
-    );
-  }
-  }
+}

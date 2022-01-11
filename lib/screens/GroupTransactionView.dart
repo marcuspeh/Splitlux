@@ -1,16 +1,17 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:Splitlux/screens/GroupMemberView.dart';
+
 import 'package:Splitlux/api/api.dart';
-import 'package:flutter/services.dart';
-import 'package:Splitlux/screens/GroupView.dart';
 import 'package:Splitlux/constants.dart';
+import 'package:Splitlux/screens/GroupMemberView.dart';
+import 'package:Splitlux/screens/GroupView.dart';
+import 'package:Splitlux/utils.dart';
 
 class GroupTransactionView extends StatefulWidget {
-  GroupTransactionView(
-      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
+  GroupTransactionView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
 
   final String jwt;
   final Map<String, dynamic> payload;
@@ -23,9 +24,6 @@ class GroupTransactionView extends StatefulWidget {
 }
 
 class _GroupTransactionViewState extends State<GroupTransactionView> {
-    _GroupTransactionViewState(
-      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
-
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _totalAmountController;
@@ -40,6 +38,8 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
   final String groupName;
 
   get http => null;
+    _GroupTransactionViewState(
+      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
 
   @override
   void initState() {
@@ -54,15 +54,6 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
         _totalAmountController.dispose();
     super.dispose();
   }
-
-  void displayDialog(context, title, text) => showDialog(
-    context: context,
-    builder: (context) =>
-      AlertDialog(
-        title: Text(title),
-        content: Text(text)
-      ),
-  );
 
   Future<String?> attemptCreateTransaction() async {
     var res = await http.post(
@@ -85,37 +76,14 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
           Positioned(
             top: 50,
             left: 10,
-            child: transactionAndBack(),
+            child: returnBackButton(context, "Transactions", () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName))
+            )),
           ),
           Container(
             child: formContents(),
             margin: EdgeInsets.fromLTRB(20, 100, 0, 0),
           )
-        ],
-      ),
-    );
-  }
-
-  Widget transactionAndBack() {
-    return RichText(
-      text: TextSpan(
-        style: TextStyle(
-          color: orange,
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
-        ),
-        children: [
-          WidgetSpan(
-              child: Container(
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName),
-                      ),
-                    ),
-                child: Icon(Icons.arrow_back)),
-          )),
-          TextSpan(text: 'Transactions'),
         ],
       ),
     );
@@ -136,7 +104,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                 child: TextFormField(
                   style: TextStyle(color: Colors.white),
                   controller: _nameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                       ),
@@ -150,16 +118,16 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                   },
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 32.0),
                 child: TextFormField(
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: _totalAmountController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                       ),
@@ -173,10 +141,10 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                   },
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text(
+              const Text(
                 'Add Payers',
                 style: TextStyle(
                     fontWeight: FontWeight.w700,
@@ -184,7 +152,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                     color: Colors.white),
               ),
               ..._getPayers(),
-              Text(
+              const Text(
                 'Add Payees',
                 style: TextStyle(
                     fontWeight: FontWeight.w700,
@@ -192,7 +160,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                     color: Colors.white),
               ),
               ..._getPayees(),
-              SizedBox(
+              const SizedBox(
                 height: 40,
               ),
               FlatButton(
@@ -221,7 +189,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                     displayDialog(context, "An Error Occurred", "Please try again");
                   }
                 },
-                child: Text('Submit'),
+                child: const Text('Submit'),
                 color: Colors.green,
               ),
             ],
@@ -240,7 +208,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
         child: Row(
           children: [
             Expanded(child: PayerTextFields(i)),
-            SizedBox(
+            const SizedBox(
               width: 16,
             ),
             Expanded(child: PayerTextFieldsAmount(i)

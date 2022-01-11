@@ -2,32 +2,24 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:Splitlux/api/api.dart';
 import 'package:Splitlux/constants.dart';
 import 'package:Splitlux/main.dart';
-import 'package:Splitlux/screens/SignUpView.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:Splitlux/screens/HomePage.dart';
+import 'package:Splitlux/screens/SignUpView.dart';
+import 'package:Splitlux/utils.dart';
+
 
 class SignIn extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   late String email, password;
-
   bool isLoading=false;
   TextEditingController _emailController=new TextEditingController();
   TextEditingController _passwordController=new TextEditingController();
   GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey();
   late ScaffoldMessengerState scaffoldMessenger ;
-
-  void displayDialog(context, title, text) => showDialog(
-      context: context,
-      builder: (context) =>
-        AlertDialog(
-          title: Text(title),
-          content: Text(text)
-        ),
-    );
 
   Future<String?> attemptLogIn(String username, String password) async {
     var res = await http.post(
@@ -37,8 +29,7 @@ class SignIn extends StatelessWidget {
         "password": password
       }
     );
-    if(res.statusCode == 200) return res.body;
-    return null;
+    return "${res.statusCode} ${res.body}";
   }
 
 
@@ -145,19 +136,26 @@ class SignIn extends StatelessWidget {
                                     }
                                     var username = _emailController.text;
                                     var password = _passwordController.text;
-                                    var responseBody = await attemptLogIn(username, password);
-                                    if (responseBody != null) {
-                                      Map<String,dynamic> response = jsonDecode(responseBody);
-                                      var jwt = response['access'];
-                                      var refresh = response['refresg'];
-                                      storage.write(key: "jwt", value: jwt);
-                                      storage.write(key: "refresh_token", value: refresh);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => HomePage.fromBase64(jwt)
-                                        )
-                                      );
+                                    var response = await attemptLogIn(username, password);
+                                    if (response != null) {
+                                      var responseHeader = response.substring(0, 3);
+                                      var responseBody = response.substring(4);
+                                      Map<String,dynamic> responseMap = jsonDecode(responseBody);
+
+                                      if (responseHeader == "200") {
+                                        var jwt = responseMap['access'];
+                                        var refresh = responseMap['refresg'];
+                                        storage.write(key: "jwt", value: jwt);
+                                        storage.write(key: "refresh_token", value: refresh);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => HomePage.fromBase64(jwt)
+                                          )
+                                        );
+                                      } else {
+                                        displayDialog(context, "An Error Occurred", (responseMap["error"] != null) ? responseMap['error'] : "Please try again");
+                                      }
                                     } else {
                                       displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
                                     }

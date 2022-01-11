@@ -1,30 +1,26 @@
 import 'dart:convert';
 
-import 'package:Splitlux/screens/AddTravelGroup.dart';
-import 'package:Splitlux/screens/JoinTravelGroup.dart';
-
-import 'package:Splitlux/api/api.dart';
-import 'package:Splitlux/screens/SignInView.dart';
-import 'package:Splitlux/screens/GroupView.dart';
-
-import 'package:Splitlux/model/groupListModel.dart';
+import 'package:http/http.dart' as http;
+import 'package:unicorndial/unicorndial.dart';
 
 import 'package:flutter/material.dart';
+
+import 'package:Splitlux/api/api.dart';
 import 'package:Splitlux/constants.dart';
-import 'package:http/http.dart' as http;
+import 'package:Splitlux/model/groupListModel.dart';
+import 'package:Splitlux/screens/CreateTravelGroup.dart';
+import 'package:Splitlux/screens/GroupView.dart';
+import 'package:Splitlux/screens/JoinTravelGroup.dart';
+import 'package:Splitlux/screens/SignInView.dart';
+import 'package:Splitlux/utils.dart';
+
 
 
 class HomePage extends StatelessWidget {
-  HomePage(this.jwt, this.payload);
+  final String jwt;
+  final Map<String, dynamic> payload;
 
-  void displayDialog(context, title, text) => showDialog(
-    context: context,
-    builder: (context) =>
-      AlertDialog(
-        title: Text(title),
-        content: Text(text)
-      ),
-  );
+  HomePage(this.jwt, this.payload);
 
   factory HomePage.fromBase64(String jwt) =>
     HomePage(
@@ -36,88 +32,72 @@ class HomePage extends StatelessWidget {
       )
     );
 
-  final String jwt;
-  final Map<String, dynamic> payload;
-
   @override
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: purple,
-      body: FutureBuilder(
+  Widget build(BuildContext context) {    
+    return FutureBuilder(
           future: http.read(Uri.parse(GROUPLIST), headers: {"Authorization": "Bearer " + jwt}),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
-              final jsonResponse = json.decode(snapshot.data);
-              GroupsList groupsList = GroupsList.fromJson(jsonResponse);
-              return Stack(
-                children: [
-                  Positioned(
-                    top: 70,
-                    left: 30,
-                    child: Text(
-                      "SplitLux",
-                      style: TextStyle(
-                        color: orange,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 50,
-                    right: 30,
-                    child: profilePicture(size),
-                  ),
-                  Positioned(
-                    top: 155,
-                    left: 21,
-                    child: billedContainer(context, size, groupsList),
-                  ),
-                ]); 
+              return successRequest(context, snapshot.data);
             } else if (snapshot.hasError) {
-              return Stack(
-                children: [
-                
-                  Center(child:Container(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 100),
-                    child:Text("Please sign in again",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          letterSpacing: 1,
-                          fontSize: 23,
-                        ),
-                    ))),
-                
-                  Center(child:Container(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    child:FittedBox(
-                          child: FloatingActionButton.extended(
-                            heroTag: "backToSignInButton",
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => SignIn(),
-                            ));
-                        },
-                        backgroundColor: orange,
-                        label: Text("Continue"),
-                      )))),
-                  ]);
+              return errorReturnView(context, "Please sign in again", "Back to sign in", () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => SignIn(),));
+              });
             } else {
               return CircularProgressIndicator();
             }
           }
-        ),
-    );
+        );
+  }
+
+  Widget successRequest(BuildContext context, String data) {
+    
+    final Size size = MediaQuery.of(context).size;
+    final floatingButtons = actionButtons(context);
+    final jsonResponse = json.decode(data);
+    GroupsList groupsList = GroupsList.fromJson(jsonResponse);
+
+    return Scaffold(
+      backgroundColor: purple,
+      floatingActionButton: UnicornDialer(
+        backgroundColor: Colors.black38,
+        parentButtonBackground: Colors.brown,
+        orientation: UnicornOrientation.VERTICAL,
+        parentButton: Icon(Icons.add),
+        childButtons: floatingButtons),
+      body: Stack(
+        children: [
+          Positioned(
+            top: 70,
+            left: 30,
+            child: Text(
+              "SplitLux",
+              style: TextStyle(
+                color: orange,
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 50,
+            right: 30,
+            child: profilePicture(size),
+          ),
+          Positioned(
+            top: 150,
+            left: 20,
+            child: billedContainer(context, size, groupsList),
+          ),
+        ]
+      )
+    ); 
   }
 
   Widget billedContainer(BuildContext context, Size size, GroupsList groupsList) {
     return Container(
-      height: size.height / 1.35,
-      width: size.width / 1.11,
+      height: size.height - 180,  // 150 for top and 30 for bottom
+      width: size.width - 40, // 20 for each side
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: orange,
@@ -125,7 +105,6 @@ class HomePage extends StatelessWidget {
       child: Stack(
         children: [
           travelGroupEntries(size, groupsList),
-          Positioned(bottom: 10, right: 30, child: actionButtons(context))
         ],
       ),
     );
@@ -169,49 +148,47 @@ class HomePage extends StatelessWidget {
         });
   }
 
-  Widget actionButtons(BuildContext context) {
-    return Container(
-        height: 150,
-        child: Column(
-          children: [
-            createButton(context),
-            joinButton(context),
-          ],
+  List<UnicornButton> actionButtons(BuildContext context) {
+    List<UnicornButton> children = [];
+    children.add(createButton(context));
+    children.add(joinButton(context));
+    return children;
+  }
+
+  UnicornButton createButton(BuildContext context) {
+    return UnicornButton(
+        hasLabel: true,
+        labelText: "Create",
+        currentButton: FloatingActionButton(
+          heroTag: "createGroupBtn",
+          backgroundColor: Colors.black,
+          mini: true,
+          child: Icon(Icons.create_sharp),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => AddTravelGroup(this.jwt, this.payload),
+              ));
+            },
         ));
   }
 
-  Widget createButton(BuildContext context) {
-    return Container(
-        height: 70.0,
-        width: 80.0,
-        child: FittedBox(
-            child: FloatingActionButton.extended(
-              heroTag: "createGroup",
+  UnicornButton joinButton(BuildContext context) {
+    return UnicornButton(
+        hasLabel: true,
+        labelText: "Join",
+        currentButton: FloatingActionButton(
+          heroTag: "joinGroupBtn",
+          backgroundColor: Colors.black,
+          mini: true,
+          child: Icon(Icons.add),
           onPressed: () {
             Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => AddTravelGroup(this.jwt, this.payload),
-                          ));
-                },
-          label: Text("Create"),
-        )));
-  }
-
-  Widget joinButton(BuildContext context) {
-    return Container(
-        height: 70.0,
-        width: 80.0,
-        child: FittedBox(
-            child: FloatingActionButton.extended(
-              heroTag: "joinGroupBtn",
-          onPressed: () {
-             Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => JoinTravelGroup(this.jwt, this.payload),
-                          ));
-          },
-          label: Text("Join"),
-        )));
+              MaterialPageRoute(
+                builder: (_) => JoinTravelGroup(this.jwt, this.payload),
+              ));
+            },
+        ));
   }
 
   Widget image(Size size, String imageUrl) {

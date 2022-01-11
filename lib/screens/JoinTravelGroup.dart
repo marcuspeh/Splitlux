@@ -1,30 +1,24 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:Splitlux/screens/HomePage.dart';
-import 'package:Splitlux/api/api.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:Splitlux/api/api.dart';
 import 'package:Splitlux/constants.dart';
+import 'package:Splitlux/screens/HomePage.dart';
+import 'package:Splitlux/utils.dart';
 
 class JoinTravelGroup extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   late String groupCode;
-
   bool isLoading=false;
   TextEditingController _groupCodeContoller=new TextEditingController();
   GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey();
-  late ScaffoldMessengerState scaffoldMessenger ;
+  late ScaffoldMessengerState scaffoldMessenger;
+  final String jwt;
+  final Map<String, dynamic> payload;
 
   JoinTravelGroup(this.jwt, this.payload);
-
-  void displayDialog(context, title, text) => showDialog(
-    context: context,
-    builder: (context) =>
-      AlertDialog(
-        title: Text(title),
-        content: Text(text)
-      ),
-  );
 
   factory JoinTravelGroup.fromBase64(String jwt) =>
     JoinTravelGroup(
@@ -35,9 +29,6 @@ class JoinTravelGroup extends StatelessWidget {
         )
       )
     );
-
-  final String jwt;
-  final Map<String, dynamic> payload;
 
     Future<String?> attemptJoin(String groupCode) async {
     var res = await http.put(
@@ -69,7 +60,9 @@ class JoinTravelGroup extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    groupNameAndBack(context),
+                    returnBackButton(context, "Join a Travel Group", () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => HomePage(jwt, payload))
+                    )),
                     SizedBox(
                       height: 8,
                     ),
@@ -170,29 +163,4 @@ class JoinTravelGroup extends StatelessWidget {
       ),
     ));
   }
-
-  Widget groupNameAndBack(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: TextStyle(
-          color: orange,
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
-        ),
-        children: [
-          WidgetSpan(
-              child: Container(
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => HomePage(jwt, payload),
-                      ),
-                    ),
-                child: Icon(Icons.arrow_back)),
-          )),
-          TextSpan(text: 'Join a Travel Group'),
-        ],
-      ),
-    );
-  }
-  }
+}

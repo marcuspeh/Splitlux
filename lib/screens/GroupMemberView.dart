@@ -1,23 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:Splitlux/screens/GroupView.dart';
-import 'package:Splitlux/model/groupDetailsModel.dart';
-import 'package:Splitlux/constants.dart';
 
-var exampleData = [
-  'Tom Jeffrey',
-  'Richard Mile',
-  'Rachel Sim',
-  'Grace Holland',
-  'Tom Xavier',
-  'Vanessa Yap',
-  'Dominic Chai',
-  'Crystal Jen',
-  'Marcus Tan',
-  'John Foo',
-  'Arabelle Chua',
-];
+import 'package:Splitlux/constants.dart';
+import 'package:Splitlux/model/groupDetailsModel.dart';
+import 'package:Splitlux/screens/GroupView.dart';
+import 'package:Splitlux/utils.dart';
 
 class GroupMemberView extends StatelessWidget {
   GroupMemberView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.members);
@@ -55,7 +43,10 @@ class GroupMemberView extends StatelessWidget {
           Positioned(
             top: 50,
             left: 10,
-            child: groupNameAndBack(context),
+            child: returnBackButton(context, "Members", () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName)),
+              )
+            ),
           ),
           Positioned(
             top: 90,
@@ -74,8 +65,8 @@ class GroupMemberView extends StatelessWidget {
 
   Widget billedContainer(Size size) {
     return Container(
-      height: size.height / 1.28,
-      width: size.width / 1.11,
+      height: size.height - 150,  // 120 for top and 30 for bottom
+      width: size.width - 40, // 20 for each side
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: orange,
@@ -85,31 +76,7 @@ class GroupMemberView extends StatelessWidget {
       ),
     );
   }
-
-  Widget groupNameAndBack(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: TextStyle(
-          color: orange,
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
-        ),
-        children: [
-          WidgetSpan(
-              child: Container(
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName),
-                      ),
-                    ),
-                child: Icon(Icons.arrow_back)),
-          )),
-          TextSpan(text: 'Members'),
-        ],
-      ),
-    );
-  }
+  
 
   Widget groupCodeText() {
     return Text("Group code ${groupCode}",

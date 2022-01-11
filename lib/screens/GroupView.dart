@@ -1,18 +1,25 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:Splitlux/screens/HomePage.dart';
-import 'package:Splitlux/screens/GroupMemberView.dart';
-import 'package:Splitlux/screens/GroupTransactionView.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:Splitlux/api/api.dart';
 import 'package:Splitlux/constants.dart';
 import 'package:Splitlux/model/groupDetailsModel.dart';
-import 'package:http/http.dart' as http;
+import 'package:Splitlux/screens/GroupMemberView.dart';
+import 'package:Splitlux/screens/GroupTransactionView.dart';
+import 'package:Splitlux/screens/HomePage.dart';
+import 'package:Splitlux/utils.dart';
 
 
 class GroupView extends StatelessWidget {
-  GroupView(
-      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
+  final String jwt;
+  final Map<String, dynamic> payload;
+  final String groupId;
+  final String groupCode;
+  final String groupName;
+
+  GroupView(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName);
 
   factory GroupView.fromBase64(
           String jwt, String groupId, String groupCode, String groupName) =>
@@ -23,21 +30,6 @@ class GroupView extends StatelessWidget {
           groupId,
           groupCode,
           groupName);
-
-  final String jwt;
-  final Map<String, dynamic> payload;
-  final String groupId;
-  final String groupCode;
-  final String groupName;
-
-  void displayDialog(context, title, text) => showDialog(
-    context: context,
-    builder: (context) =>
-      AlertDialog(
-        title: Text(title),
-        content: Text(text)
-      ),
-  );
 
   Future<String?> attemptDeleteTransaction(String id) async {
     var res = await http.delete(
@@ -50,83 +42,64 @@ class GroupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: purple,
+      body: FutureBuilder(
+          future: http.read(Uri.parse(GROUPDETAILS + this.groupId + "/"),
+              headers: {"Authorization": "Bearer " + jwt}),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              return successRequest(context, snapshot.data);
+            } else if (snapshot.hasError) {
+              return errorReturnView(context, "An error occured", "Return to home page", () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) =>HomePage(jwt, payload)));
+              });
+            } else {
+              return CircularProgressIndicator();
+            }
+          })
+    );
+  }
+   Widget successRequest(BuildContext context, String data) {
     final Size size = MediaQuery.of(context).size;
 
+    final jsonResponse = json.decode(data);
+    GroupDetails groupDetails = new GroupDetails.fromJson(jsonResponse);
     return Scaffold(
-        backgroundColor: purple,
-        body: FutureBuilder(
-            future: http.read(Uri.parse(GROUPDETAILS + this.groupId + "/"),
-                headers: {"Authorization": "Bearer " + jwt}),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                final jsonResponse = json.decode(snapshot.data);
-                GroupDetails groupDetails =
-                    new GroupDetails.fromJson(jsonResponse);
-                return Stack(
-                  children: [
-                    Positioned(
-                      top: 50,
-                      left: 10,
-                      child: groupNameAndBack(context, groupName),
-                    ),
-                    Positioned(
-                      top: 30,
-                      right: 10,
-                      child: membershipStatus(context, groupDetails.members),
-                    ),
-                    Positioned(
-                      top: 90,
-                      left: 30,
-                      child: groupCodeText(groupCode),
-                    ),
-                    Positioned(
-                      top: 120,
-                      left: 21,
-                      child: billedContainer(context, size, groupDetails.transactions),
-                    ),
-                  ],
-                );
-              } else if (snapshot.hasError) {
-                return Stack(children: [
-                  Center(
-                      child: Container(
-                          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 100),
-                          child: Text(
-                            "An error occurred",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              letterSpacing: 1,
-                              fontSize: 23,
-                            ),
-                          ))),
-                  Center(
-                      child: Container(
-                          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                          child: FittedBox(
-                              child: FloatingActionButton.extended(
-                            heroTag: "returnHomePageBtn",
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) =>
-                                    HomePage(this.jwt, this.payload),
-                              ));
-                            },
-                            backgroundColor: orange,
-                            label: Text("Continue"),
-                          )))),
-                ]);
-              } else {
-                return CircularProgressIndicator();
-              }
-            }));
+      backgroundColor: purple,
+      body: Stack(
+        children: [
+          Positioned(
+            top: 50,
+            left: 10,
+            child: returnBackButton(context, groupName, () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => HomePage(jwt, payload))
+            )),
+          ),
+          Positioned(
+            top: 30,
+            right: 10,
+            child: membershipStatus(context, groupDetails.members),
+          ),
+          Positioned(
+            top: 90,
+            left: 30,
+            child: groupCodeText(groupCode),
+          ),
+          Positioned(
+            top: 120,
+            left: 21,
+            child: billedContainer(context, size, groupDetails.transactions),
+          ),
+        ],
+      )
+    );
   }
 
   Widget billedContainer(BuildContext context, Size size, List<Transaction> transactions) {
     return Container(
-      height: size.height / 1.28,
-      width: size.width / 1.11,
+      height: size.height - 150,  // 120 for top and 30 for bottom
+      width: size.width - 40, // 20 for each side
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: orange,
@@ -147,29 +120,6 @@ class GroupView extends StatelessWidget {
     );
   }
 
-  Widget groupNameAndBack(BuildContext context, String groupName) {
-    return RichText(
-      text: TextSpan(
-        style: TextStyle(
-          color: orange,
-          fontWeight: FontWeight.bold,
-          fontSize: 30,
-        ),
-        children: [
-          WidgetSpan(
-              child: Container(
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => HomePage(this.jwt, this.payload),
-                    )),
-                child: Icon(Icons.arrow_back)),
-          )),
-          TextSpan(text: groupName),
-        ],
-      ),
-    );
-  }
-
   Widget membershipStatus(BuildContext context, List<Member> members) {
     return Container(
         height: 80.0,
@@ -183,13 +133,16 @@ class GroupView extends StatelessWidget {
                   jwt, payload, groupId, groupCode, groupName, members),
             ),
           ),
-          label: Text("${members.length} members"),
+          label: Text(
+            "${members.length} members",
+            style: TextStyle(fontSize: 16),
+          ),
         )));
   }
 
   Widget groupCodeText(String groupCode) {
-    return Text("Group code ${groupCode}",
-        style: TextStyle(
+    return Text("Group code $groupCode",
+        style: const TextStyle(
           color: orange,
           fontWeight: FontWeight.normal,
           fontSize: 15,
@@ -204,25 +157,25 @@ class GroupView extends StatelessWidget {
           Transaction transaction = transactions[index];
           return Container(
             height: 50,
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: GestureDetector(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => HomePage(this.jwt, this.payload),
+                  builder: (_) => HomePage(jwt, payload),
                 ),
               ),
               child: Material(
                 color: purple,
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                     height: size.height / 14,
                     width: size.width / 1.5,
                     alignment: Alignment.centerLeft,
                     child: Row(children: [
                       Text(
                         "(\$${transaction.amount}) ${transaction.title}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: orange,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -231,7 +184,7 @@ class GroupView extends StatelessWidget {
                       Container(
                           height: 20.0,
                           width: 20.0,
-                          margin: EdgeInsets.fromLTRB(200, 0, 0, 0),
+                          margin: const EdgeInsets.fromLTRB(200, 0, 0, 0),
                           child: FittedBox(
                               child: FloatingActionButton(
                             heroTag: "removeTransactionBtn" + transaction.id,
@@ -252,7 +205,7 @@ class GroupView extends StatelessWidget {
                                 displayDialog(context, "An Error Occurred", "Please try again");
                               }
                             },
-                            child: Icon(Icons.remove),
+                            child: const Icon(Icons.remove),
                           ))),
                     ])),
               ),
@@ -266,7 +219,7 @@ class GroupView extends StatelessWidget {
   }
 
   Widget transactionsText() {
-    return Text("Transactions",
+    return const Text("Transactions",
         style: TextStyle(
           color: darkPurple,
           fontSize: 18,
@@ -286,7 +239,7 @@ class GroupView extends StatelessWidget {
                         builder: (_) => GroupTransactionView(jwt, payload, groupId, groupCode, groupName),
                       ),
                     ),
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         )));
   }
 }
