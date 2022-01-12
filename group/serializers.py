@@ -1,4 +1,5 @@
 from django.core.validators import MaxLengthValidator, MinValueValidator
+from django.db.models import fields
 from rest_framework import serializers
 
 from core.serializers import SimpleUserSerializer
@@ -24,10 +25,10 @@ class GroupJoinIncomingSerializer(serializers.Serializer):
 #=============================== Outgoing ===============================#
 
 # To display list of group
-class GroupListOutgoingSerializer(serializers.Serializer):
-    id = serializers.IntegerField(validators=[MinValueValidator(1)])
-    name = serializers.CharField(validators=[MaxLengthValidator(CHAR_LENGTH)])
-    code_id = serializers.CharField(validators=[MaxLengthValidator(CHAR_LENGTH)])
+class GroupListOutgoingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ('id', 'name', 'code_id', 'is_closed')
 
 # To display specific group
 class GroupSerializer(serializers.ModelSerializer):

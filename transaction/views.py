@@ -4,6 +4,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+import re
+
 from core.models import User
 from core.permission import IsUser
 from group.models import Group
@@ -24,7 +26,7 @@ class CreateTransaction(APIView):
             try:
                 group = Group.objects.get(id = data["group_id"])
             except Exception as e:
-                return Response(data={"error": e}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={"error": e.args}, status=status.HTTP_400_BAD_REQUEST)
 
             if group.is_closed:
                 return Response(data={"error": "Group is closed"}, status=status.HTTP_400_BAD_REQUEST)
@@ -72,8 +74,15 @@ class CreateTransaction(APIView):
             group.transactions.add(transaction)
 
             return Response(data={"success": "Transaction created successfully"}, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        error = ""
+        for key, value in serializer.errors.items():
+            if key == "payers" or key == "expenses":
+                for i in value:
+                    for x, y in i.items():
+                        error += f"{key}-{x}: {y[0]}\n"
+            else:
+                error += f"{key}: {value[0]}\n"
+        return Response({'error': error}, status=status.HTTP_400_BAD_REQUEST)
 
 class GetTransaction(APIView):
     permission_classes = [IsUser]
@@ -104,8 +113,6 @@ class DeleteTransaction(APIView):
         except Exception as e:
             return Response(e.args, status=status.HTTP_400_BAD_REQUEST)
         
-    
-
         if group.is_closed:
             return Response(data={"error": "Group is closed"}, status=status.HTTP_400_BAD_REQUEST)
 
