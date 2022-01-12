@@ -125,7 +125,7 @@ class GroupView extends StatelessWidget {
   }
 
   Widget membershipStatus(BuildContext context, List<Member> members) {
-    return ElevatedButton.icon(
+    return ElevatedButton(
       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(darkPurple)),      
       onPressed: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -133,10 +133,12 @@ class GroupView extends StatelessWidget {
               jwt, payload, groupId, groupCode, groupName, members, isClosed),
         ),
       ),
-      icon: Icon(Icons.face_sharp, size: 16),
-      label: Text(
+      child: Text(
         "${members.length} members",
-        style: TextStyle(fontSize: 16),
+        style: const TextStyle(
+              color: orange,
+              fontSize: 16
+            ),
       ),
     );
   }
@@ -202,42 +204,44 @@ class GroupView extends StatelessWidget {
           ),
         );
     } else {
-      return Row(children: [
-        Text(
-          "(\$${transaction.amount}) ${transaction.title}",
-          style: const TextStyle(
-            color: orange,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "(\$${transaction.amount}) ${transaction.title}",
+            style: const TextStyle(
+              color: orange,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        Container(
-            height: 20.0,
-            width: 20.0,
-            margin: const EdgeInsets.fromLTRB(200, 0, 0, 0),
-            child: FittedBox(
-                child: FloatingActionButton(
-              heroTag: "removeTransactionBtn" + transaction.id,
-              backgroundColor: Colors.red,
-              onPressed: () async {
-                var response = await attemptDeleteTransaction(transaction.id);
-                if (response != null) {
-                  var responseHeader = response.substring(0, 3);
-                  if (responseHeader == "400") {
-                    var responseBody = response.substring(4);
-                    Map<String,dynamic> responseMap = jsonDecode(responseBody);
-                    displayDialog(context, "An Error Occurred", responseMap["error"]);
+          Container(
+              height: 20.0,
+              width: 20.0,
+              margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              child: FittedBox(
+                  child: FloatingActionButton(
+                heroTag: "removeTransactionBtn" + transaction.id,
+                backgroundColor: Colors.red,
+                onPressed: () async {
+                  var response = await attemptDeleteTransaction(transaction.id);
+                  if (response != null) {
+                    var responseHeader = response.substring(0, 3);
+                    if (responseHeader == "400") {
+                      var responseBody = response.substring(4);
+                      Map<String,dynamic> responseMap = jsonDecode(responseBody);
+                      displayDialog(context, "An Error Occurred", responseMap["error"]);
+                    } else {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName, isClosed)));
+                    }
                   } else {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => GroupView(jwt, payload, groupId, groupCode, groupName, isClosed)));
+                    displayDialog(context, "An Error Occurred", "Please try again");
                   }
-                } else {
-                  displayDialog(context, "An Error Occurred", "Please try again");
-                }
-              },
-              child: const Icon(Icons.remove),
-            ))),
-      ]);
+                },
+                child: const Icon(Icons.remove),
+              ))),
+        ]);
     }
   }
 

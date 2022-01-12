@@ -1,8 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:Splitlux/api/api.dart';
 import 'package:Splitlux/constants.dart';
@@ -30,7 +32,8 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
   late TextEditingController _totalAmountController;
   static List<String?> payerList = [null];
   static List<double?> payerAmount = [null];
-  static List<String?> payeeList = [null];
+  static List<String?> expenseList = [null];
+  static List<double?> expenseAmount = [null];
 
   final String jwt;
   final Map<String, dynamic> payload;
@@ -39,9 +42,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
   final String groupName;
   final bool isClosed;
 
-  get http => null;
-    _GroupTransactionViewState(
-      this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.isClosed);
+  _GroupTransactionViewState(this.jwt, this.payload, this.groupId, this.groupCode, this.groupName, this.isClosed);
 
   @override
   void initState() {
@@ -58,12 +59,32 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
   }
 
   Future<String?> attemptCreateTransaction() async {
+    Map<String, dynamic> parsed_data = {
+        "group_id": groupId,
+        "title": _nameController.text,
+        "amount": _totalAmountController.text,
+        "payers": <Map<String, dynamic>>[{"user": 5, "amount": 5}], 
+        "expenses": <Map<String, dynamic>>[{"user": 5, "amount": 5}]
+      };
+
+    for (int i = 0; i < payerList.length; i++) {
+      parsed_data["payers"].add({
+        "user": payerList[i],
+        "amount": payerAmount[i]
+      });
+    }
+
+    for (int i = 0; i < payerList.length; i++) {
+      parsed_data["expenses"].add({
+        "user": expenseList[i],
+        "amount": expenseAmount[i]
+      });
+    }
+
     var res = await http.post(
       Uri.parse(CREATETRANSACTION),
-      body: {
-        "name": "Hello"
-      },
-      headers: {"Authorization": "Bearer " + jwt}
+      body: json.encode(parsed_data),
+      headers: {"Authorization": "Bearer " + jwt, HttpHeaders.contentTypeHeader: "application/json"}
     );
     return "${res.statusCode} ${res.body}";
   }
@@ -176,7 +197,7 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                     if (responseHeader == "400") {
                       var responseBody = response.substring(4);
                       Map<String,dynamic> responseMap = jsonDecode(responseBody);
-                      displayDialog(context, "An Error Occurred", responseMap);
+                      displayDialog(context, "An Error Occurred", responseMap["error"]);
                     } else {
                       Navigator.push(
                         context,
@@ -185,8 +206,6 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
                         )
                       );
                     }
-                    
-                   
                   } else {
                     displayDialog(context, "An Error Occurred", "Please try again");
                   }
@@ -215,6 +234,9 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
             ),
             Expanded(child: PayerTextFieldsAmount(i)
               ),
+            const SizedBox(
+              width: 8,
+            ),
             // we need add button at last payer row
             _addRemovePayerButton(i == payerList.length - 1, i),
           ],
@@ -225,23 +247,28 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
   }
 
   List<Widget> _getPayees() {
-    List<Widget> payeeTextFields = [];
-    for (int i = 0; i < payeeList.length; i++) {
-      payeeTextFields.add(Padding(
+    List<Widget> expenseTextFields = [];
+    for (int i = 0; i < expenseList.length; i++) {
+      expenseTextFields.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Row(
           children: [
-            Expanded(child: PayeeTextFields(i)),
+            Expanded(child: ExpenseTextFields(i)),
             SizedBox(
               width: 16,
             ),
+            Expanded(child: PayerTextFieldsAmount(i)
+              ),
+            const SizedBox(
+              width: 8,
+            ),
             // we need add button at last payer row
-            _addRemovePayeeButton(i == payeeList.length - 1, i),
+            _addRemovePayeeButton(i == expenseList.length - 1, i),
           ],
         ),
       ));
     }
-    return payeeTextFields;
+    return expenseTextFields;
   }
 
   /// add / remove button
@@ -275,9 +302,9 @@ class _GroupTransactionViewState extends State<GroupTransactionView> {
       onTap: () {
         if (add) {
           // add new text-fields at the top of all payer textfields
-          payeeList.insert(0, null);
+          expenseList.insert(0, null);
         } else
-          payeeList.removeAt(index);
+          expenseList.removeAt(index);
         setState(() {});
       },
       child: Container(
@@ -373,37 +400,37 @@ class _PayerTextFieldsAmountState extends State<PayerTextFieldsAmount> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _payerAmountController.text =
-          (_GroupTransactionViewState.payerAmount[widget.index] ?? 0.0).toString();
+          (_GroupTransactionViewState.payerAmount[widget.index] ?? "").toString();
     });
 
     return TextFormField(
-                  style: TextStyle(color: Colors.white),
-                  controller: _payerAmountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white)),
-                      hintText: 'Enter amount',
-                      hintStyle: TextStyle(color: Colors.white24)),
-                  validator: (v) {
-                    if (v!.trim().isEmpty) return 'Please enter something';
-                    return null;
-                  },
-                );
+      style: TextStyle(color: Colors.white),
+      controller: _payerAmountController,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white)),
+          hintText: 'Enter amount',
+          hintStyle: TextStyle(color: Colors.white24)),
+      validator: (v) {
+        if (v!.trim().isEmpty) return 'Please enter something';
+        return null;
+      },
+    );
   }
 }
 
-class PayeeTextFields extends StatefulWidget {
+class ExpenseTextFields extends StatefulWidget {
   final int index;
-  PayeeTextFields(this.index);
+  ExpenseTextFields(this.index);
   @override
-  _PayeeTextFieldsState createState() => _PayeeTextFieldsState();
+  _ExpenseTextFieldsState createState() => _ExpenseTextFieldsState();
 }
 
-class _PayeeTextFieldsState extends State<PayeeTextFields> {
+class _ExpenseTextFieldsState extends State<ExpenseTextFields> {
   late TextEditingController _nameController;
 
   @override
@@ -422,13 +449,13 @@ class _PayeeTextFieldsState extends State<PayeeTextFields> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _nameController.text =
-          _GroupTransactionViewState.payeeList[widget.index] ?? '';
+          _GroupTransactionViewState.expenseList[widget.index] ?? '';
     });
 
     return TextFormField(
       style: TextStyle(color: Colors.white),
       controller: _nameController,
-      onChanged: (v) => _GroupTransactionViewState.payeeList[widget.index] = v,
+      onChanged: (v) => _GroupTransactionViewState.expenseList[widget.index] = v,
       decoration: InputDecoration(
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
@@ -436,6 +463,55 @@ class _PayeeTextFieldsState extends State<PayeeTextFields> {
           focusedBorder:
               UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
           hintText: 'Enter payee\'s name',
+          hintStyle: TextStyle(color: Colors.white24)),
+      validator: (v) {
+        if (v!.trim().isEmpty) return 'Please enter something';
+        return null;
+      },
+    );
+  }
+}
+
+class ExpenseTextFieldsAmount extends StatefulWidget {
+  final int index;
+  ExpenseTextFieldsAmount(this.index);
+  @override
+  _ExpenseTextFieldsAmountState createState() => _ExpenseTextFieldsAmountState();
+}
+
+class _ExpenseTextFieldsAmountState extends State<ExpenseTextFieldsAmount> {
+  late TextEditingController _ExpenseAmountController;
+
+  @override
+  void initState() {
+    super.initState();
+    _ExpenseAmountController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _ExpenseAmountController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      _ExpenseAmountController.text =
+          (_GroupTransactionViewState.expenseAmount[widget.index] ?? "").toString();
+    });
+
+    return TextFormField(
+      style: TextStyle(color: Colors.white),
+      controller: _ExpenseAmountController,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white)),
+          hintText: 'Enter amount',
           hintStyle: TextStyle(color: Colors.white24)),
       validator: (v) {
         if (v!.trim().isEmpty) return 'Please enter something';
