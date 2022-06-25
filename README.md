@@ -1,7 +1,6 @@
 # Splitlux
 
-## Introduction
-Hello, we are Marcus and Chrus. This repo is used for our HackNRoll 2022 submission. When we go on trips in groups, expenses are often paid by one (or two) person. Our project is on splitting expenses within the group at the end of the trip. It will provide a clear breakdown of the expenses as well as reduces the effort required to decide on how the payment works.
+When we go on trips in groups, expenses are often paid by one (or two) person. Our project is on splitting expenses within the group at the end of the trip. It will provide a clear breakdown of the expenses as well as reduces the effort required to decide on how the payment works.
 
 ## Devpost submission
 Click [here](https://devpost.com/software/splitlux) to view our Devpost submittion
