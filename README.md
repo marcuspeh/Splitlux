@@ -18,7 +18,7 @@ Installation: `pip install virtualenv`
 3. Deactivate the environment - `env/Scripts/deactivate`
 
 ### Class diagram
-![class diagram](docs/images/models.png)
+![class diagram](docs/images/erd.png)
 
 ### End Points
 |ENDPOINT | HTTPS METHODS | DESCRIPTION | 
