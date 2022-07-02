@@ -5,7 +5,7 @@ This is used to generate the ERD :[https://www.comp.nus.edu.sg/~cs2102/Tools/ERD
 Simply copy and paste the [code](#Codes) section below into the tool to generate the diagram
 
 ## Codes 
-[User](ID*, name, email, password, is_admin);
+[User](ID*, name, email);
 [Group](ID*, name, is_closed, code_id);
 <Owner>();
 <Members>();
@@ -22,9 +22,9 @@ Payment ==> Payer;
 User ==> Payee;
 Payment ==> Payee;
 
-<To_Pay_List>();
-Payment ==> To_Pay_List;
-Group --- To_Pay_List;
+<To_Pay_list>();
+Payment ==> To_Pay_list;
+Group --- To_Pay_list;
 
 [Transaction](ID*, title, total_amount);
 <Payers>(amount);
@@ -34,5 +34,6 @@ Transaction --- Expenses;
 User --- Payers;
 User --- Expenses;
 
-
-
+<Transaction_List>();
+Transaction ==> Transaction_List;
+Group --- Transaction_List;

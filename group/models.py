@@ -1,8 +1,7 @@
+import uuid
 from django.db import models
 
 import bisect 
-import string
-import random
 
 from core.models import User
 from transaction.models import Transaction
@@ -32,6 +31,7 @@ class Group(models.Model):
     is_closed = models.BooleanField(default=False)
 
     code_id = models.CharField(max_length=CHAR_LENGTH)
+    code_id = models.CharField(max_length=6, unique=True, default=uuid.uuid4)
     owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="group_owner")
   
     created_at = models.DateTimeField(auto_now_add=True)
@@ -40,26 +40,9 @@ class Group(models.Model):
     def create(user, name):
         obj = Group.objects.create(name=name, owner=user)
         obj.members.add(user)
-        obj.generate_code()
         obj.save()
 
         return obj
-
-    def generate_code(self):
-        LENGTH = 6
-
-        secret = [i for i in str(self.id)]
-
-        for i in range(LENGTH - len(secret)):
-            secret += random.choice(string.ascii_letters)
-        
-        random.shuffle(secret)
-
-        secret = "".join(secret)
-
-        self.code_id = secret
-        self.save()
-        return self.code_id
 
     def calculate_payments(self):
         # Calculate payments logic here
