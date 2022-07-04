@@ -62,6 +62,18 @@ class Group(models.Model):
 
         return code
 
+    def set_is_closed(self, state: bool):
+        if type(state) != bool:
+            return self
+
+        self.is_closed = state
+        if not state:
+            self.to_pay_list.clear()
+
+        self.save()
+
+        return self
+
     def calculate_payments(self):
         # Calculate payments logic here
         surplus_dict = self.get_total_surplus()
@@ -71,7 +83,11 @@ class Group(models.Model):
 
         while surplus_list:
             minimum = surplus_list.pop(0)
-            maximum = surplus_list.pop()
+
+            if not minimum[1]:
+                continue
+
+            maximum = surplus_list.pop() 
 
             if -minimum[1] < maximum[1]:
                 payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=-minimum[1])

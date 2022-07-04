@@ -30,6 +30,7 @@ Installation: `pip install virtualenv`
 |/group/list/ | GET | Returns a simplified list of groups |
 |/group/create/ | POST | Creates a new group |
 |/group/join/ | PUT | Join a group with group_id |
+|/group/reopen/ | PUT | Reopen a group with group_id |
 |/group/<uuid:id>/ | GET | Retrieves the data of a group |
 |/group/calculatepayment/<uuid:id>/ | GET | Gets the payments and closes the group (Calculating payment not done) |
 |  |  |  |

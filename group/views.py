@@ -71,6 +71,22 @@ class GetGroup(APIView):
         else:
             return Response(data={"error": f"{user.email} is not in group"}, status=status.HTTP_400_BAD_REQUEST)
 
+class ReopenGroup(APIView):
+    permission_classes = [IsUser]
+
+    def put(self, request, format=None, **kwargs):
+        user = self.request.user
+        obj = get_object_or_404(Group, id=kwargs['id'])
+
+        if user not in obj.members.all():
+            return Response(data={"error": f"{user.email} is not in group"}, status=status.HTTP_400_BAD_REQUEST)
+        elif user == obj.owner:
+            if obj.is_closed:
+                obj.set_is_closed(False)
+            return Response(data=GroupSerializer(obj).data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data={"error": f"{user.email} is not the owner of the group"}, status=status.HTTP_400_BAD_REQUEST)
+
 class CalculatePayment(APIView):
     permission_classes = [IsUser]
     
@@ -84,7 +100,8 @@ class CalculatePayment(APIView):
         if user not in group.members.all():
             return Response(data={"error": f"{user.email} is not in group"}, status=status.HTTP_400_BAD_REQUEST)
         elif user == group.owner:
-            group.calculate_payments()
+            if not group.is_closed:
+                group.calculate_payments()
             return Response(data=GroupSerializer(group).data, status=status.HTTP_201_CREATED)
         else:
             return Response(data={"error": f"{user.email} is not the owner of the group"}, status=status.HTTP_400_BAD_REQUEST)
