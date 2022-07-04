@@ -1,5 +1,8 @@
+import random
+import string
 import uuid
 from django.db import models
+from django.utils import timezone
 
 import bisect 
 
@@ -14,6 +17,9 @@ class Payment(models.Model):
     payee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payment_payee')
 
     amount = models.FloatField()
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
     @staticmethod
     def create(payer, payee, amount):
@@ -30,19 +36,31 @@ class Group(models.Model):
 
     is_closed = models.BooleanField(default=False)
 
-    code_id = models.CharField(max_length=CHAR_LENGTH)
     code_id = models.CharField(max_length=6, unique=True, default=uuid.uuid4)
     owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="group_owner")
-  
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
     @staticmethod
     def create(user, name):
         obj = Group.objects.create(name=name, owner=user)
         obj.members.add(user)
+        
+        obj.code_id = Group.generate_code(6)
         obj.save()
 
         return obj
+
+    @staticmethod
+    def generate_code(n: int):
+        alphanumeric = string.ascii_uppercase + string.digits
+        code = ''.join(random.choices(alphanumeric, k=n))
+
+        while Group.objects.filter(code_id = code):
+            code = ''.join(random.choices(alphanumeric, k=n))
+
+        return code
 
     def calculate_payments(self):
         # Calculate payments logic here

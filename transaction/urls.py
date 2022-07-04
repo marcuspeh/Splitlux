@@ -4,6 +4,6 @@ from transaction.views import CreateTransaction, GetTransaction, DeleteTransacti
 
 urlpatterns = [
     path('create/', CreateTransaction.as_view()),
-    path('<int:id>/', GetTransaction.as_view()),
-    path('delete/<int:id>/', DeleteTransaction.as_view())
+    path('<uuid:id>/', GetTransaction.as_view()),
+    path('delete/<uuid:id>/', DeleteTransaction.as_view())
 ]

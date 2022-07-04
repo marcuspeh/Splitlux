@@ -16,7 +16,7 @@ class PairSerializer(serializers.ModelSerializer):
 
 # For creating transaction
 class TransactionIncomingSerializer(serializers.Serializer):
-    group_id = serializers.IntegerField(validators=[MinValueValidator(1)])
+    group_id = serializers.UUIDField(format='hex')
     title = serializers.CharField(validators=[MaxLengthValidator(CHAR_LENGTH)])
     amount = serializers.FloatField(validators=[MinValueValidator(0)])
     payers = PairSerializer(many=True)

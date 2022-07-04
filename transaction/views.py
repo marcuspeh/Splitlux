@@ -73,7 +73,7 @@ class CreateTransaction(APIView):
             transaction = Transaction.create(title=data['title'], amount=data['amount'], payers=payers, expenses=expenses)
             group.transactions.add(transaction)
 
-            return Response(data={"success": "Transaction created successfully"}, status=status.HTTP_201_CREATED)
+            return Response(data=TransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
         error = ""
         for key, value in serializer.errors.items():
             if key == "payers" or key == "expenses":

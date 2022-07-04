@@ -23,16 +23,17 @@ Installation: `pip install virtualenv`
 ### End Points
 |ENDPOINT | HTTPS METHODS | DESCRIPTION | 
 | ------------- |:-------------:| ------------- |
-|/auth/users | POST | Create/login a new user |
+|/auth/users | POST | Create a new user |
 |/auth/users | GET | Retrieves user data |
+|/auth/jwt/create/ | POST | Login user |
 | | | |
 |/group/list/ | GET | Returns a simplified list of groups |
 |/group/create/ | POST | Creates a new group |
 |/group/join/ | PUT | Join a group with group_id |
-|/group/<int:id>/ | GET | Retrieves the data of a group |
-|/group/calculatepayment/<int:id>/ | GET | Gets the payments and closes the group (Calculating payment not done) |
+|/group/<uuid:id>/ | GET | Retrieves the data of a group |
+|/group/calculatepayment/<uuid:id>/ | GET | Gets the payments and closes the group (Calculating payment not done) |
 |  |  |  |
-|/transaction/create | POST | Creates a new transaction |
-|/transaction/<int:id> | GET | Gets the specified transaction |
-|/transaction/delete/<int:id> | DELETE | Delete the specified transaction |
+|/transaction/create/ | POST | Creates a new transaction |
+|/transaction/<uuid:id>/ | GET | Gets the specified transaction |
+|/transaction/delete/<uuid:id>/ | DELETE | Delete the specified transaction |
 
