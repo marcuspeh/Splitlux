@@ -28,6 +28,9 @@ Installation: `pip install virtualenv`
 |/auth/jwt/create/ | POST | Login user |
 | | | |
 |/group/list/ | GET | Returns a simplified list of groups |
+|/group/list/?n=3 | GET | Returns a simplified list of 3 groups |
+|/group/list/?q=jap | GET | Returns a simplified list of groups with 'jap' in name |
+|/group/list/?n=3&q=jap | GET | Returns a simplified list of 3 groups with 'jap' in name |
 |/group/create/ | POST | Creates a new group |
 |/group/join/ | PUT | Join a group with group_id |
 |/group/reopen/ | PUT | Reopen a group with group_id |

@@ -16,8 +16,19 @@ class GroupList(APIView):
 
     def get(self, request, format=None):
         try:
+            n = request.GET.get("n")
+            search = request.GET.get("q")
+        
             user = self.request.user
             group_list = Group.objects.filter(members__in=[user])
+
+            if search:
+                group_list = group_list.filter(name__contains=search)
+
+            if n and n.isnumeric():
+                group_list = group_list.order_by('-last_updated')[:int(n)]
+            else:
+                group_list = group_list.order_by('-last_updated')
             return Response(GroupListOutgoingSerializer(group_list, many=True).data, status=status.HTTP_200_OK)
 
         except Exception as e:
