@@ -29,7 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """Custom User model"""
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
-    name = models.CharField(max_length=CHAR_LENGTH, unique=True)
+    name = models.CharField(max_length=CHAR_LENGTH)
     email = models.EmailField(max_length=CHAR_LENGTH, unique=True)
 
     is_admin = models.BooleanField(default=False)
