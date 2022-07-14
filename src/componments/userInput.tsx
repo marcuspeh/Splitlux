@@ -1,7 +1,6 @@
 import React from "react"
 import { StyleSheet, Text, TextInput, View } from "react-native"
-import FontStyle from "../style/fontStyle";
-import LayoutStyle from "../style/layoutStyle";
+import FontStyle from "../style/fontStyle"
 
 interface Props {
   label: string
