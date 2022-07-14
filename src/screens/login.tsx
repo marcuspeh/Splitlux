@@ -5,18 +5,20 @@ import UserInput from '../componments/userInput'
 import FontStyle from '../style/fontStyle'
 import LayoutStyle from '../style/layoutStyle'
 
-const forgetPasswordClick = (): void => {
-  console.log("Forget password")
-}
 
-const createAccountClick = (): void => {
-  console.log("Create account")
-}
 
-const Login = () => {
+const Login = ({ navigation }: any) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [errorMessage, setErrorMessage] = useState(" ")
+
+  const forgetPasswordClick = (): void => {
+    navigation.navigate('ResetPassword')
+  }
+
+  const createAccountClick = (): void => {
+    navigation.navigate('Register')
+  }
 
   const loginClick = (): void => {
     if ( email.length === 0 || password.length === 0 ) {
@@ -27,7 +29,7 @@ const Login = () => {
       ) {
       setErrorMessage("Please enter a valid email address")
     } else {
-      console.log("Login", email, password)
+      navigation.navigate('Home')
     }
   }
 

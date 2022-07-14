@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import LargeButton from '../componments/largeButton'
 import UserInput from '../componments/userInput'
 import FontStyle from '../style/fontStyle'
 
 
-const goBackClick = (): void => {
-  console.log("Go back")
-}
-
-const ResetPassword = () => {
+const ResetPassword = ({ navigation }: any) => {
   const [email, setEmail] = useState("")
   const [emailErrorMessage, setEmailErrorMessage] = useState(" ")
+
+  const goBackClick = (): void => {
+    navigation.navigate('Login')
+  }
 
   const resetClick = (): void => {
     if ( email.length === 0 ) {
@@ -22,7 +22,17 @@ const ResetPassword = () => {
       ) {
         setEmailErrorMessage("Please enter a valid email address")
     } else {
-      console.log("Reset", email)
+      Alert.alert(
+        "Success",
+        "Instructions will be sent via email if the email address matches our records. Please check your spam folder if you have not received the email after 5 mins.",
+        [
+          {
+            text: "Go back",
+            onPress: () => navigation.navigate('Login'),
+            style: "default",
+          },
+        ],
+      )
     }
   }
 

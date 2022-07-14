@@ -1,14 +1,19 @@
 import React from 'react'
-import { View, Text, StatusBar } from 'react-native'
-import Login from './src/screens/login'
+import { StatusBar } from 'react-native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+
+import Router from './src/routes/router'
+import { AuthProvider } from './src/contexts/auth'
+
+const Stack = createNativeStackNavigator()
 
 const App = () => {
   return (
-    <View>
+    <AuthProvider>
       <StatusBar hidden={true} />
-      <Login />
-    </View>
-  );
-};
+      <Router />
+    </AuthProvider>
+  )
+}
 
 export default App;

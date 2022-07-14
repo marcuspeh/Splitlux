@@ -1,15 +1,12 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import LargeButton from '../componments/largeButton'
 import UserInput from '../componments/userInput'
 import FontStyle from '../style/fontStyle'
 
 
-const signInClick = (): void => {
-  console.log("Create account")
-}
 
-const Logout = () => {
+const Register = ({ navigation }: any) => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -18,6 +15,10 @@ const Logout = () => {
   const [emailErrorMessage, setEmailErrorMessage] = useState(" ")
   const [passwordErrorMessage, setPasswordErrorMessage] = useState(" ")
   const [password2ErrorMessage, setPassword2ErrorMessage] = useState(" ")
+
+  const signInClick = (): void => {
+    navigation.navigate('Login')
+  }
 
   const signupClick = (): void => {
     var isValid: boolean = true
@@ -37,6 +38,10 @@ const Logout = () => {
       setPassword2ErrorMessage("Confirm password is required")
       isValid = false
     }
+    if ( password !== password2 ) {
+      setPassword2ErrorMessage("Password does not match")
+      isValid = false
+    }
   
     if (isValid) {
       if (
@@ -45,7 +50,17 @@ const Logout = () => {
         ) {
           setEmailErrorMessage("Please enter a valid email address")
       } else {
-        console.log("Register", name, email, password, password2)
+        Alert.alert(
+          "Success",
+          "Account Registered",
+          [
+            {
+              text: "Go back",
+              onPress: () => navigation.navigate('Login'),
+              style: "default",
+            },
+          ],
+        )
       }
     }
   }
@@ -152,4 +167,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Logout
+export default Register
