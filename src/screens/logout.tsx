@@ -117,9 +117,9 @@ const Logout = () => {
         onPress={signupClick}
         style={{marginTop: 50}}
       />
-      <Text style={[styles.newUser]}>
+      <Text style={[styles.haveAccount]}>
         Have Account? {" "}
-        <Text style={[styles.createAccount]} onPress={signInClick}>
+        <Text style={[styles.signIn]} onPress={signInClick}>
           Log In
         </Text>
        </Text>
@@ -141,14 +141,10 @@ const styles = StyleSheet.create({
   loginText: {
     marginBottom: 50
   },
-  forgetPasswordText: {
-    textAlign: 'right',
-    marginTop: 5
-  },
-  newUser: {
+  haveAccount: {
     marginTop: 30
   },
-  createAccount: {
+  signIn: {
     color: "rgba(13, 153, 255, 1)",
   },
   errorMessage: {
