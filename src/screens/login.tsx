@@ -52,14 +52,8 @@ const Login = () => {
         style={{marginTop: 50}}
         defaultValue={email}
         isError={errorMessage.length > 1}
+        errorMessage={errorMessage}
       />
-      {
-        errorMessage ? 
-          <View style={LayoutStyle.fullRow}>
-            <Text style={[FontStyle.error, styles.errorMessage]}>{errorMessage}</Text> 
-          </View>
-        : <></>
-      }
       <UserInput 
         label={'Password'} 
         isPassword={true} 

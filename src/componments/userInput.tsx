@@ -1,6 +1,7 @@
 import React from "react"
 import { StyleSheet, Text, TextInput, View } from "react-native"
 import FontStyle from "../style/fontStyle";
+import LayoutStyle from "../style/layoutStyle";
 
 interface Props {
   label: string
@@ -8,6 +9,7 @@ interface Props {
   defaultValue?: string
   isPassword?: boolean
   isError?: boolean
+  errorMessage?: string
   onChange?: (text: string) => void
   placeHolder?: string
   style?: {}
@@ -43,6 +45,11 @@ const UserInput = (props: Props) => {
             onChangeText={onChange}
           />
       }
+      {
+        props.errorMessage ? 
+          <Text style={[FontStyle.error, styles.errorMessage]}>{props.errorMessage}</Text> 
+        : <></>
+      }
     </View>
     
   )
@@ -64,6 +71,9 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     borderBottomColor: 'background: rgba(223, 15, 15, 0.7)',
     borderBottomWidth: 1
+  }, 
+  errorMessage: {
+    textAlign: 'left'
   }
 });
   
