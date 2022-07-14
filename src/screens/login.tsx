@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import LargeButton from '../componments/largeButton';
-import UserInput from '../componments/userInput';
-import FontStyle from '../style/fontStyle';
-import LayoutStyle from '../style/layoutStyle';
+import LargeButton from '../componments/largeButton'
+import UserInput from '../componments/userInput'
+import FontStyle from '../style/fontStyle'
+import LayoutStyle from '../style/layoutStyle'
 
 const forgetPasswordClick = (): void => {
   console.log("Forget password")
@@ -22,7 +22,7 @@ const Login = () => {
     if ( email.length === 0 || password.length === 0 ) {
       setErrorMessage("Please fill up both email and password")
     } else if (
-      !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      !/^(([^<>()\[\]\\.,:\s@"]+(\.[^<>()\[\]\\.,:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         .test(email)
       ) {
       setErrorMessage("Please enter a valid email address")
@@ -50,6 +50,7 @@ const Login = () => {
         placeHolder={'Enter your email'}
         onChange={emailInput}
         style={{marginTop: 50}}
+        defaultValue={email}
         isError={errorMessage.length > 1}
       />
       {
@@ -62,6 +63,7 @@ const Login = () => {
       <UserInput 
         label={'Password'} 
         isPassword={true} 
+        defaultValue={password}
         placeHolder={'Enter your password'} 
         onChange={passwordInput}
         style={{marginTop: 50}}
@@ -84,8 +86,8 @@ const Login = () => {
         </Text>
        </Text>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -114,6 +116,6 @@ const styles = StyleSheet.create({
   errorMessage: {
     textAlign: 'left'
   }
-});
+})
 
-export default Login;
+export default Login
