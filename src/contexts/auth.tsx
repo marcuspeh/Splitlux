@@ -21,7 +21,14 @@ const AuthProvider: React.FC = ({children}: any) => {
 
       if (authDataSerialized) {
         const _authData: AuthData = JSON.parse(authDataSerialized);
-        setAuthData(_authData);
+        // Test if valid
+        const isValid: boolean = await AuthService.verifyToken(_authData.access)
+        if (isValid) {
+          setAuthData(_authData);
+        } else {
+          setAuthData(undefined);
+          await EncryptedStorage.removeItem('@AuthData');
+        }
       }
     } catch (error) {
         // Do nothing

@@ -67,9 +67,24 @@ const resetPassword = async (email: string): Promise<void> => {
     console.log(error)
   }
 }
+  
+const verifyToken = async (token: string): Promise<boolean> => {
+  try {
+    await axios.post(
+      `${API_URL}/auth/jwt/verify/`,
+      {
+        token: token
+      }
+    )
+    return true
+  } catch (error) {
+    return false
+  }
+}
 
 export const AuthService = {
   signIn,
   register,
-  resetPassword
+  resetPassword,
+  verifyToken
 };
