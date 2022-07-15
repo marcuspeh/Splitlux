@@ -55,7 +55,21 @@ const register = async (name: string, email: string, password: string, password2
   }
 }
   
+const resetPassword = async (email: string): Promise<void> => {
+  try {
+    await axios.post(
+      `${API_URL}/auth/users/reset_password/`,
+      {
+        email: email
+      }
+    )
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const AuthService = {
   signIn,
-  register
+  register,
+  resetPassword
 };
