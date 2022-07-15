@@ -1,7 +1,10 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
 import FontStyle from "../style/fontStyle"
-import UserSolidIcon from '../assets/images/people-group-solid.svg'
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons/faPeopleGroup'
+import LayoutStyle from "../style/layoutStyle"
 
 interface Props {
     title: String
@@ -11,14 +14,16 @@ interface Props {
 
 const GroupCard = (props: Props) => {
     return (
-      <View style={styles.container}>
+      <View style={[LayoutStyle.background, styles.container]}>
         <Text style={FontStyle.body1}>{props.title}</Text>
         <View style={styles.row}>
           <Text style={FontStyle.caption}>Group Code: {props.groupCode}</Text>
-          <Text style={[FontStyle.caption, styles.personCount]}>
-            <UserSolidIcon style={styles.image} width={12} height={12}/>
-            {' '}{props.memberCount}
-          </Text>
+          <View style={styles.personCount}>
+            <FontAwesomeIcon icon={ faPeopleGroup } />
+            <Text style={[FontStyle.caption]}>
+              {' '}{props.memberCount}
+            </Text>
+          </View>
         </View>
       </View>
     )
@@ -26,19 +31,21 @@ const GroupCard = (props: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
+    paddingTop: 15,
     paddingRight: 10,
-    paddingBottom: 20,
+    paddingBottom: 15,
     paddingLeft: 10,
-    borderColor: 'rgba(0, 0, 0, 0.05)',
-    borderWidth: 1,
-    border: "solid",
-    shadowColor: 'rgba(0, 0, 0, 0.3)',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,  
+    width: "100%",
+    borderColor: 'rgba(0, 0, 0, 0.01)',
+    borderWidth: 0,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
     elevation: 2,
-    width: "100%"
   },
   row: {
     display: 'flex',
@@ -50,6 +57,8 @@ const styles = StyleSheet.create({
     color: "black"
   },
   personCount: {
+    display: 'flex',
+    flexDirection: "row",
     width: "12%"
   }
 });
