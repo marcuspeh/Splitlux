@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Alert, StyleSheet, Text, View } from 'react-native'
 import LargeButton from '../componments/largeButton'
 import UserInput from '../componments/userInput'
+import { useAuth } from '../contexts/auth'
+import { AuthService } from '../service/authService'
 import FontStyle from '../style/fontStyle'
 
 
@@ -20,7 +22,7 @@ const Register = ({ navigation }: any) => {
     navigation.navigate('Login')
   }
 
-  const signupClick = (): void => {
+  const signupClick = async (): Promise<void> => {
     var isValid: boolean = true
     if ( name.length === 0 ) {
       setNameErrorMessage("Name is required")
@@ -39,7 +41,7 @@ const Register = ({ navigation }: any) => {
       isValid = false
     }
     if ( password !== password2 ) {
-      setPassword2ErrorMessage("Password does not match")
+      setPassword2ErrorMessage("Passwords does not match")
       isValid = false
     }
   
@@ -50,17 +52,25 @@ const Register = ({ navigation }: any) => {
         ) {
           setEmailErrorMessage("Please enter a valid email address")
       } else {
-        Alert.alert(
-          "Success",
-          "Account Registered",
-          [
-            {
-              text: "Go back",
-              onPress: () => navigation.navigate('Login'),
-              style: "default",
-            },
-          ],
-        )
+        const response = await AuthService.register(name, email, password, password2)
+        if (response.isSuccess) {
+          Alert.alert(
+            "Success",
+            "Account Registered",
+            [
+              {
+                text: "Go back",
+                onPress: () => navigation.navigate('Login'),
+                style: "default",
+              },
+            ],
+          )
+        } else {
+          if (response.nameError) setNameErrorMessage(response.nameError)
+          if (response.emailError) setEmailErrorMessage(response.emailError)
+          if (response.passwordError) setPasswordErrorMessage(response.passwordError)
+          if (response.password2Error) setPassword2ErrorMessage(response.password2Error)
+        }
       }
     }
   }
@@ -77,10 +87,12 @@ const Register = ({ navigation }: any) => {
 
   const passwordInput = (text: string): void => {
     setPasswordErrorMessage(" ")
+    setPassword2ErrorMessage(" ")
     setPassword(text)
   }
 
   const password2Input = (text: string): void => {
+    setPasswordErrorMessage(" ")
     setPassword2ErrorMessage(" ")
     setPassword2(text)
   }

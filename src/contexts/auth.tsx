@@ -30,11 +30,16 @@ const AuthProvider: React.FC = ({children}: any) => {
     }
   }
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string): Promise<boolean> => {
+    
     const _authData = await AuthService.signIn(email, password);
 
-    setAuthData(_authData);
-    EncryptedStorage.setItem('@AuthData', JSON.stringify(_authData));
+    if (_authData.access && _authData.access.length > 0) {
+      setAuthData(_authData);
+      EncryptedStorage.setItem('@AuthData', JSON.stringify(_authData));
+      return true
+    }
+    return false
   };
 
   const signOut = async () => {

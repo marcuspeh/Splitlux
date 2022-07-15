@@ -1,20 +1,61 @@
+import axios, { AxiosError } from 'axios';
+
 import { AuthData } from "../models/authData";
+import { RegisterResponse } from "../models/registerResponse";
 
-const JWTTokenMock =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikx1Y2FzIEdhcmNleiIsImlhdCI6MTUxNjIzOTAyMn0.oK5FZPULfF-nfZmiumDGiufxf10Fe2KiGe9G5Njoa64';
+const API_URL="http://10.0.2.2:8000"
 
-const signIn = (email: string, _password: string): Promise<AuthData> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        token: JWTTokenMock,
-        email: email,
-        name: 'Lucas Garcez',
-      });
-    }, 1000);
-  });
+const signIn = async (email: string, password: string): Promise<AuthData> => {
+  var result;
+  try {
+    result = await axios.post(
+      `${API_URL}/auth/jwt/create/`,
+      {
+        "email": email,
+        "password": password,
+      }
+    )
+  } catch (err) {
+    // do nothing
+    console.log(err)
+  }
+
+  return {
+    email: email,
+    refresh: result ? result.data.refresh : "",
+    access: result ? result.data.access : "",
+  }
 };
+
+const register = async (name: string, email: string, password: string, password2: string): Promise<RegisterResponse> => {
+  try {
+    const result = await axios.post(
+      `${API_URL}/auth/users/`,
+      {
+        "name": name,
+        "email": email,
+        "password": password,
+        "re_password": password2
+      }
+    )
+    return {
+      isSuccess: true
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error)
+    const response: RegisterResponse = {isSuccess: false}
+    const data = error.response.data
+
+    if (data.name) response.nameError = data.name
+    if (data.email) response.emailError = data.email
+    if (data.password) response.passwordError = data.password
+    if (data.non_field_errors) response.password2Error = data.non_field_errors[0]
+  
+    return response
+  }
+}
   
 export const AuthService = {
   signIn,
+  register
 };

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import LargeButton from '../componments/largeButton'
 import UserInput from '../componments/userInput'
+import { AuthContext, AuthProvider, useAuth } from '../contexts/auth'
 import FontStyle from '../style/fontStyle'
 import LayoutStyle from '../style/layoutStyle'
 
@@ -11,6 +12,7 @@ const Login = ({ navigation }: any) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [errorMessage, setErrorMessage] = useState(" ")
+  const auth = useAuth()
 
   const forgetPasswordClick = (): void => {
     navigation.navigate('ResetPassword')
@@ -20,7 +22,7 @@ const Login = ({ navigation }: any) => {
     navigation.navigate('Register')
   }
 
-  const loginClick = (): void => {
+  const loginClick = async (): Promise<void> => {
     if ( email.length === 0 || password.length === 0 ) {
       setErrorMessage("Please fill up both email and password")
     } else if (
@@ -29,7 +31,10 @@ const Login = ({ navigation }: any) => {
       ) {
       setErrorMessage("Please enter a valid email address")
     } else {
-      navigation.navigate('Home')
+      const isSuccess = await auth.signIn(email, password)
+      if (!isSuccess) {
+        setErrorMessage("Invalid credentials")
+      }
     }
   }
 
@@ -63,7 +68,6 @@ const Login = ({ navigation }: any) => {
         placeHolder={'Enter your password'} 
         onChange={passwordInput}
         style={{marginTop: 50}}
-        isError={errorMessage.length > 1}
       />
       <View style={LayoutStyle.fullRow}>
         <Text style={[styles.forgetPasswordText]} onPress={forgetPasswordClick}>

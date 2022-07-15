@@ -1,14 +1,23 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import LargeButton from '../componments/largeButton'
+import { useAuth } from '../contexts/auth'
 import FontStyle from '../style/fontStyle'
 
 
 const Home = ({ navigation }: any) => {
+  const auth = useAuth()
+
+  const logoutClick = async () => {
+    await auth.signOut()
+  }
+
   return (
     <View style={styles.container}>
       <Text style={[FontStyle.body2, styles.messageText]}>
         Hello World
       </Text>
+      <LargeButton label={'Log out'} onPress={logoutClick} />
     </View>
   )
 }

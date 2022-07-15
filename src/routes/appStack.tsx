@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator()
 
 const AppStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false, animation: 'none'}}>
+    <Stack.Navigator screenOptions={{headerShown: false, animation: 'default'}}>
       <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
   )
