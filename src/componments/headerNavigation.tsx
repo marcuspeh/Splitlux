@@ -30,7 +30,7 @@ const HeaderNavigation = (props: Props) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginBottom: 40,
+    marginBottom: 30,
     paddingRight: 30,
     paddingBottom: 15,
     paddingTop: 15, 
