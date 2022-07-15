@@ -26,6 +26,9 @@ Installation: `pip install virtualenv`
 |/auth/users | POST | Create a new user |
 |/auth/users | GET | Retrieves user data |
 |/auth/jwt/create/ | POST | Login user |
+|/auth/users/reset_password/ | POST | Sends an email to reset password|
+|/auth/users/reset_password_confirm/ | POST | Confirm reset password |
+|/auth/updateProfilePic/ | POST | Update profile pic |
 | | | |
 |/group/list/ | GET | Returns a simplified list of groups |
 |/group/list/?n=3 | GET | Returns a simplified list of 3 groups |
