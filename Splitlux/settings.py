@@ -106,6 +106,7 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=360),
+    'BLACKLIST_AFTER_ROTATION': False,
 }
 
 AUTH_USER_MODEL = 'core.User'
@@ -113,7 +114,6 @@ AUTH_USER_MODEL = 'core.User'
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
-    
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     # 'ACTIVATION_URL': 'activate/{uid}/{token}',
