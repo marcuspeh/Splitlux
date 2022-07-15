@@ -1,25 +1,19 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import LargeButton from '../componments/largeButton'
+import HeaderNavigation from '../componments/headerNavigation'
 import NavBar from '../componments/navBar'
-import { useAuth } from '../contexts/auth'
 import FontStyle from '../style/fontStyle'
 
 
-const Home = ({ navigation }: any) => {
-  const auth = useAuth()
-
-  const logoutClick = async () => {
-    await auth.signOut()
-  }
+const Profile = ({ navigation }: any) => {
 
   return (
     <>
+      <HeaderNavigation navigation={navigation} title={'Home'} />
       <View style={styles.container}>
         <Text style={[FontStyle.body2, styles.messageText]}>
-          Hello World
+          Profile
         </Text>
-        <LargeButton label={'Log out'} onPress={logoutClick} />
       </View>
       <NavBar navigation={navigation} />
     </>
@@ -47,4 +41,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Home
+export default Profile
