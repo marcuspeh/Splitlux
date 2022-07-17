@@ -8,6 +8,7 @@ interface Props {
   defaultValue?: string
   placeHolder?: string
   onChange?: (text: string) => void
+  onClick?: () => void
   style?: {}
 }
 
@@ -19,7 +20,7 @@ const SearchInput = (props: Props) => {
   }
   
   return (
-    <View style={[styles.container, props.style]}>
+    <View style={[styles.container, props.style]} onTouchStart={props.onClick}>
       <FontAwesomeIcon icon={ faSearch } />
       <TextInput 
         style = {[FontStyle.body1, styles.textInput]}

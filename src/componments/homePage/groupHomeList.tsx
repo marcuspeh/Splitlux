@@ -10,7 +10,8 @@ import { Loading } from '../loading'
 
 interface Props {
   navigation: any,
-  n?: number
+  n?: number,
+  searchTerm?: string
 }
 
 const GroupHomeList = (props: Props) => {
@@ -19,14 +20,15 @@ const GroupHomeList = (props: Props) => {
   const [isError, setIsError] = useState(false)
 
   const getGroupList = async () => {
-    // get groupList from backend
-    const result: GroupListResponse = await GroupService.getGroupList(props.n)
-    if (result.isSuccess) {
-      setGroupList(result.data || [])
-    } else {
-      setIsError(true)
+    if (groupList.length === 0) {
+      const result: GroupListResponse = await GroupService.getGroupList(props.n)
+      if (result.isSuccess) {
+        setGroupList(result.data || [])
+      } else {
+        setIsError(true)
+      }
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -54,10 +56,25 @@ const GroupHomeList = (props: Props) => {
       key={item.id}
     />
     </View>
-)
+  )
 
+  const filterGroup = (word: string) => {
+    return groupList.filter((group) => {
+        return group.name.toLocaleLowerCase().includes(word.toLocaleLowerCase())
+      })
+  }
+  
   if (isLoading && groupList.length == 0) {
     return <Loading />
+  } else if (props.searchTerm && props.searchTerm.length > 0) {
+    return (
+      <FlatList
+        data={filterGroup(props.searchTerm)}
+        renderItem={renderGroupCard}
+        style={LayoutStyle.containerWithoutCenter}
+        ListEmptyComponent={<Text style={FontStyle.body2}>There is no group found :(</Text>}
+      />
+    )
   } else {
     return (
       <FlatList

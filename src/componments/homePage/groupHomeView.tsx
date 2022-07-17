@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, StyleSheet, Dimensions  } from 'react-native'
 import FontStyle from '../../style/fontStyle'
 import LayoutStyle from '../../style/layoutStyle'
@@ -10,12 +10,12 @@ interface Props {
 }
 
 export const GroupHomeView = (props: Props) => {
+  const [n, setN] = useState(Math.floor((Dimensions.get('window').height - 300) / 80))
+
   const groupListClick = () => {
     props.navigation.navigate('GroupList')
   }
-
-  const n = Math.floor(Dimensions.get('window').height / 200)
-
+  
   return (
   <>
     <View style={[LayoutStyle.containerWithoutCenter, styles.greetingView]}>
@@ -46,6 +46,6 @@ const styles = StyleSheet.create({
   },
   greetingView: {
     width: '100%',
-    marginBottom: 40
+    marginBottom: 20
   }
 })
