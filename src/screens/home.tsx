@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { GroupHomeView } from '../componments/homePage/groupHomeView'
 import LargeButton from '../componments/largeButton'
 import NavBar from '../componments/navBar'
 import { useAuth } from '../contexts/auth'
@@ -16,11 +17,14 @@ const Home = ({ navigation }: any) => {
 
   return (
     <>
-      <View style={LayoutStyle.container}>
-        <Text style={[FontStyle.body2, styles.messageText]}>
-          Hello World
-        </Text>
-        <LargeButton label={'Log out'} onPress={logoutClick} />
+      <View style={styles.navBarContainer}>
+        <View style={LayoutStyle.container}>
+          <Text style={[FontStyle.body2, styles.messageText]}>
+            Hello World
+          </Text>
+          <LargeButton label={'Log out'} onPress={logoutClick} />
+        </View>
+        <GroupHomeView navigation={navigation} name={"Mike Tyson"}/>
       </View>
       <NavBar navigation={navigation} />
     </>
@@ -39,6 +43,9 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     textAlign: 'center'
+  },
+  navBarContainer: {
+    marginBottom: 200
   }
 })
 

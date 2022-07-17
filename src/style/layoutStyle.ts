@@ -1,18 +1,20 @@
 import { StyleSheet } from "react-native";
 
 const LayoutStyle = StyleSheet.create({
-  fullRow: {
-    width: "100%"
-  },
   background: {
-    backgroundColor: "#E5E5E5"
+    backgroundColor: "#fafafa"
   },
   container : {    
     display: 'flex',
     alignItems: 'center',
     paddingLeft: '10%',
     paddingRight: '10%',
-  }
+  },
+  containerWithoutCenter : {    
+    width: '100%',
+    paddingLeft: '10%',
+    paddingRight: '10%',
+  },
 });
 
 export default LayoutStyle

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { SimpleGroupData } from '../../models/data/simpleGroupData'
 import { GroupListResponse } from '../../models/response/groupListResponse'
 import { GroupService } from '../../service/groupService'
+import FontStyle from '../../style/fontStyle'
+import LayoutStyle from '../../style/layoutStyle'
 import GroupCard from '../groupCard'
 import { Loading } from '../loading'
 
@@ -38,26 +40,32 @@ const GroupHomeList = (props: Props) => {
     return cardClick
   }
 
+  const renderGroupCard  = ({ item }: {item: SimpleGroupData}) => (
+    <View
+      style={{
+        margin: 1,
+        marginBottom: 15
+      }}>
+    <GroupCard 
+      title={item.name} 
+      groupCode={item.code_id} 
+      memberCount={item.member_count} 
+      onClick={createGroupClick(item.id)}
+      key={item.id}
+    />
+    </View>
+)
+
   if (isLoading && groupList.length == 0) {
     return <Loading />
   } else {
     return (
-      <>
-          {
-            ( groupList.map((group) =>
-              <GroupCard 
-                title={group.name} 
-                groupCode={group.code_id} 
-                memberCount={group.member_count} 
-                onClick={createGroupClick(group.id)}
-                style={{
-                  marginBottom: 15
-                }}
-                key={group.id}
-              />
-            )) 
-          }
-      </>
+      <FlatList
+        data={groupList}
+        renderItem={renderGroupCard}
+        style={LayoutStyle.containerWithoutCenter}
+        ListEmptyComponent={<Text style={FontStyle.body2}>There is no group found :(</Text>}
+      />
     )
   }
 }

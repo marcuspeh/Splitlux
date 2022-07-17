@@ -1,6 +1,12 @@
 import { StyleSheet } from "react-native";
 
 const FontStyle = StyleSheet.create({
+    header5: {
+      fontSize: 24,
+      fontWeight: "400",
+      color: "rgba(0, 0, 0, 1)",
+      lineHeight: 28
+    },
     header6: {
       fontSize: 20,
       fontWeight: "500",

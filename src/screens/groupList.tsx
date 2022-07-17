@@ -13,8 +13,8 @@ const GroupList = ({ navigation }: any) => {
 
       <View style={[LayoutStyle.container]}>
         <Text style={[FontStyle.header6, styles.headerText]}>All Groups</Text>
-        <GroupHomeList navigation={navigation} />
       </View>
+      <GroupHomeList navigation={navigation} />
     </>
   )
 }

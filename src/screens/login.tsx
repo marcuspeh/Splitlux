@@ -69,7 +69,7 @@ const Login = ({ navigation }: any) => {
         onChange={passwordInput}
         style={{marginTop: 50}}
       />
-      <View style={LayoutStyle.fullRow}>
+      <View style={styles.fullRow}>
         <Text style={[styles.forgetPasswordText]} onPress={forgetPasswordClick}>
           Forget Password?
         </Text>
@@ -109,7 +109,10 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     textAlign: 'left'
-  }
+  },
+  fullRow: {
+    width: "100%"
+  },
 })
 
 export default Login
