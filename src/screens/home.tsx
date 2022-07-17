@@ -4,6 +4,7 @@ import LargeButton from '../componments/largeButton'
 import NavBar from '../componments/navBar'
 import { useAuth } from '../contexts/auth'
 import FontStyle from '../style/fontStyle'
+import LayoutStyle from '../style/layoutStyle'
 
 
 const Home = ({ navigation }: any) => {
@@ -15,7 +16,7 @@ const Home = ({ navigation }: any) => {
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={LayoutStyle.container}>
         <Text style={[FontStyle.body2, styles.messageText]}>
           Hello World
         </Text>
@@ -27,12 +28,6 @@ const Home = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: 60,
-    paddingRight: 60,
-  },
   logo: {
     fontSize: 72,
     margin: 60
