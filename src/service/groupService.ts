@@ -1,5 +1,8 @@
 import axios, { AxiosError } from 'axios';
+import { JoinGroupData } from '../models/data/joinGroupData';
+import { CreateGroupResponse } from '../models/response/createGroupResponse';
 import { GroupListResponse } from '../models/response/groupListResponse';
+import { JoinGroupResponse } from '../models/response/joinGroupResponse';
 import customAxios from './utilities/customAxios';
 import getHeader from './utilities/headerUtilities';
 
@@ -24,7 +27,46 @@ const getGroupList = async (n?: number): Promise<GroupListResponse> => {
   }
 }
   
+const createGroup = async (name: string): Promise<CreateGroupResponse> => {
+  try {
+    var uri: string = `${API_URL}/group/create/`
+
+    const result = await customAxios.post(uri, {name: name}, {headers: await getHeader()})
+
+    return {
+      isSuccess: true, 
+      data: result.data
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error)
+
+    return {
+      isSuccess: false
+    }
+  }
+}
+  
+const joinGroup = async (groupCode: string): Promise<JoinGroupResponse> => {
+  try {
+    var uri: string = `${API_URL}/group/join/`
+
+    const result = await customAxios.put(uri, {group_id: groupCode}, {headers: await getHeader()})
+
+    return {
+      isSuccess: true, 
+      data: result.data
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error.response.data)
+
+    return {
+      isSuccess: false
+    }
+  }
+}
 
 export const GroupService = {
-  getGroupList
+  getGroupList,
+  createGroup,
+  joinGroup
 };
