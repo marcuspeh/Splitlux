@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import LargeButton from '../componments/largeButton'
 import UserInput from '../componments/userInput'
-import { AuthContext, AuthProvider, useAuth } from '../contexts/auth'
+import { useAuth } from '../contexts/auth'
 import FontStyle from '../style/fontStyle'
 import LayoutStyle from '../style/layoutStyle'
 
@@ -49,7 +49,7 @@ const Login = ({ navigation }: any) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={LayoutStyle.container}>
       <Text style={styles.logo}>$plitlux</Text>
       <Text style={[FontStyle.header6, styles.loginText]}>Log In To $plitlux</Text>
       <UserInput 
@@ -90,12 +90,6 @@ const Login = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: 60,
-    paddingRight: 60,
-  },
   logo: {
     fontSize: 72,
     margin: 60

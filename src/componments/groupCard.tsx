@@ -10,23 +10,31 @@ interface Props {
     title: String
     groupCode: String
     memberCount: String
+    onClick?: () => void
+    style?: {}
 }
 
 const GroupCard = (props: Props) => {
-    return (
-      <View style={[LayoutStyle.background, styles.container]}>
-        <Text style={FontStyle.body1}>{props.title}</Text>
-        <View style={styles.row}>
-          <Text style={FontStyle.caption}>Group Code: {props.groupCode}</Text>
-          <View style={styles.personCount}>
-            <FontAwesomeIcon icon={ faPeopleGroup } />
-            <Text style={[FontStyle.caption]}>
-              {' '}{props.memberCount}
-            </Text>
-          </View>
+  const cardClick = () => {
+    if (props.onClick) {
+      props.onClick()
+    }
+  }
+
+  return (
+    <View style={[LayoutStyle.background, styles.container, props.style]} onTouchStart={cardClick}>
+      <Text style={FontStyle.body1}>{props.title}</Text>
+      <View style={styles.row}>
+        <Text style={FontStyle.caption}>Group Code: {props.groupCode}</Text>
+        <View style={styles.personCount}>
+          <FontAwesomeIcon icon={ faPeopleGroup } />
+          <Text style={[FontStyle.caption]}>
+            {' '}{props.memberCount}
+          </Text>
         </View>
       </View>
-    )
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({

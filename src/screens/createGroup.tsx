@@ -5,6 +5,7 @@ import LargeButton from '../componments/largeButton'
 import NavBar from '../componments/navBar'
 import UserInput from '../componments/userInput'
 import FontStyle from '../style/fontStyle'
+import LayoutStyle from '../style/layoutStyle'
 
 
 const CreateGroup = ({ navigation }: any) => {
@@ -24,7 +25,7 @@ const CreateGroup = ({ navigation }: any) => {
     <>
       <HeaderNavigation navigation={navigation} title={'Create'} />
 
-      <View style={styles.container}>
+      <View style={[LayoutStyle.container]}>
         <Text style={[FontStyle.header6, styles.headerText]}>Create Group</Text>
         <UserInput 
           label={'Group Name'} 
@@ -41,12 +42,6 @@ const CreateGroup = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: 60,
-    paddingRight: 60,
-  },
   headerText: {
     marginBottom: 40,
     textAlign: 'left',

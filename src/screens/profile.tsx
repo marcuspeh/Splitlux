@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import HeaderNavigation from '../componments/headerNavigation'
 import NavBar from '../componments/navBar'
 import FontStyle from '../style/fontStyle'
+import LayoutStyle from '../style/layoutStyle'
 
 
 const Profile = ({ navigation }: any) => {
@@ -10,7 +11,7 @@ const Profile = ({ navigation }: any) => {
   return (
     <>
       <HeaderNavigation navigation={navigation} title={'Home'} />
-      <View style={styles.container}>
+      <View style={LayoutStyle.container}>
         <Text style={[FontStyle.body2, styles.messageText]}>
           Profile
         </Text>
@@ -21,12 +22,6 @@ const Profile = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: 60,
-    paddingRight: 60,
-  },
   logo: {
     fontSize: 72,
     margin: 60

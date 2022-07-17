@@ -5,6 +5,7 @@ import LargeButton from '../componments/largeButton'
 import NavBar from '../componments/navBar'
 import UserInput from '../componments/userInput'
 import FontStyle from '../style/fontStyle'
+import LayoutStyle from '../style/layoutStyle'
 
 
 const JoinGroup = ({ navigation }: any) => {
@@ -24,7 +25,7 @@ const JoinGroup = ({ navigation }: any) => {
     <>
       <HeaderNavigation navigation={navigation} title={'Join'} />
 
-      <View style={styles.container}>
+      <View style={LayoutStyle.container}>
         <Text style={[FontStyle.header6, styles.headerText]}>Join Group</Text>
         <UserInput 
           label={'Group Code'} 
@@ -41,12 +42,6 @@ const JoinGroup = ({ navigation }: any) => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: 60,
-    paddingRight: 60,
-  },
   headerText: {
     marginBottom: 40,
     textAlign: 'left',

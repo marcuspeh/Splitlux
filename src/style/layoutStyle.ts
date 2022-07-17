@@ -5,7 +5,13 @@ const LayoutStyle = StyleSheet.create({
     width: "100%"
   },
   background: {
-    backgroundColor: "#fff"
+    backgroundColor: "#E5E5E5"
+  },
+  container : {    
+    display: 'flex',
+    alignItems: 'center',
+    paddingLeft: '10%',
+    paddingRight: '10%',
   }
 });
 

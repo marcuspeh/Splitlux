@@ -7,6 +7,7 @@ import LayoutStyle from '../style/layoutStyle'
 import JoinGroup from '../screens/joinGroup'
 import CreateGroup from '../screens/createGroup'
 import Profile from '../screens/profile'
+import GroupList from '../screens/groupList'
 
 const Stack = createNativeStackNavigator()
 
@@ -23,6 +24,7 @@ const AppStack = () => {
       <Stack.Screen name="JoinGroup" component={JoinGroup} />
       <Stack.Screen name="CreateGroup" component={CreateGroup} />
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="GroupList" component={GroupList} />
     </Stack.Navigator>
   )
 }

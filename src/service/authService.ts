@@ -1,14 +1,15 @@
 import axios, { AxiosError } from 'axios';
 
-import { AuthData } from "../models/authData";
-import { RegisterResponse } from "../models/registerResponse";
+import { AuthData } from "../models/data/authData";
+import { RegisterResponse } from "../models/response/registerResponse";
+import customAxios from './utilities/customAxios';
 
 const API_URL="http://10.0.2.2:8000"
 
 const signIn = async (email: string, password: string): Promise<AuthData> => {
   var result;
   try {
-    result = await axios.post(
+    result = await customAxios.post(
       `${API_URL}/auth/jwt/create/`,
       {
         "email": email,
@@ -29,7 +30,7 @@ const signIn = async (email: string, password: string): Promise<AuthData> => {
 
 const register = async (name: string, email: string, password: string, password2: string): Promise<RegisterResponse> => {
   try {
-    const result = await axios.post(
+    const result = await customAxios.post(
       `${API_URL}/auth/users/`,
       {
         "name": name,
@@ -57,7 +58,7 @@ const register = async (name: string, email: string, password: string, password2
   
 const resetPassword = async (email: string): Promise<void> => {
   try {
-    await axios.post(
+    await customAxios.post(
       `${API_URL}/auth/users/reset_password/`,
       {
         email: email
@@ -70,7 +71,7 @@ const resetPassword = async (email: string): Promise<void> => {
   
 const verifyToken = async (token: string): Promise<boolean> => {
   try {
-    await axios.post(
+    await customAxios.post(
       `${API_URL}/auth/jwt/verify/`,
       {
         token: token

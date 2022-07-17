@@ -1,8 +1,8 @@
 import React, {createContext, useState, useContext, useEffect} from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-import { AuthData } from '../models/authData';
-import { AuthContextData } from '../models/authContextData';
+import { AuthData } from '../models/data/authData';
+import { AuthContextData } from '../models/data/authContextData';
 import { AuthService } from '../service/authService';
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
