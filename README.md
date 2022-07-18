@@ -28,8 +28,9 @@ Installation: `pip install virtualenv`
 |/auth/jwt/create/ | POST | Login user |
 |/auth/users/reset_password/ | POST | Sends an email to reset password|
 |/auth/users/reset_password_confirm/ | POST | Confirm reset password |
-| /auth/jwt/verify/ | POST | Verify if token is valid |
+|/auth/jwt/verify/ | POST | Verify if token is valid |
 |/auth/updateProfilePic/ | POST | Update profile pic |
+|/auth/updateProfile/ | POST | Update profile |
 | | | |
 |/group/list/ | GET | Returns a simplified list of groups |
 |/group/list/?n=3 | GET | Returns a simplified list of 3 groups |

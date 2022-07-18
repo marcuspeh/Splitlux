@@ -10,6 +10,10 @@ CHAR_LENGTH = 255
 class ProfilePicIncomingSerializer(serializers.Serializer):
     pic = serializers.CharField()
 
+class ProfileIncomingSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=CHAR_LENGTH)
+    email = serializers.EmailField(max_length=CHAR_LENGTH)
+
 
 #=============================== OUTGOING ===============================#
 class UserCreateSerializer(serializers.ModelSerializer):
