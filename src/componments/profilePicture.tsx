@@ -1,5 +1,5 @@
 import React from "react"
-import { Image, StyleSheet } from "react-native"
+import { Image, StyleSheet, View } from "react-native"
 
 interface Props {
   picture: string
@@ -8,9 +8,18 @@ interface Props {
 }
 
 const ProfilePicture = (props: Props) => {
-var base64Icon = `data:image/png;base64,${props.picture}`;
+  const onClick = () => {
+    if (props.onPress) {
+      props.onPress()
+    }
+  }
+
+  var base64Icon = `data:image/png;base64,${props.picture}`;
+
   return (
-    <Image style={[styles.container, props.style]} source={{uri: base64Icon}}/>
+    <View onTouchStart={onClick}>
+      <Image style={[styles.container, props.style]} source={{uri: base64Icon}}/>
+    </View>
   )
 }
 

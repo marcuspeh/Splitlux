@@ -48,6 +48,10 @@ const Home = ({ navigation }: any) => {
     setSearchTerm("")
   }
 
+  const profilePicClick = () => {
+    navigation.navigate('Profile')
+  }
+
   if (!userProfile) {
     return <Loading />
   } 
@@ -66,7 +70,7 @@ const Home = ({ navigation }: any) => {
             { isSearching ? (
               <Text style={[FontStyle.subtitle2, styles.cancelText]} onPress={cancelClick} >Cancel</Text>
             ) : (
-              <ProfilePicture picture={userProfile.profile_pic} />
+              <ProfilePicture picture={userProfile.profile_pic} onPress={profilePicClick}/>
             )}
           </View>
         </View>

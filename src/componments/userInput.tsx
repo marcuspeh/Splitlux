@@ -1,4 +1,6 @@
-import React from "react"
+import { faEye } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
+import React, { useState } from "react"
 import { StyleSheet, Text, TextInput, View } from "react-native"
 import FontStyle from "../style/fontStyle"
 
@@ -15,9 +17,17 @@ interface Props {
 }
 
 const UserInput = (props: Props) => {
+  const [isCencored, setIsCencored] = useState(props.isPassword || false)
+
   const onChange = (event: any): void => {
     if (props.onChange) {
       props.onChange(event)
+    }
+  }
+
+  const passwordViewClick = () => {
+    if (props.isPassword) {
+      setIsCencored(!isCencored)
     }
   }
   
@@ -26,23 +36,32 @@ const UserInput = (props: Props) => {
       <Text style={FontStyle.subtitle2}>{props.label}</Text>
       {props.isError 
         ?
+        <View style={styles.textInputError}>
           <TextInput 
-            style = {[FontStyle.body1, styles.textInputError]}
+            style = {[FontStyle.body1]}
             underlineColorAndroid = "transparent"
             placeholder = {props.placeHolder || "$plilux"}
             defaultValue = {props.defaultValue || ""}
-            secureTextEntry = {props.isPassword || false}
+            secureTextEntry = {isCencored}
             onChangeText={onChange}
           />
+          </View>
         : 
-          <TextInput 
-            style = {[FontStyle.body1, styles.textInput]}
-            underlineColorAndroid = "transparent"
-            placeholder = {props.placeHolder || "$plilux"}
-            defaultValue = {props.defaultValue || ""}
-            secureTextEntry = {props.isPassword || false}
-            onChangeText={onChange}
-          />
+          <View style={styles.textInput}>
+            <TextInput 
+              style = {[FontStyle.body1]}
+              underlineColorAndroid = "transparent"
+              placeholder = {props.placeHolder || "$plilux"}
+              defaultValue = {props.defaultValue || ""}
+              secureTextEntry = {isCencored}
+              onChangeText={onChange}
+            />
+            {props.isPassword && 
+              <View onTouchStart={passwordViewClick} onTouchEnd={passwordViewClick}>
+                <FontAwesomeIcon style={styles.eyeIcon} icon={faEye} />
+              </View>
+            }
+          </View>
       }
       {
         props.errorMessage ? 
@@ -62,7 +81,12 @@ const styles = StyleSheet.create({
     alignself: 'self',
     paddingBottom: 0,
     borderBottomColor: 'rgba(0, 0, 0, 0.5)',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+
+    display: 'flex',
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: 'center'
   },
   textInputError: {
     alignself: 'self',
@@ -73,6 +97,11 @@ const styles = StyleSheet.create({
   }, 
   errorMessage: {
     textAlign: 'left'
+  },
+  eyeIcon: {
+    marginLeft: 10,
+    marginRight: 5,
+    color: "rgba(0, 0, 0, 0.8)",
   }
 });
   

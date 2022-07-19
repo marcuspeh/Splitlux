@@ -22,8 +22,26 @@ const getProfile = async (n?: number, searchTerm?: string): Promise<UserProfileR
     }
   }
 }
+
+const updateProfile = async (name: string, email: string): Promise<UserProfileResponse> => {
+  try {
+    var uri: string = `${API_URL}/auth/updateProfile/`
+    await customAxios.post(uri, {name: name, email: email},{headers: await getHeader()})
+
+    return {
+      isSuccess: true
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error)
+
+    return {
+      isSuccess: false
+    }
+  }
+}
   
 
 export const UserService = {
-  getProfile
+  getProfile,
+  updateProfile
 };

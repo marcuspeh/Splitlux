@@ -27,74 +27,105 @@ const Register = ({ navigation }: any) => {
     if ( name.length === 0 ) {
       setNameErrorMessage("Name is required")
       isValid = false
+    } else if ( name.length > 255) {
+      setNameErrorMessage("Max characters exceeded")
+      isValid = false
     }
+
     if ( email.length === 0 ) {
       setEmailErrorMessage("Email is required")
       isValid = false
+    } else if ( email.length > 255) {
+      setEmailErrorMessage("Max characters exceeded")
+      isValid = false
+    } else if (
+      !/^(([^<>()\[\]\\.,:\s@"]+(\.[^<>()\[\]\\.,:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        .test(email)
+      ) {
+        setEmailErrorMessage("Please enter a valid email address")
+        isValid = false
     }
+
     if ( password.length === 0 ) {
       setPasswordErrorMessage("Password is required")
       isValid = false
-    }
+    } else if ( password.length > 255) {
+      setPasswordErrorMessage("Max characters exceeded")
+      isValid = false
+    } 
+
     if ( password2.length === 0 ) {
       setPassword2ErrorMessage("Confirm password is required")
       isValid = false
-    }
-    if ( password !== password2 ) {
+    } else if ( password2.length > 255) {
+      setPassword2ErrorMessage("Max characters exceeded")
+      isValid = false
+    } else if ( password !== password2 ) {
       setPassword2ErrorMessage("Passwords does not match")
       isValid = false
     }
   
     if (isValid) {
-      if (
-        !/^(([^<>()\[\]\\.,:\s@"]+(\.[^<>()\[\]\\.,:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          .test(email)
-        ) {
-          setEmailErrorMessage("Please enter a valid email address")
+      const response = await AuthService.register(name, email, password, password2)
+      if (response.isSuccess) {
+        Alert.alert(
+          "Success",
+          "Account Registered",
+          [
+            {
+              text: "Go back",
+              onPress: () => navigation.navigate('Login'),
+              style: "default",
+            },
+          ],
+        )
       } else {
-        const response = await AuthService.register(name, email, password, password2)
-        if (response.isSuccess) {
-          Alert.alert(
-            "Success",
-            "Account Registered",
-            [
-              {
-                text: "Go back",
-                onPress: () => navigation.navigate('Login'),
-                style: "default",
-              },
-            ],
-          )
-        } else {
-          if (response.nameError) setNameErrorMessage(response.nameError)
-          if (response.emailError) setEmailErrorMessage(response.emailError)
-          if (response.passwordError) setPasswordErrorMessage(response.passwordError)
-          if (response.password2Error) setPassword2ErrorMessage(response.password2Error)
-        }
+        if (response.nameError) setNameErrorMessage(response.nameError)
+        if (response.emailError) setEmailErrorMessage(response.emailError)
+        if (response.passwordError) setPasswordErrorMessage(response.passwordError)
+        if (response.password2Error) setPassword2ErrorMessage(response.password2Error)
       }
     }
   }
 
   const nameInput = (text: string): void => {
-    setNameErrorMessage(" ")
-    setName(text)
+    if (text.length <= 255) {
+      setNameErrorMessage(" ")
+      setName(text)
+    } else {
+      setNameErrorMessage("Max characters exceeded")
+    }
   }
 
   const emailInput = (text: string): void => {
-    setEmailErrorMessage(" ")
-    setEmail(text)
+    if (text.length <= 255) {
+      setEmailErrorMessage(" ")
+      setEmail(text)
+    } else {
+      setEmailErrorMessage("Max characters exceeded")
+    }
   }
 
   const passwordInput = (text: string): void => {
-    setPasswordErrorMessage(" ")
-    setPassword2ErrorMessage(" ")
-    setPassword(text)
+    if (text.length <= 255) {
+      setPasswordErrorMessage(" ")
+      setPassword2ErrorMessage(" ")
+      setPassword(text)
+    } else {
+      setPasswordErrorMessage("Max characters exceeded")
+      setPassword2ErrorMessage(" ")
+    }
   }
 
   const password2Input = (text: string): void => {
-    setPasswordErrorMessage(" ")
-    setPassword2ErrorMessage(" ")
-    setPassword2(text)
+    if (text.length <= 255) {
+      setPasswordErrorMessage(" ")
+      setPassword2ErrorMessage(" ")
+      setPassword2(text)
+    } else {
+      setPasswordErrorMessage(" ")
+      setPassword2ErrorMessage("Max characters exceeded")
+    }
   }
 
   return (
