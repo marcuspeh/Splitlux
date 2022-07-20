@@ -23,6 +23,7 @@ Installation: `pip install virtualenv`
 ### End Points
 |ENDPOINT | HTTPS METHODS | DESCRIPTION | 
 | ------------- |:-------------:| ------------- |
+|/auth/checkServer | GET | Checks if server is running |
 |/auth/users | POST | Create a new user |
 |/auth/users | GET | Retrieves user data |
 |/auth/jwt/create/ | POST | Login user |
