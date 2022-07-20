@@ -39,9 +39,27 @@ const updateProfile = async (name: string, email: string): Promise<UserProfileRe
     }
   }
 }
+
+const updateProfilePic = async (picture: string): Promise<UserProfileResponse> => {
+  try {
+    var uri: string = `${API_URL}/auth/updateProfilePic/`
+    await customAxios.post(uri, {pic: picture},{headers: await getHeader()})
+
+    return {
+      isSuccess: true
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error)
+
+    return {
+      isSuccess: false
+    }
+  }
+}
   
 
 export const UserService = {
   getProfile,
-  updateProfile
+  updateProfile,
+  updateProfilePic
 };

@@ -12,13 +12,15 @@ import { UserProfileResponse } from '../models/response/userProfileResponse'
 import { UserService } from '../service/userService'
 import FontStyle from '../style/fontStyle'
 import LayoutStyle from '../style/layoutStyle'
+import CameraModal from '../componments/cameraModal'
 
 
 const Profile = ({ navigation }: any) => {
   const [userProfile, setUserProfile] = useState<UserProfileData>()
   const [displayName, setDisplayName] = useState("")
   const [nameError, setNameError] = useState(" ")
-  const [emailError, setEmailError] = useState(" ")
+  const [emailError, setEmailError] = useState(" ") 
+  const [isProfilePicModalOpen, setIsProfilePicModalOpen] = useState(false)
 
   const auth = useAuth()
   
@@ -32,6 +34,17 @@ const Profile = ({ navigation }: any) => {
       } else {
         auth.signOut()
       }
+    }
+  }
+
+  const updateProfile = async () => {
+    const response = await UserService.getProfile()
+    
+    if (response.isSuccess) {
+      setUserProfile(response.data)
+      setDisplayName(response.data?.name || "")
+    } else {
+      auth.signOut()
     }
   }
 
@@ -70,7 +83,7 @@ const Profile = ({ navigation }: any) => {
       }
     }
   }
-  
+
   const saveClick = async () => {
     if (userProfile) {
       var isValid = true
@@ -98,7 +111,6 @@ const Profile = ({ navigation }: any) => {
       }
 
       if (isValid) {
-        // save profile and update display name if successful
         const response: UserProfileResponse = await UserService.updateProfile(userProfile.name, userProfile.email)
         if (response.isSuccess) {
           setDisplayName(userProfile.name)
@@ -119,6 +131,8 @@ const Profile = ({ navigation }: any) => {
           <ProfilePicture 
             picture={userProfile.profile_pic} 
             style={[styles.profilePic]}
+            isEdit={true}
+            onPress={() => setIsProfilePicModalOpen(true)}
           />
           <Text style={[FontStyle.header5, styles.nameText]}>{displayName}</Text>
         </View>
@@ -147,6 +161,7 @@ const Profile = ({ navigation }: any) => {
         </Text>
       </View>
       <NavBar navigation={navigation} />
+      <CameraModal isActive={isProfilePicModalOpen} onClose={() => {setIsProfilePicModalOpen(false)}} onUpdate={updateProfile}/>
     </>
   )
 }

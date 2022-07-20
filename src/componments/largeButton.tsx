@@ -7,34 +7,30 @@ interface Props {
   onPress: () => void
   isDisabled?: boolean
   style?: {}
+  textStyle?: {}
 }
 
 const LargeButton = (props: Props) => {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={props.onPress}
-        disabled={props.isDisabled || false}
-        style={[styles.button, props.style]}
-        activeOpacity={0.5}
-      >
-        <Text style={[FontStyle.body2, styles.whteText]}>{props.label}</Text>
-      </TouchableOpacity>
-    </View>
-    
+    <TouchableOpacity
+      onPress={props.onPress}
+      disabled={props.isDisabled || false}
+      style={[styles.button, props.style]}
+      activeOpacity={0.5}
+    >
+      <Text style={[FontStyle.body2, styles.whteText, props.textStyle]}>{props.label}</Text>
+    </TouchableOpacity> 
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%'
-  },
   button: {
     backgroundColor: "rgba(13, 153, 255, 1)",
     alignItems: "center",
     borderRadius: 20,
     width: '100%',
-    padding: 5
+    padding: 5,
+    elevation: 2
   },
   whteText: {
     color: "rgba(255, 255, 255, 1)",
