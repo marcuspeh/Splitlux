@@ -8,6 +8,7 @@ import JoinGroup from '../screens/joinGroup'
 import CreateGroup from '../screens/createGroup'
 import Profile from '../screens/profile'
 import GroupList from '../screens/groupList'
+import LoadingAuthenticated from '../screens/loadingAuthenticated'
 
 const Stack = createNativeStackNavigator()
 
@@ -20,6 +21,7 @@ const AppStack = () => {
         ...LayoutStyle.background
       }
     }}>
+      <Stack.Screen name="Loading" component={LoadingAuthenticated} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="JoinGroup" component={JoinGroup} />
       <Stack.Screen name="CreateGroup" component={CreateGroup} />
