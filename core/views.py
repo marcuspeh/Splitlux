@@ -48,3 +48,9 @@ class UpdateProfile(APIView):
                 return Response(data={"error": e.args}, status=status.HTTP_400_BAD_REQUEST)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CheckServer(APIView):
+
+    def get(self, request, format=None):
+        return Response(data={'message': 'Hello world'}, status=status.HTTP_201_CREATED)
+          
