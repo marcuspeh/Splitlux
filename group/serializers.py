@@ -36,6 +36,15 @@ class GroupListOutgoingSerializer(serializers.ModelSerializer):
         member_count = obj.members.all().count()
         return member_count
 
+# To display list of group
+class GroupMembersListOutgoingSerializer(serializers.ModelSerializer):
+    members = SimpleUserSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Group
+        fields = ('members',)
+    
+
 # To display specific group
 class GroupSerializer(serializers.ModelSerializer):
     transactions = SimpleTransactionSerializer(many=True, read_only=True)
