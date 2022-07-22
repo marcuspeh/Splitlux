@@ -58,7 +58,7 @@ const Home = ({ navigation }: any) => {
 
   return (
     <>
-      <View style={styles.navBarContainer}>
+      <View>
         <View style={LayoutStyle.container}>
           <View style={[styles.row]}>
             <SearchInput 
@@ -68,7 +68,7 @@ const Home = ({ navigation }: any) => {
               defaultValue={isSearching ?   searchTerm : ""}
             />
             { isSearching ? (
-              <Text style={[FontStyle.subtitle2, styles.cancelText]} onPress={cancelClick} >Cancel</Text>
+              <Text style={[FontStyle.subtitle2, LayoutStyle.linkText]} onPress={cancelClick} >Cancel</Text>
             ) : (
               <ProfilePicture picture={userProfile.profile_pic} onPress={profilePicClick}/>
             )}
@@ -80,25 +80,18 @@ const Home = ({ navigation }: any) => {
           <GroupHomeView navigation={navigation} name={userProfile.name} />
         )}
       </View>
-      { isSearching ? <></> : <NavBar navigation={navigation} /> }
+      { !isSearching && <NavBar navigation={navigation} /> }
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  logo: {
-    fontSize: 72,
-    margin: 60
-  },
-  loginText: {
-    marginBottom: 50
-  },
   messageText: {
     paddingLeft: 20,
     paddingRight: 20,
     textAlign: 'center'
   },
-  navBarContainer: {
+  partialGroupList: {
     marginBottom: 200
   },
   row: {
@@ -109,9 +102,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 30,
     width: '100%',
-  },
-  cancelText: {
-    color: "rgba(13, 153, 255, 1)",
   },
 })
 

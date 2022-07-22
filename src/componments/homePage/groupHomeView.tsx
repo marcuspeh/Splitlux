@@ -24,7 +24,7 @@ export const GroupHomeView = (props: Props) => {
     </View>
     <View style={[styles.row, LayoutStyle.container]}>
       <Text style={[FontStyle.header6]}>Groups</Text>
-      <Text onPress={groupListClick} style={[FontStyle.body2, styles.seeAllText]}>See all</Text>
+      <Text onPress={groupListClick} style={[FontStyle.body2, LayoutStyle.linkText, styles.seeAllText]}>See all</Text>
     </View>
     <GroupHomeList navigation={props.navigation} n={n}/>
   </>
@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   seeAllText: {
-    color: "rgba(13, 153, 255, 1)",
     textAlign: 'right'
   },
   greetingView: {

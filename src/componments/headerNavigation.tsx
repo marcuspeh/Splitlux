@@ -18,7 +18,7 @@ const HeaderNavigation = (props: Props) => {
   return (
   <View style={[LayoutStyle.background, styles.container]}>
     <View style={styles.backButton} onTouchStart={backClick}>
-      <FontAwesomeIcon icon={faArrowLeft} style={styles.backIcon}/>
+      <FontAwesomeIcon icon={faArrowLeft} style={LayoutStyle.linkText}/>
     </View>
     <View style={styles.title}>
       <Text style={[FontStyle.title]}>{props.title}</Text>
@@ -55,9 +55,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: 'center',
   },
-  backIcon: {
-    color: "rgba(13, 153, 255, 1)"
-  }
 });
   
 export default HeaderNavigation

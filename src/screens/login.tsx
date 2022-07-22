@@ -81,7 +81,7 @@ const Login = ({ navigation }: any) => {
       />
       <Text style={[styles.newUser]}>
         New User? {" "}
-        <Text style={[styles.createAccount]} onPress={createAccountClick}>
+        <Text style={[LayoutStyle.linkText]} onPress={createAccountClick}>
           Create Account
         </Text>
        </Text>
@@ -103,9 +103,6 @@ const styles = StyleSheet.create({
   },
   newUser: {
     marginTop: 30
-  },
-  createAccount: {
-    color: "rgba(13, 153, 255, 1)",
   },
   errorMessage: {
     textAlign: 'left'

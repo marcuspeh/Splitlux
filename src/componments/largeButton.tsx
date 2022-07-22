@@ -1,6 +1,7 @@
 import React from "react"
 import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import FontStyle from "../style/fontStyle";
+import LayoutStyle from "../style/layoutStyle";
 
 interface Props {
   label: string
@@ -15,7 +16,7 @@ const LargeButton = (props: Props) => {
     <TouchableOpacity
       onPress={props.onPress}
       disabled={props.isDisabled || false}
-      style={[styles.button, props.style]}
+      style={[LayoutStyle.linkBackground, styles.button, props.style]}
       activeOpacity={0.5}
     >
       <Text style={[FontStyle.body2, styles.whteText, props.textStyle]}>{props.label}</Text>
@@ -25,7 +26,6 @@ const LargeButton = (props: Props) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "rgba(13, 153, 255, 1)",
     alignItems: "center",
     borderRadius: 20,
     width: '100%',

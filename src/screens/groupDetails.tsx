@@ -6,6 +6,7 @@ import { ErrorComponment } from '../componments/error'
 import GroupDetailsMember from '../componments/groupDetailMember'
 import GroupDetailsHeader from '../componments/groupDetailsHeader'
 import HeaderNavigation from '../componments/headerNavigation'
+import LargeButton from '../componments/largeButton'
 import { Loading } from '../componments/loading'
 import TransactionCard from '../componments/transactionCard'
 import { GroupData, SimplifiedTransactionData } from '../models/data/groupData'
@@ -24,6 +25,26 @@ const GroupDetails = ({ navigation, route }: any) => {
         setGroupData(response.data)
       }
     }
+  }
+
+  const groupMemberListClick = async () => {
+    console.log('Group member list click')
+  }
+
+  const addTransactionClick = async () => {
+    console.log('Add transaction click')
+  }
+
+  const viewPaymentsClick = async () => {
+    console.log('View payments click')
+  }
+
+  const closeGroupClick = async () => {
+    console.log('Close group click')
+  }
+
+  const openGroupClick = async () => {
+    console.log('Open group click')
   }
 
   useEffect(() => {
@@ -72,17 +93,22 @@ const GroupDetails = ({ navigation, route }: any) => {
           creatorPic={groupData.owner.profile_pic} 
           memberPic={groupData.members.map((member) => member.profile_pic)} 
           memberCount={groupData.member_count} 
-          onClick={() => {}}
+          onClick={groupMemberListClick}
         />
         <View style={[styles.transactionRow]}>
           <Text style={[FontStyle.header6]}>Transactions</Text>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={[styles.plusButton]}
-            activeOpacity={0.5}
-          >
-            <FontAwesomeIcon icon={faPlus} style={styles.plusText}/>
-          </TouchableOpacity> 
+          {groupData.is_closed ? (
+            <Text style={[LayoutStyle.linkText]} onPress={viewPaymentsClick}>View Payments</Text>
+          ) : (
+            <TouchableOpacity
+              onPress={addTransactionClick}
+              style={[LayoutStyle.linkBackground, styles.plusButton]}
+              activeOpacity={0.5}
+            >
+              <FontAwesomeIcon icon={faPlus} style={styles.plusText}/>
+            </TouchableOpacity> 
+          )}
+          
         </View>
       </View>
       <FlatList
@@ -91,6 +117,21 @@ const GroupDetails = ({ navigation, route }: any) => {
         style={LayoutStyle.containerWithoutCenter}
         ListEmptyComponent={<Text style={FontStyle.body2}>There is no transaction found :(</Text>}
       />
+      {groupData.is_owner && (
+        <View style={[LayoutStyle.containerWithoutCenter, styles.bottomButton]}>
+          { groupData.is_closed ? (
+            <LargeButton 
+              label={'Reopen group'} 
+              onPress={openGroupClick} 
+            />
+          ) : (
+            <LargeButton 
+              label={'Close group'} 
+              onPress={closeGroupClick} 
+            />
+          )}
+        </View>
+      )}
     </>
   )
 }
@@ -114,13 +155,16 @@ const styles = StyleSheet.create({
 
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: "rgba(13, 153, 255, 1)",
     justifyContent: "center",
     elevation: 2,
     padding: 5
   },
   plusText: {
     color: "white"
+  },
+  bottomButton: {
+    marginTop: 20,
+    marginBottom: 30
   }
 })
 

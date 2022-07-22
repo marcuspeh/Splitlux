@@ -62,7 +62,7 @@ const ResetPassword = ({ navigation }: any) => {
         onPress={resetClick}
         style={{marginTop: 50}}
       />
-      <Text style={[styles.goBackText]} onPress={goBackClick}>
+      <Text style={[LayoutStyle.linkText, styles.goBackText]} onPress={goBackClick}>
         Go Back To Login
       </Text>
     </View>
@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
   },
   goBackText: {
     marginTop: 30,
-    color: "rgba(13, 153, 255, 1)",
   },
   errorMessage: {
     textAlign: 'left'

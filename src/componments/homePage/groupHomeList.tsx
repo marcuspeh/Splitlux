@@ -62,7 +62,7 @@ const GroupHomeList = (props: Props) => {
       <FlatList
         data={filterGroup(props.searchTerm)}
         renderItem={renderGroupCard}
-        style={LayoutStyle.containerWithoutCenter}
+        style={[LayoutStyle.containerWithoutCenter, styles.groupList]}
         ListEmptyComponent={<Text style={FontStyle.body2}>There is no group found :(</Text>}
       />
     )
@@ -71,7 +71,7 @@ const GroupHomeList = (props: Props) => {
       <FlatList
         data={groupList}
         renderItem={renderGroupCard}
-        style={LayoutStyle.containerWithoutCenter}
+        style={[LayoutStyle.containerWithoutCenter, styles.groupList]}
         ListEmptyComponent={<Text style={FontStyle.body2}>There is no group found :(</Text>}
       />
     )
@@ -89,11 +89,8 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     textAlign: 'center'
   },
-  characterCount: {
-    width: '100%',
-    textAlign: "right",
-    marginTop: 5,
-    marginBottom: 50
+  groupList: {
+    marginBottom: 20,
   }
 })
 

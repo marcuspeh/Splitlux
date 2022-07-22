@@ -19,5 +19,6 @@ export type GroupData = {
   member_count: number,
   transactions: SimplifiedTransactionData[]
   is_closed: boolean
+  is_owner: boolean
   code_id: string
 }

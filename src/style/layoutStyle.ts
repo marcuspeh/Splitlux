@@ -15,6 +15,12 @@ const LayoutStyle = StyleSheet.create({
     paddingLeft: '10%',
     paddingRight: '10%',
   },
+  linkText: {
+    color: "rgba(13, 153, 255, 1)",
+  },
+  linkBackground: {
+    backgroundColor: "rgba(13, 153, 255, 1)",
+  }
 });
 
 export default LayoutStyle

@@ -177,7 +177,7 @@ const Register = ({ navigation }: any) => {
       />
       <Text style={[styles.haveAccount]}>
         Have Account? {" "}
-        <Text style={[styles.signIn]} onPress={signInClick}>
+        <Text style={[LayoutStyle.linkText]} onPress={signInClick}>
           Log In
         </Text>
        </Text>
@@ -195,9 +195,6 @@ const styles = StyleSheet.create({
   },
   haveAccount: {
     marginTop: 30
-  },
-  signIn: {
-    color: "rgba(13, 153, 255, 1)",
   },
   errorMessage: {
     textAlign: 'left'
