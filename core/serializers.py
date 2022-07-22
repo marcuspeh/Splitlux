@@ -37,3 +37,10 @@ class SimpleUserSerializer(serializers.ModelSerializer):
 
     def get_profile_pic(self, obj):
         return ProfilePicHelper.getProfilePic(obj.id)
+
+class UserNameSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('name', )
+

@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from core.permission import IsUser
 from group.models import Group
 from group.serializers import GroupCreateIncomingSerializer, GroupListOutgoingSerializer, \
-        GroupJoinIncomingSerializer, GroupMembersListOutgoingSerializer, GroupPaymentsListOutgoingSerializer, GroupSerializer
+        GroupJoinIncomingSerializer, GroupMembersListOutgoingSerializer, GroupMembersNameOutgoingSerializer, GroupPaymentsListOutgoingSerializer, GroupSerializer
 
 # Create your views here.
 class GroupList(APIView):
@@ -97,6 +97,22 @@ class GetMember(APIView):
             
         if user in group.members.all():
             return Response(data=GroupMembersListOutgoingSerializer(group).data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data={"error": f"{user.email} is not in group"}, status=status.HTTP_400_BAD_REQUEST)
+
+class GetMemberName(APIView):
+    permission_classes = [IsUser]
+    
+    def get(self, request, format=None, **kwargs):
+        user = self.request.user
+
+        try:
+            group = Group.objects.get(id=kwargs['id'])
+        except Exception as e:
+            return Response(e.args, status=status.HTTP_400_BAD_REQUEST)
+            
+        if user in group.members.all():
+            return Response(data=GroupMembersNameOutgoingSerializer(group).data, status=status.HTTP_201_CREATED)
         else:
             return Response(data={"error": f"{user.email} is not in group"}, status=status.HTTP_400_BAD_REQUEST)
 

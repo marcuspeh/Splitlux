@@ -2,12 +2,15 @@ from email.policy import default
 from django.core.validators import MaxLengthValidator
 from rest_framework import serializers
 
-from core.serializers import SimpleUserSerializer
+from core.serializers import SimpleUserSerializer, UserNameSerializer
 from group.models import *
 from transaction.serializers import SimpleTransactionSerializer
 
 # Payment serializer - for nested serializer
 class PaymentSerializer(serializers.ModelSerializer):
+    payer = SimpleUserSerializer()
+    payee = SimpleUserSerializer()
+
     class Meta:
         model = Payment
         fields = ('id', 'payer', 'payee', 'amount')
@@ -36,7 +39,7 @@ class GroupListOutgoingSerializer(serializers.ModelSerializer):
         member_count = obj.members.all().count()
         return member_count
 
-# To display list of group
+# To display list of group members
 class GroupMembersListOutgoingSerializer(serializers.ModelSerializer):
     members = SimpleUserSerializer(many=True, read_only=True)
 
@@ -44,7 +47,15 @@ class GroupMembersListOutgoingSerializer(serializers.ModelSerializer):
         model = Group
         fields = ('name', 'members', 'is_closed', 'code_id')
 
-# To display list of group
+# To display group member name
+class GroupMembersNameOutgoingSerializer(serializers.ModelSerializer):
+    members = UserNameSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Group
+        fields = ('name', 'members', 'code_id')
+
+# To display payments of group
 class GroupPaymentsListOutgoingSerializer(serializers.ModelSerializer):
     to_pay_list = PaymentSerializer(many=True, read_only=True)
 
