@@ -23,17 +23,15 @@ const JoinGroup = ({ navigation }: any) => {
   }
 
   const createGroupClick = async (): Promise<void> => {
-    if (groupCode.length < 6) {
-      setErrorMessage("Max characters exceeded")
-    } else if (groupCode.length > 6) {
-      setErrorMessage("Max characters exceeded")
+    if (groupCode.length !== 6) {
+      setErrorMessage("Group code should be 6 characters")
     } else {
       const response = await GroupService.joinGroup(groupCode)
 
       if (response.isSuccess) {
         setGroupCode("")
         setErrorMessage(" ")
-        console.log(response.data?.id || "Success")
+        navigation.navigate('GroupDetails', { id: response.data?.id || "Success" })
       } else {
         setErrorMessage("An unknown error occured")
       }

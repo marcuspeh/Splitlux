@@ -35,13 +35,6 @@ const GroupHomeList = (props: Props) => {
     getGroupList()
   })
 
-  const createGroupClick = (id: string): ()=>void => {
-    const cardClick = () => {
-      console.log(id)
-    }
-    return cardClick
-  }
-
   const renderGroupCard  = ({ item }: {item: SimpleGroupData}) => (
     <View
       style={{
@@ -49,11 +42,9 @@ const GroupHomeList = (props: Props) => {
         marginBottom: 15
       }}>
     <GroupCard 
-      title={item.name} 
-      groupCode={item.code_id} 
-      memberCount={item.member_count} 
-      onClick={createGroupClick(item.id)}
+      group={item}
       key={item.id}
+      navigation={props.navigation}
     />
     </View>
   )

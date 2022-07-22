@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
-import { JoinGroupData } from '../models/data/joinGroupData';
 import { CreateGroupResponse } from '../models/response/createGroupResponse';
+import { GroupDataResponse } from '../models/response/groupDataResponse';
 import { GroupListResponse } from '../models/response/groupListResponse';
 import { JoinGroupResponse } from '../models/response/joinGroupResponse';
 import customAxios from './utilities/customAxios';
@@ -19,10 +19,11 @@ const getGroupList = async (n?: number): Promise<GroupListResponse> => {
       data: result.data
     }
   } catch (error: AxiosError | any) {
-    console.log(error)
+    console.log(error.response.data)
 
     return {
-      isSuccess: false
+      isSuccess: false,
+      errorMessage: error.response.data
     }
   }
 }
@@ -38,10 +39,11 @@ const createGroup = async (name: string): Promise<CreateGroupResponse> => {
       data: result.data
     }
   } catch (error: AxiosError | any) {
-    console.log(error)
+    console.log(error.response.data)
 
     return {
-      isSuccess: false
+      isSuccess: false,
+      errorMessage: error.response.data
     }
   }
 }
@@ -60,7 +62,28 @@ const joinGroup = async (groupCode: string): Promise<JoinGroupResponse> => {
     console.log(error.response.data)
 
     return {
-      isSuccess: false
+      isSuccess: false,
+      errorMessage: error.response.data
+    }
+  }
+}  
+
+const getGroupData = async (groupId: string): Promise<GroupDataResponse> => {
+  try {
+    var uri: string = `${API_URL}/group/${groupId}/`
+
+    const result = await customAxios.get(uri, {headers: await getHeader()})
+
+    return {
+      isSuccess: true, 
+      data: result.data
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error.response.data)
+
+    return {
+      isSuccess: false,
+      errorMessage: error.response.data
     }
   }
 }
@@ -68,5 +91,6 @@ const joinGroup = async (groupCode: string): Promise<JoinGroupResponse> => {
 export const GroupService = {
   getGroupList,
   createGroup,
-  joinGroup
+  joinGroup,
+  getGroupData
 };

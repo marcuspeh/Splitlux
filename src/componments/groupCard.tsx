@@ -5,31 +5,28 @@ import FontStyle from "../style/fontStyle"
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faPeopleGroup } from '@fortawesome/free-solid-svg-icons/faPeopleGroup'
 import LayoutStyle from "../style/layoutStyle"
+import { SimpleGroupData } from "../models/data/simpleGroupData"
 
 interface Props {
-    title: String
-    groupCode: String
-    memberCount: String
-    onClick?: () => void
-    style?: {}
+  navigation: any
+  group: SimpleGroupData
+  style?: {}
 }
 
 const GroupCard = (props: Props) => {
   const cardClick = () => {
-    if (props.onClick) {
-      props.onClick()
-    }
+    props.navigation.navigate('GroupDetails', { id: props.group.id })
   }
 
   return (
     <View style={[LayoutStyle.background, styles.container, props.style]} onTouchStart={cardClick}>
-      <Text style={FontStyle.body1}>{props.title}</Text>
+      <Text style={FontStyle.body1}>{props.group.name}</Text>
       <View style={styles.row}>
-        <Text style={FontStyle.caption}>Group Code: {props.groupCode}</Text>
+        <Text style={FontStyle.caption}>Group Code: {props.group.code_id}</Text>
         <View style={styles.personCount}>
           <FontAwesomeIcon icon={ faPeopleGroup } />
           <Text style={[FontStyle.caption]}>
-            {' '}{props.memberCount}
+            {' '}{props.group.member_count}
           </Text>
         </View>
       </View>

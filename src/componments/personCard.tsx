@@ -1,22 +1,22 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
+import { SimplifiedUserProfileData } from "../models/data/groupData"
 import FontStyle from "../style/fontStyle"
 
 import LayoutStyle from "../style/layoutStyle"
 import ProfilePicture from "./profilePicture"
 
 interface Props {
-    name: string
-    encodedImage: string
+    person: SimplifiedUserProfileData
 }
 
 const PersonCard = (props: Props) => {
   return (
   <View style={[LayoutStyle.background, styles.container]}>
     <View style={styles.row}>
-      <ProfilePicture picture={props.encodedImage} style={{width: 30, height: 30, marginRight: 10}}/>
+      <ProfilePicture picture={props.person.profile_pic} style={{width: 30, height: 30, marginRight: 10}}/>
       <View style={styles.nameView}>
-        <Text style={[FontStyle.body1, styles.nameText]}>{props.name}</Text>
+        <Text style={[FontStyle.body1, styles.nameText]}>{props.person.name}</Text>
       </View>
     </View>
   </View>

@@ -16,10 +16,11 @@ const getProfile = async (): Promise<UserProfileResponse> => {
       data: result.data[0]
     }
   } catch (error: AxiosError | any) {
-    console.log(error)
+    console.log(error.response.data)
 
     return {
-      isSuccess: false
+      isSuccess: false,
+      errorMessage: error.response.data
     }
   }
 }
@@ -33,10 +34,11 @@ const updateProfile = async (name: string, email: string): Promise<GenericRespon
       isSuccess: true
     }
   } catch (error: AxiosError | any) {
-    console.log(error)
+    console.log(error.response.data)
 
     return {
-      isSuccess: false
+      isSuccess: false,
+      errorMessage: error.response.data
     }
   }
 }
@@ -50,10 +52,11 @@ const updateProfilePic = async (picture: string): Promise<GenericResponse> => {
       isSuccess: true
     }
   } catch (error: AxiosError | any) {
-    console.log(error)
+    console.log(error.response.data)
 
     return {
-      isSuccess: false
+      isSuccess: false,
+      errorMessage: error.response.data
     }
   }
 }

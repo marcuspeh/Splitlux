@@ -33,7 +33,7 @@ const CreateGroup = ({ navigation }: any) => {
       if (response.isSuccess) {
         setGroupName("")
         setErrorMessage(" ")
-        console.log(response.data?.id || "Success")
+        navigation.navigate('GroupDetails', { id: response.data?.id || "Success" })
       } else {
         setErrorMessage("An unknown error occured")
       }

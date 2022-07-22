@@ -9,6 +9,7 @@ import CreateGroup from '../screens/createGroup'
 import Profile from '../screens/profile'
 import GroupList from '../screens/groupList'
 import LoadingAuthenticated from '../screens/loadingAuthenticated'
+import GroupDetails from '../screens/groupDetails'
 
 const Stack = createNativeStackNavigator()
 
@@ -27,6 +28,7 @@ const AppStack = () => {
       <Stack.Screen name="CreateGroup" component={CreateGroup} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="GroupList" component={GroupList} />
+      <Stack.Screen name="GroupDetails" component={GroupDetails} />
     </Stack.Navigator>
   )
 }

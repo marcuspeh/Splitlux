@@ -13,10 +13,11 @@ const checkServer = async (n?: number, searchTerm?: string): Promise<GenericResp
       isSuccess: true,
     }
   } catch (error: AxiosError | any) {
-    console.log(error)
+    console.log(error.response.data)
 
     return {
-      isSuccess: false
+      isSuccess: false,
+      errorMessage: error.response.data
     }
   }
 }

@@ -1,25 +1,25 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
+import { SimplifiedTransactionData } from "../models/data/groupData"
 import FontStyle from "../style/fontStyle"
 
 import LayoutStyle from "../style/layoutStyle"
 
 interface Props {
-    title: String
-    date: String
-    amount: String
+    transaction: SimplifiedTransactionData
+    style?: {}
 }
 
 const TransactionCard = (props: Props) => {
     return (
-      <View style={[LayoutStyle.background, styles.container]}>
+      <View style={[LayoutStyle.background, styles.container, props.style]}>
         <View style={styles.row}>
           <View>
-            <Text style={FontStyle.body1}>{props.title}</Text>
-            <Text style={FontStyle.caption}>{props.date}</Text>
+            <Text style={FontStyle.body1}>{props.transaction.title}</Text>
+            <Text style={FontStyle.caption}>{props.transaction.created_at.toString()}</Text>
           </View>
           <View style={styles.amountView}>
-            <Text style={[FontStyle.body1, styles.amountText]}>${' '}{props.amount}</Text>
+            <Text style={[FontStyle.body1, styles.amountText]}>${' '}{props.transaction.amount}</Text>
           </View>
         </View>
       </View>
