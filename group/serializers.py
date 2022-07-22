@@ -42,7 +42,7 @@ class GroupMembersListOutgoingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('members',)
+        fields = ('name', 'members', 'is_closed', 'code_id')
     
 
 # To display specific group
@@ -54,7 +54,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'owner', 'members',  'member_count','transactions', 'is_closed', 'code_id') 
+        fields = ('id', 'name', 'owner', 'members',  'member_count', 'transactions', 'is_closed', 'code_id') 
 
     def get_member_count(self, obj):
         member_count = obj.members.all().count()
