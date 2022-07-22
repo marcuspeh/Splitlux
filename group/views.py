@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from core.permission import IsUser
 from group.models import Group
 from group.serializers import GroupCreateIncomingSerializer, GroupListOutgoingSerializer, \
-        GroupJoinIncomingSerializer, GroupMembersListOutgoingSerializer, GroupSerializer
+        GroupJoinIncomingSerializer, GroupMembersListOutgoingSerializer, GroupPaymentsListOutgoingSerializer, GroupSerializer
 
 # Create your views here.
 class GroupList(APIView):
@@ -99,6 +99,24 @@ class GetMember(APIView):
             return Response(data=GroupMembersListOutgoingSerializer(group).data, status=status.HTTP_201_CREATED)
         else:
             return Response(data={"error": f"{user.email} is not in group"}, status=status.HTTP_400_BAD_REQUEST)
+
+class GetPayments(APIView):
+    permission_classes = [IsUser]
+    
+    def get(self, request, format=None, **kwargs):
+        user = self.request.user
+
+        try:
+            group = Group.objects.get(id=kwargs['id'])
+        except Exception as e:
+            return Response(e.args, status=status.HTTP_400_BAD_REQUEST)
+            
+        if user not in group.members.all():
+            return Response(data={"error": f"{user.email} is not in group"}, status=status.HTTP_400_BAD_REQUEST)
+        elif not group.is_closed:
+            return Response(data={"error": f"Payments are not calculated yet."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data=GroupPaymentsListOutgoingSerializer(group).data, status=status.HTTP_201_CREATED)
 
 class ReopenGroup(APIView):
     permission_classes = [IsUser]

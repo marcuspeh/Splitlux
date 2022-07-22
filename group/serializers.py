@@ -43,7 +43,14 @@ class GroupMembersListOutgoingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ('name', 'members', 'is_closed', 'code_id')
-    
+
+# To display list of group
+class GroupPaymentsListOutgoingSerializer(serializers.ModelSerializer):
+    to_pay_list = PaymentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Group
+        fields = ('name', 'to_pay_list')
 
 # To display specific group
 class GroupSerializer(serializers.ModelSerializer):

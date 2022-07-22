@@ -42,7 +42,8 @@ Installation: `pip install virtualenv`
 |/group/reopen/ | PUT | Reopen a group with group_id |
 |/group/members/<uuid:id>/ | GET | Retrieves the group members of a group |
 |/group/<uuid:id>/ | GET | Retrieves the data of a group |
-|/group/calculatepayment/<uuid:id>/ | GET | Gets the payments and closes the group (Calculating payment not done) |
+|/group/calculatepayment/<uuid:id>/ | GET | Calculates the payments and closes the group |
+|/group/payment/<uuid:id>/ | GET | Gets the payments |
 |  |  |  |
 |/transaction/create/ | POST | Creates a new transaction |
 |/transaction/<uuid:id>/ | GET | Gets the specified transaction |
