@@ -36,7 +36,7 @@ const GroupDetails = ({ navigation, route }: any) => {
   }
 
   const viewPaymentsClick = async () => {
-    console.log("View payments")
+    navigation.navigate("GroupPayments", { id: route.params?.id || ""})
   }
 
   const closeGroupClick = async () => {

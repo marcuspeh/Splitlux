@@ -25,23 +25,23 @@ const GroupDetailsMember = (props: Props) => {
       return (
         <>
           <ProfilePicture picture={props.memberPic[0]} style={[styles.profilePicSize1]}/>
-          <ProfilePicture picture={props.memberPic[0]} style={[styles.profilePicSize2]}/>
+          <ProfilePicture picture={props.memberPic[1]} style={[styles.profilePicSize2]}/>
         </>
       )
     } else if (props.memberPic.length == 3) {
       return (
         <>
           <ProfilePicture picture={props.memberPic[0]} style={[styles.profilePicSize1]}/>
-          <ProfilePicture picture={props.memberPic[0]} style={[styles.profilePicSize2]}/>
-          <ProfilePicture picture={props.memberPic[0]} style={[styles.profilePicSize3]}/>
+          <ProfilePicture picture={props.memberPic[1]} style={[styles.profilePicSize2]}/>
+          <ProfilePicture picture={props.memberPic[2]} style={[styles.profilePicSize3]}/>
         </>
       )
     } else {
       return (
         <>
           <ProfilePicture picture={props.memberPic[0]} style={[styles.profilePicSize1]}/>
-          <ProfilePicture picture={props.memberPic[0]} style={[styles.profilePicSize2]}/>
-          <ProfilePicture picture={props.memberPic[0]} style={[styles.profilePicSize3]}/>
+          <ProfilePicture picture={props.memberPic[1]} style={[styles.profilePicSize2]}/>
+          <ProfilePicture picture={props.memberPic[2]} style={[styles.profilePicSize3]}/>
           <View style={[styles.profilePicExtraNumber]}> 
             <Text style={[FontStyle.body2]}>+{props.memberPic.length - 3}</Text>
           </View>

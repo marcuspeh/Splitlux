@@ -22,7 +22,7 @@ const GroupCard = (props: Props) => {
     <View style={[LayoutStyle.background, styles.container, props.style]} onTouchStart={cardClick}>
       <Text style={FontStyle.body1}>{props.group.name}</Text>
       <View style={styles.row}>
-        <Text style={FontStyle.caption}>Group Code: {props.group.code_id}</Text>
+        <Text style={FontStyle.caption}>Group Code: {props.group.is_closed ? "* * * * * *" : props.group.code_id}</Text>
         <View style={styles.personCount}>
           <FontAwesomeIcon icon={ faPeopleGroup } />
           <Text style={[FontStyle.caption]}>
