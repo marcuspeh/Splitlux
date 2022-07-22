@@ -28,7 +28,7 @@ const GroupDetails = ({ navigation, route }: any) => {
   }
 
   const groupMemberListClick = async () => {
-    console.log('Group member list click')
+    navigation.navigate("GroupMembers", { id: route.params?.id || ""})
   }
 
   const addTransactionClick = async () => {
@@ -36,31 +36,26 @@ const GroupDetails = ({ navigation, route }: any) => {
   }
 
   const viewPaymentsClick = async () => {
-    console.log('View payments click')
+    console.log("View payments")
   }
 
   const closeGroupClick = async () => {
-    console.log('Close group click')
+    const response = await GroupService.calculatePayments(route.params?.id || "")
+    if (response.isSuccess) {
+      setGroupData(response.data)
+    }
   }
 
   const openGroupClick = async () => {
-    console.log('Open group click')
+    const response = await GroupService.reopenGroup(route.params?.id || "")
+    if (response.isSuccess) {
+      setGroupData(response.data)
+    }
   }
 
   useEffect(() => {
     getGroupData()
   })
-
-  if (!route.params?.id) {
-    return (
-    <>
-      <HeaderNavigation navigation={navigation} title={'Group'} />
-
-      <View style={LayoutStyle.container}>
-        <ErrorComponment message='Please try again'/>
-      </View>
-    </>
-  )}
 
   if (!groupData) {
     return <Loading />

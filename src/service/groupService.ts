@@ -1,5 +1,7 @@
 import axios, { AxiosError } from 'axios';
+import { GroupMembersData } from '../models/data/getMembersData';
 import { CreateGroupResponse } from '../models/response/createGroupResponse';
+import { GetGroupMembersResponse } from '../models/response/getGroupMembersResponse';
 import { GroupDataResponse } from '../models/response/groupDataResponse';
 import { GroupListResponse } from '../models/response/groupListResponse';
 import { JoinGroupResponse } from '../models/response/joinGroupResponse';
@@ -88,9 +90,72 @@ const getGroupData = async (groupId: string): Promise<GroupDataResponse> => {
   }
 }
 
+const getGroupMembers = async (groupId: string): Promise<GetGroupMembersResponse> => {
+  try {
+    var uri: string = `${API_URL}/group/members/${groupId}/`
+
+    const result = await customAxios.get(uri, {headers: await getHeader()})
+
+    return {
+      isSuccess: true, 
+      data: result.data
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error.response.data)
+
+    return {
+      isSuccess: false,
+      errorMessage: error.response.data
+    }
+  }
+}
+
+const calculatePayments = async (groupId: string): Promise<GroupDataResponse> => {
+  try {
+    var uri: string = `${API_URL}/group/calculatepayment/${groupId}/`
+
+    const result = await customAxios.get(uri, {headers: await getHeader()})
+
+    return {
+      isSuccess: true, 
+      data: result.data
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error.response.data)
+
+    return {
+      isSuccess: false,
+      errorMessage: error.response.data
+    }
+  }
+}
+
+const reopenGroup = async (groupId: string): Promise<GroupDataResponse> => {
+  try {
+    var uri: string = `${API_URL}/group/reopen/${groupId}/`
+
+    const result = await customAxios.put(uri, {}, {headers: await getHeader()})
+
+    return {
+      isSuccess: true, 
+      data: result.data
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error.response.data)
+
+    return {
+      isSuccess: false,
+      errorMessage: error.response.data
+    }
+  }
+}
+
 export const GroupService = {
   getGroupList,
   createGroup,
   joinGroup,
-  getGroupData
+  getGroupData,
+  getGroupMembers,
+  calculatePayments,
+  reopenGroup
 };
