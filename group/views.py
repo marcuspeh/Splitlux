@@ -61,6 +61,10 @@ class JoinGroup(APIView):
             user = self.request.user
             data = serializer.data
             obj = get_object_or_404(Group, code_id=data['group_id'])
+
+            if obj.is_closed:
+                return Response(data={"error": f"{obj.name} is closed"}, status=status.HTTP_400_BAD_REQUEST)
+                
             obj.members.add(user)
             return Response(data=GroupListOutgoingSerializer(obj).data, status=status.HTTP_201_CREATED)
         
