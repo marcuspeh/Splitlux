@@ -55,7 +55,7 @@ const joinGroup = async (groupCode: string): Promise<JoinGroupResponse> => {
   try {
     var uri: string = `${API_URL}/group/join/`
 
-    const result = await customAxios.put(uri, {group_id: groupCode}, {headers: await getHeader()})
+    const result = await customAxios.put(uri, {group_id: groupCode.toUpperCase()}, {headers: await getHeader()})
 
     return {
       isSuccess: true, 
