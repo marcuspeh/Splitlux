@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { GroupMembersData } from '../models/data/getMembersData';
 import { CreateGroupResponse } from '../models/response/createGroupResponse';
+import { GetGroupMembersNameResponse } from '../models/response/getGroupMembersNameResponse';
 import { GetGroupMembersResponse } from '../models/response/getGroupMembersResponse';
 import { GetPaymentResponse } from '../models/response/getPaymentResponse';
 import { GroupDataResponse } from '../models/response/groupDataResponse';
@@ -111,6 +112,26 @@ const getGroupMembers = async (groupId: string): Promise<GetGroupMembersResponse
   }
 }
 
+const getGroupMembersName = async (groupId: string): Promise<GetGroupMembersNameResponse> => {
+  try {
+    var uri: string = `${API_URL}/group/membersName/${groupId}/`
+
+    const result = await customAxios.get(uri, {headers: await getHeader()})
+
+    return {
+      isSuccess: true, 
+      data: result.data
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error.response.data)
+
+    return {
+      isSuccess: false,
+      errorMessage: error.response.data
+    }
+  }
+}
+
 const calculatePayments = async (groupId: string): Promise<GroupDataResponse> => {
   try {
     var uri: string = `${API_URL}/group/calculatepayment/${groupId}/`
@@ -183,5 +204,6 @@ export const GroupService = {
   getGroupMembers,
   calculatePayments,
   reopenGroup,
-  getPayments
+  getPayments,
+  getGroupMembersName
 };

@@ -60,6 +60,7 @@ const Login = ({ navigation }: any) => {
         defaultValue={email}
         isError={errorMessage.length > 1}
         errorMessage={errorMessage}
+        keyboardType={'email-address'}
       />
       <UserInput 
         label={'Password'} 

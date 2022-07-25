@@ -149,6 +149,7 @@ const Register = ({ navigation }: any) => {
         defaultValue={email}
         isError={emailErrorMessage.length > 1}
         errorMessage={emailErrorMessage}
+        keyboardType={'email-address'}
       />
       <UserInput 
         label={'Password'} 

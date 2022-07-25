@@ -56,6 +56,7 @@ const ResetPassword = ({ navigation }: any) => {
         defaultValue={email}
         isError={emailErrorMessage.length > 1}
         errorMessage={emailErrorMessage}
+        keyboardType={'email-address'}
       />
       <LargeButton 
         label={'Reset'} 

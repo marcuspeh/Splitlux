@@ -12,6 +12,7 @@ import LoadingAuthenticated from '../screens/loadingAuthenticated'
 import GroupDetails from '../screens/groupDetails'
 import GroupMembers from '../screens/groupMembers'
 import GroupPayments from '../screens/groupPayment'
+import GroupTransactions from '../screens/groupTransactions'
 
 const Stack = createNativeStackNavigator()
 
@@ -33,6 +34,7 @@ const AppStack = () => {
       <Stack.Screen name="GroupDetails" component={GroupDetails} />
       <Stack.Screen name="GroupMembers" component={GroupMembers} />
       <Stack.Screen name="GroupPayments" component={GroupPayments} />
+      <Stack.Screen name="GroupTransactions" component={GroupTransactions} />
     </Stack.Navigator>
   )
 }

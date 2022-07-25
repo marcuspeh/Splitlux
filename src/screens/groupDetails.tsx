@@ -20,7 +20,7 @@ const GroupDetails = ({ navigation, route }: any) => {
 
   const getGroupData = async () => {
     if (!groupData) {
-      const response = await GroupService.getGroupData(route.params?.id || "")
+      const response = await GroupService.getGroupData(route.params?.id)
       if (response.isSuccess) {
         setGroupData(response.data)
       }
@@ -28,26 +28,26 @@ const GroupDetails = ({ navigation, route }: any) => {
   }
 
   const groupMemberListClick = async () => {
-    navigation.navigate("GroupMembers", { id: route.params?.id || ""})
+    navigation.navigate("GroupMembers", { id: route.params?.id })
   }
 
   const addTransactionClick = async () => {
-    console.log('Add transaction click')
+    navigation.navigate("GroupTransactions", { id: route.params?.id })
   }
 
   const viewPaymentsClick = async () => {
-    navigation.navigate("GroupPayments", { id: route.params?.id || ""})
+    navigation.navigate("GroupPayments", { id: route.params?.id })
   }
 
   const closeGroupClick = async () => {
-    const response = await GroupService.calculatePayments(route.params?.id || "")
+    const response = await GroupService.calculatePayments( route.params?.id )
     if (response.isSuccess) {
       setGroupData(response.data)
     }
   }
 
   const openGroupClick = async () => {
-    const response = await GroupService.reopenGroup(route.params?.id || "")
+    const response = await GroupService.reopenGroup( route.params?.id )
     if (response.isSuccess) {
       setGroupData(response.data)
     }

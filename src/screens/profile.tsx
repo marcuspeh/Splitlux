@@ -151,6 +151,7 @@ const Profile = ({ navigation }: any) => {
           isError={emailError.length > 1}
           errorMessage={emailError} 
           style={[styles.emailInput, {marginTop: 50}]}
+          keyboardType={'email-address'}
         />
         <LargeButton label={'Save'} onPress={saveClick} />
         <Text 

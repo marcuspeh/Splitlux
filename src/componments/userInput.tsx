@@ -1,16 +1,16 @@
 import { faEye } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import React, { useState } from "react"
-import { StyleSheet, Text, TextInput, View } from "react-native"
+import { KeyboardTypeOptions, StyleSheet, Text, TextInput, View } from "react-native"
 import FontStyle from "../style/fontStyle"
 
 interface Props {
-  label: string
-  autoCapitalize?: boolean
+  label?: string
   defaultValue?: string
   isPassword?: boolean
   isError?: boolean
   errorMessage?: string
+  keyboardType?: KeyboardTypeOptions
   onChange?: (text: string) => void
   placeHolder?: string
   style?: {}
@@ -33,16 +33,17 @@ const UserInput = (props: Props) => {
   
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={FontStyle.subtitle2}>{props.label}</Text>
+      {props.label && (<Text style={FontStyle.subtitle2}>{props.label}</Text>)}
       {props.isError 
         ?
         <View style={styles.textInputError}>
           <TextInput 
             style = {[FontStyle.body1]}
             underlineColorAndroid = "transparent"
-            placeholder = {props.placeHolder || "$plilux"}
+            placeholder = {props.placeHolder || "$plitlux"}
             defaultValue = {props.defaultValue || ""}
             secureTextEntry = {isCencored}
+            keyboardType={props.keyboardType || 'default'}
             onChangeText={onChange}
           />
           </View>
@@ -54,6 +55,7 @@ const UserInput = (props: Props) => {
               placeholder = {props.placeHolder || "$plilux"}
               defaultValue = {props.defaultValue || ""}
               secureTextEntry = {isCencored}
+              keyboardType={props.keyboardType || 'default'}
               onChangeText={onChange}
             />
             {props.isPassword && 
