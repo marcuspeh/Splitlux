@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, TextInput, View } from "react-native"
 import { UserNameData } from "../../models/data/groupMemberNameData"
-import UserInput from "../userInput"
 import SelectDropdown from 'react-native-select-dropdown'
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faChevronDown, faChevronUp, faClose } from "@fortawesome/free-solid-svg-icons"
@@ -11,7 +10,7 @@ import { TransactionNameAmountData } from "../../models/data/transactionNameAmou
 
 interface Props {
   members: UserNameData[]
-  onChange: () => void
+  onChange: (data: TransactionNameAmountData[]) => void
   style?: {}
   transactionData?: TransactionNameAmountData[]
 }
@@ -29,7 +28,7 @@ const TransactionNameAmountSection = (props: Props) => {
   const [transactionList, setTransactionList] = useState<TransactionNameAmountData[]>(props.transactionData || [newTransactionData()])
 
   useEffect(() => {
-    props.onChange()
+    props.onChange(transactionList)
   }, [transactionList])
 
   const onMemberSelect = (key: number) => {

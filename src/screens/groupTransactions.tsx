@@ -3,12 +3,14 @@ import { StyleSheet, Text, View } from 'react-native'
 import { ErrorComponment } from '../componments/error'
 import GroupDetailsHeader from '../componments/groupDetailsHeader'
 import HeaderNavigation from '../componments/headerNavigation'
+import LargeButton from '../componments/largeButton'
 import { Loading } from '../componments/loading'
 import TransactionNameAmountSection from '../componments/transactionPage/transactionNameAmountSection'
 import UserInput from '../componments/userInput'
 import { GroupMemberNameData } from '../models/data/groupMemberNameData'
 import { TransactionNameAmountData } from '../models/data/transactionNameAmountData'
 import { GroupService } from '../service/groupService'
+import { TransactionService } from '../service/transactionService'
 import FontStyle from '../style/fontStyle'
 import LayoutStyle from '../style/layoutStyle'
 
@@ -20,13 +22,10 @@ const GroupTransactions = ({ navigation, route }: any) => {
   const [descriptionError, setDescriptionError] = useState(" ")
   const [totalAmount, setTotalAmount] = useState("")
   const [totalAmountError, setTotalAmountError] = useState(" ")
-  const [paymentDetails, setPaymentDetails] = useState<TransactionNameAmountData>()
+  const [paymentDetails, setPaymentDetails] = useState<TransactionNameAmountData[]>([])
   const [paymentDetailsError, setPaymentDetailsError] = useState(" ")
-  const [expenseDetails, setExpenseDetails] = useState<TransactionNameAmountData>()
+  const [expenseDetails, setExpenseDetails] = useState<TransactionNameAmountData[]>([])
   const [expenseDetailsError, setExpenseDetailsError] = useState("")
-
-  const [paymentError, setPaymentError] = useState("")
-  const [expenseError, setExpenseError] = useState("")
 
   if (!route.params?.id) {
     return (
@@ -70,6 +69,115 @@ const GroupTransactions = ({ navigation, route }: any) => {
     }
   }
   
+  const onSubmitClick = async () => {
+    setPaymentDetailsError(" ")
+    setExpenseDetailsError(" ")
+
+    const paymentMap = new Map<string, number>()
+    const paymentToBalance = new Set<string>()
+    var paymentRemainder: number = Number(totalAmount)
+
+    const expenseMap = new Map<string, number>()
+    const expenseToBalance = new Set<string>()
+    var expenseRemainder: number = Number(totalAmount)
+
+    var isPaymentError = false
+    var isExpenseError = false
+
+    // Verify payments amount
+    for (var i = 0; i < paymentDetails.length; i++) {
+      const userId = paymentDetails[i].user.id
+      if (paymentDetails[i].amount === "") {
+        if (userId !== "") {
+          paymentToBalance.add(userId)
+        }
+      } else {
+        const amount = Number(paymentDetails[i].amount)
+        if (isNaN(amount)) {
+          setPaymentDetailsError("Amount must be a number")
+          isPaymentError = true
+          break
+        } else if (userId === "") {
+          setPaymentDetailsError("Member field(s) is/are unselected")
+          isPaymentError = true
+          break
+        }
+        
+        paymentMap.set(userId, amount)
+        paymentRemainder -= amount
+      }
+    }
+
+    // Verify expenses amount
+    console.log(expenseDetails)
+    for (var i = 0; i < expenseDetails.length; i++) {
+      const userId = expenseDetails[i].user.id
+      if (expenseDetails[i].amount === "") {
+        if (userId !== "") {
+          expenseToBalance.add(userId)
+        }
+      } else {
+        const amount = Number(expenseDetails[i].amount)
+        if (isNaN(amount)) {
+          setExpenseDetailsError("Amount must be a number")
+          isExpenseError = true
+          break
+        } else if (userId === "") {
+          setExpenseDetailsError("Member field(s) is/are unselected")
+          isExpenseError = true
+          break
+        } 
+        expenseMap.set(userId, amount)
+        expenseRemainder -= amount
+      }
+    }
+
+
+    const isPaymentTotalError = paymentRemainder < 0 || (paymentRemainder > 0 && paymentToBalance.size === 0)
+    if (isPaymentTotalError && !isPaymentError) {
+      setPaymentDetailsError("Total amount does not tally")
+      isPaymentError = true
+    }
+
+    const isExpenseTotalError = expenseRemainder < 0 || (expenseRemainder > 0 && expenseToBalance.size === 0)
+    if (isExpenseTotalError && !isExpenseError) {
+      setExpenseDetailsError("Total amount does not tally")
+      isExpenseError = true
+    }
+
+    if (!isExpenseError && !isPaymentError) {
+      const paymentSplit = paymentRemainder / paymentToBalance.size
+      paymentToBalance.forEach((member) => {paymentMap.set(member, paymentSplit)})
+
+      console.log(expenseMap)
+      const expenseSplit = expenseRemainder / expenseToBalance.size
+      expenseToBalance.forEach((member) => {expenseMap.set(member, expenseSplit)})
+      console.log(expenseMap)
+
+      const parsedPayers = []
+      for (const [key, value] of paymentMap.entries()) {
+        parsedPayers.push({
+          user: key,
+          amount: value
+        })
+      }
+
+      const parsedExpenses = []
+      for (const [key, value] of expenseMap.entries()) {
+        parsedExpenses.push({
+          user: key,
+          amount: value
+        })
+      }
+
+      const response = await TransactionService.addTransaction(route.params?.id, description, Number(totalAmount), parsedPayers, parsedExpenses)
+      if (response.isSuccess) {
+        navigation.goBack()
+      }
+
+    }
+  }
+
   if (!groupData) {
     return <Loading />
   }
@@ -109,21 +217,21 @@ const GroupTransactions = ({ navigation, route }: any) => {
         />
 
         <Text style={[FontStyle.header6, styles.formRow]}>Payers</Text>          
-        {paymentError.length === 0 ? (
+        {paymentDetailsError.length === 0 ? (
           <Text style={[FontStyle.caption, styles.messageRow]}>Leave amount blank to auto calculate</Text>
         ) : (
-          <Text style={[FontStyle.error, styles.messageRow]}>{paymentError}</Text>
+          <Text style={[FontStyle.error, styles.messageRow]}>{paymentDetailsError}</Text>
         )}   
-        <TransactionNameAmountSection members={groupData.members} onChange={() => {}} />
+        <TransactionNameAmountSection members={groupData.members} onChange={setPaymentDetails} />
 
         <Text style={[FontStyle.header6, styles.formRow]}>Expenses</Text>       
-        {expenseError.length === 0 ? (
+        {expenseDetailsError.length === 0 ? (
           <Text style={[FontStyle.caption, styles.messageRow]}>Leave amount blank to auto calculate</Text>
         ) : (
-          <Text style={[FontStyle.error, styles.messageRow]}>{expenseError}</Text>
+          <Text style={[FontStyle.error, styles.messageRow]}>{expenseDetailsError}</Text>
         )}    
-        <TransactionNameAmountSection members={groupData.members} onChange={() => {}} />
-
+        <TransactionNameAmountSection members={groupData.members} onChange={setExpenseDetails} />
+        <LargeButton label={'Save'} onPress={onSubmitClick} />
       </View>
     </>
   )
