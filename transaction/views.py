@@ -10,7 +10,7 @@ from core.models import User
 from core.permission import IsUser
 from group.models import Group
 from transaction.models import Transaction
-from transaction.serializers import TransactionIncomingSerializer, TransactionSerializer
+from transaction.serializers import SimpleTransactionSerializer, TransactionIncomingSerializer, TransactionSerializer
 
 # Create your views here.
 class CreateTransaction(APIView):
@@ -73,7 +73,7 @@ class CreateTransaction(APIView):
             transaction = Transaction.create(title=data['title'], amount=data['amount'], payers=payers, expenses=expenses)
             group.transactions.add(transaction)
 
-            return Response(data=TransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
+            return Response(data=SimpleTransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
         error = ""
         for key, value in serializer.errors.items():
             if key == "payers" or key == "expenses":
