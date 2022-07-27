@@ -4,9 +4,8 @@ import uuid
 from django.db import models
 from django.utils import timezone
 
-import bisect 
-
 from core.models import User
+from group.helper import GroupHelper
 from transaction.models import Transaction
 
 CHAR_LENGTH = 255
@@ -85,24 +84,24 @@ class Group(models.Model):
 
         while surplus_list:
             minimum = surplus_list.pop(0)
-
+    
             if not minimum[1]:
                 continue
 
             maximum = surplus_list.pop() 
 
             if -minimum[1] < maximum[1]:
-                payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=-minimum[1])
-                temp = (maximum[0], maximum[1] + minimum[1])
-                bisect.insort_right(surplus_list, temp, key=lambda x: x[1]) 
+                payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=round(-minimum[1], 2))
+                temp = (maximum[0], round(maximum[1] + minimum[1], 3))
+                GroupHelper.insertInOrder(surplus_list, temp, key=lambda x: x[1]) 
 
             elif -minimum[1] > maximum[1]:
-                payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=maximum[1])
-                temp = (minimum[0], minimum[1] + maximum[1])
-                bisect.insort_right(surplus_list, temp, key=lambda x: x[1]) 
+                payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=round(maximum[1], 2))
+                temp = (minimum[0], round(minimum[1] + maximum[1], 3))
+                GroupHelper.insertInOrder(surplus_list, temp, key=lambda x: x[1]) 
 
             else:
-                payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=maximum[1])
+                payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=round(maximum[1], 2))
 
             self.to_pay_list.add(payment)
 

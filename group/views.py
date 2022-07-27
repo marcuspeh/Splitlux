@@ -171,8 +171,8 @@ class CalculatePayment(APIView):
         elif user == group.owner:
             if not group.is_closed:
                 group.calculate_payments()
-                data = GroupSerializer(group).data
-                data['is_owner'] = user == group.owner
+            data = GroupSerializer(group).data
+            data['is_owner'] = user == group.owner
             return Response(data=data, status=status.HTTP_201_CREATED)
         else:
             return Response(data={"error": f"{user.email} is not the owner of the group"}, status=status.HTTP_400_BAD_REQUEST)
