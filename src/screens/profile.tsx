@@ -25,15 +25,13 @@ const Profile = ({ navigation }: any) => {
   const auth = useAuth()
   
   const loadProfile = async () => {
-    if (!userProfile) {
-      const response = await UserService.getProfile()
-      
-      if (response.isSuccess) {
-        setUserProfile(response.data)
-        setDisplayName(response.data?.name || "")
-      } else {
-        auth.signOut()
-      }
+    const response = await UserService.getProfile()
+    
+    if (response.isSuccess) {
+      setUserProfile(response.data)
+      setDisplayName(response.data?.name || "")
+    } else {
+      auth.signOut()
     }
   }
 
@@ -49,7 +47,14 @@ const Profile = ({ navigation }: any) => {
   }
 
   useEffect(() => {
-    loadProfile()
+    if (!userProfile) {
+      loadProfile()
+    }
+    
+    const willFocusSubscription = navigation.addListener('focus', () => {
+        loadProfile()
+    })
+    return willFocusSubscription
   })
   
   const logoutClick = async () => {

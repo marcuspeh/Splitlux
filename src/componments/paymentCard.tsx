@@ -21,7 +21,7 @@ const PaymentCard = (props: Props) => {
       </View>
 
       <View style={[styles.amountText]}>
-        <Text style={FontStyle.body1}>${props.payment.amount}</Text>
+        <Text style={FontStyle.body1}>${Math.round(props.payment.amount * 100) / 100}</Text>
       </View>
 
       <View style={[styles.payeeText]}>

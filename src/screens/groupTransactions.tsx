@@ -39,16 +39,21 @@ const GroupTransactions = ({ navigation, route }: any) => {
   )}
 
   const getGroupMemberNameData = async () => {
-    if (!groupData) {
-      const response = await GroupService.getGroupMembersName(route.params?.id)
-      if (response.isSuccess) {
-        setGroupData(response.data)
-      }
+    const response = await GroupService.getGroupMembersName(route.params?.id)
+    if (response.isSuccess) {
+      setGroupData(response.data)
     }
   }
 
   useEffect(() => {
-    getGroupMemberNameData()
+    if (!groupData) {
+      getGroupMemberNameData()
+    }
+    
+    const willFocusSubscription = navigation.addListener('focus', () => {
+        getGroupMemberNameData()
+    })
+    return willFocusSubscription
   })
 
   const descriptionInput = (text: string): void => {

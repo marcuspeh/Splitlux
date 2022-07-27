@@ -19,19 +19,24 @@ const Home = ({ navigation }: any) => {
   const auth = useAuth()
 
   const loadProfile = async () => {
-    if (!userProfile) {
-      const response = await UserService.getProfile()
-      
-      if (response.isSuccess) {
-        setUserProfile(response.data)
-      } else {
-        auth.signOut()
-      }
+    const response = await UserService.getProfile()
+    
+    if (response.isSuccess) {
+      setUserProfile(response.data)
+    } else {
+      auth.signOut()
     }
   }
 
   useEffect(() => {
-    loadProfile()
+    if (!userProfile) {
+      loadProfile()
+    }
+    
+    const willFocusSubscription = navigation.addListener('focus', () => {
+        loadProfile()
+    })
+    return willFocusSubscription
   })
 
   const searchInput = (text: string) => {

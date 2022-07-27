@@ -16,16 +16,21 @@ const GroupPayments = ({ navigation, route }: any) => {
   const [groupData, setGroupData] = useState<GetPaymentData>()
 
   const getGroupMembers = async () => {
-    if (!groupData) {
-      const response = await GroupService.getPayments(route.params?.id || "")
-      if (response.isSuccess) {
-        setGroupData(response.data)
-      }
+    const response = await GroupService.getPayments(route.params?.id || "")
+    if (response.isSuccess) {
+      setGroupData(response.data)
     }
   }
 
   useEffect(() => {
-    getGroupMembers()
+    if (!groupData) {
+      getGroupMembers()
+    }
+    
+    const willFocusSubscription = navigation.addListener('focus', () => {
+        getGroupMembers()
+    })
+    return willFocusSubscription
   })
 
   if (!route.params?.id) {
@@ -72,7 +77,7 @@ const GroupPayments = ({ navigation, route }: any) => {
       <FlatList
         data={groupData.payments}
         renderItem={renderTransactionCard}
-        style={LayoutStyle.containerWithoutCenter}
+        style={[LayoutStyle.containerWithoutCenter]}
         ListEmptyComponent={<Text style={FontStyle.body2}>Hooray, there is no payments!</Text>}
       />
     </>

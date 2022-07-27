@@ -19,11 +19,9 @@ const GroupDetails = ({ navigation, route }: any) => {
   const [groupData, setGroupData] = useState<GroupData>()
 
   const getGroupData = async () => {
-    if (!groupData) {
-      const response = await GroupService.getGroupData(route.params?.id)
-      if (response.isSuccess) {
-        setGroupData(response.data)
-      }
+    const response = await GroupService.getGroupData(route.params?.id)
+    if (response.isSuccess) {
+      setGroupData(response.data)
     }
   }
 
@@ -54,7 +52,14 @@ const GroupDetails = ({ navigation, route }: any) => {
   }
 
   useEffect(() => {
-    getGroupData()
+    if (!groupData) {
+      getGroupData()
+    }
+    
+    const willFocusSubscription = navigation.addListener('focus', () => {
+        getGroupData()
+    })
+    return willFocusSubscription
   })
 
   if (!groupData) {

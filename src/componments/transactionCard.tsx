@@ -2,6 +2,7 @@ import React from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { SimplifiedTransactionData } from "../models/data/groupData"
 import FontStyle from "../style/fontStyle"
+import moment from 'moment'
 
 import LayoutStyle from "../style/layoutStyle"
 
@@ -16,7 +17,7 @@ const TransactionCard = (props: Props) => {
         <View style={styles.row}>
           <View>
             <Text style={FontStyle.body1}>{props.transaction.title}</Text>
-            <Text style={FontStyle.caption}>{props.transaction.created_at.toString()}</Text>
+            <Text style={FontStyle.caption}>{moment(props.transaction.created_at).format('DD MMM YYYY')}</Text>
           </View>
           <View style={styles.amountView}>
             <Text style={[FontStyle.body1, styles.amountText]}>${' '}{props.transaction.amount}</Text>

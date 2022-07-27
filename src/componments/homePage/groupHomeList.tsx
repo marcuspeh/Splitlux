@@ -20,19 +20,24 @@ const GroupHomeList = (props: Props) => {
   const [isError, setIsError] = useState(false)
 
   const getGroupList = async () => {
-    if (groupList.length === 0) {
-      const result: GroupListResponse = await GroupService.getGroupList(props.n)
-      if (result.isSuccess) {
-        setGroupList(result.data || [])
-      } else {
-        setIsError(true)
-      }
-      setIsLoading(false)
+    const result: GroupListResponse = await GroupService.getGroupList(props.n)
+    if (result.isSuccess) {
+      setGroupList(result.data || [])
+    } else {
+      setIsError(true)
     }
+    setIsLoading(false)
   }
 
   useEffect(() => {
-    getGroupList()
+    if (!groupList || groupList.length === 0) {
+      getGroupList()
+    }
+
+    const willFocusSubscription = props.navigation.addListener('focus', () => {
+        getGroupList()
+    })
+    return willFocusSubscription
   })
 
   const renderGroupCard  = ({ item }: {item: SimpleGroupData}) => (

@@ -1,8 +1,9 @@
 import { SimplifiedUserProfileData } from "./groupData";
+import { UserNameData } from "./groupMemberNameData";
 
 export type PaymentData = {
   id: string
-  payer: SimplifiedUserProfileData
-  payee: SimplifiedUserProfileData
+  payer: UserNameData
+  payee: UserNameData
   amount: number
 }

@@ -16,16 +16,21 @@ const GroupMembers = ({ navigation, route }: any) => {
   const [groupData, setGroupData] = useState<GroupMembersData>()
 
   const getGroupMembers = async () => {
-    if (!groupData) {
-      const response = await GroupService.getGroupMembers(route.params?.id || "")
-      if (response.isSuccess) {
-        setGroupData(response.data)
-      }
+    const response = await GroupService.getGroupMembers(route.params?.id || "")
+    if (response.isSuccess) {
+      setGroupData(response.data)
     }
   }
 
   useEffect(() => {
-    getGroupMembers()
+    if (!groupData) {
+      getGroupMembers()
+    }
+    
+    const willFocusSubscription = navigation.addListener('focus', () => {
+        getGroupMembers()
+    })
+    return willFocusSubscription
   })
 
   if (!route.params?.id) {
