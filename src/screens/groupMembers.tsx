@@ -48,7 +48,7 @@ const GroupMembers = ({ navigation, route }: any) => {
     return <Loading />
   }
 
-  const renderTransactionCard  = ({ item }: {item: SimplifiedUserProfileData}) => (
+  const renderMemberCard  = ({ item }: {item: SimplifiedUserProfileData}) => (
     <View
       style={{
         margin: 1,
@@ -76,7 +76,7 @@ const GroupMembers = ({ navigation, route }: any) => {
       </View>
       <FlatList
         data={groupData.members}
-        renderItem={renderTransactionCard}
+        renderItem={renderMemberCard}
         style={LayoutStyle.containerWithoutCenter}
         ListEmptyComponent={<Text style={FontStyle.body2}>There is no transaction found :(</Text>}
       />

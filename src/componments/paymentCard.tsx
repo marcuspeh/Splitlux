@@ -8,13 +8,12 @@ import { PaymentData } from "../models/data/paymentData"
 
 interface Props {
   payment: PaymentData
-  style?: {}
 }
 
 const PaymentCard = (props: Props) => {
 
   return (
-    <View style={[LayoutStyle.background, styles.container, styles.row, props.style]}>
+    <View style={[LayoutStyle.background, styles.container, styles.row]}>
       <View style={[styles.payerText]}>
         <Text style={FontStyle.body1}>{props.payment.payer.name}</Text>
         <Text style={FontStyle.caption}>From</Text>
@@ -22,7 +21,7 @@ const PaymentCard = (props: Props) => {
 
       <View style={[styles.amountText]}>
         <Text style={FontStyle.body1}>${Math.round(props.payment.amount * 100) / 100}</Text>
-      </View>
+      </View> 
 
       <View style={[styles.payeeText]}>
         <Text style={FontStyle.body1}>{props.payment.payee.name}</Text>
@@ -56,22 +55,22 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   amountText: {
-    height: "100%",
     display: 'flex',
     justifyContent: "center",
     alignItems: 'center',
+    width: '20%'
   },
   payerText: {
-    height: "100%",
     display: 'flex',
     justifyContent: "center",
     alignItems: 'flex-start',
+    width: '40%'
   },
   payeeText: {
-    height: "100%",
     display: 'flex',
     justifyContent: "center",
     alignItems: 'flex-end',
+    width: '40%'
   }
 });
   

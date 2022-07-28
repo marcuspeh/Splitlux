@@ -12,14 +12,14 @@ interface Props {
 
 const PersonCard = (props: Props) => {
   return (
-  <View style={[LayoutStyle.background, styles.container]}>
-    <View style={styles.row}>
-      <ProfilePicture picture={props.person.profile_pic} style={{width: 30, height: 30, marginRight: 10}}/>
-      <View style={styles.nameView}>
-        <Text style={[FontStyle.body1, styles.nameText]}>{props.person.name}</Text>
+    <View style={[LayoutStyle.background, styles.container]}>
+      <View style={styles.row}>
+        <ProfilePicture picture={props.person.profile_pic} style={{width: 30, height: 30, marginRight: 10}}/>
+        <View style={styles.nameView}>
+          <Text style={[FontStyle.body1, styles.nameText]}>{props.person.name}</Text>
+        </View>
       </View>
     </View>
-  </View>
   )
 }
 
