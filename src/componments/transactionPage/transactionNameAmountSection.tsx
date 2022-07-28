@@ -24,7 +24,7 @@ const newTransactionData = () => ({
 })
 
 const TransactionNameAmountSection = (props: Props) => {
-  const [memberList, setMemberList] = useState(props.members.map(member => [member.name, member.id]))
+  const [memberList, setMemberList] = useState(props.members.map(member => [member.name, member.id, true]))
   const [transactionList, setTransactionList] = useState<TransactionNameAmountData[]>(props.transactionData || [newTransactionData()])
 
   useEffect(() => {
@@ -33,12 +33,29 @@ const TransactionNameAmountSection = (props: Props) => {
 
   const onMemberSelect = (key: number) => {
     return (selectedItem: string[], index: number) => {
+      const originalUser = transactionList[key].user
+      var actualIndex = -1
+      while (index >= 0) {
+        actualIndex += 1
+        if (memberList[actualIndex][2]) {
+          index -= 1
+        }
+      }
+
       var temp: TransactionNameAmountData[] = transactionList
       temp[key].user = {
         name: selectedItem[0],
-        id: selectedItem[1]
+        id: selectedItem[1],
+        index: actualIndex
       }
       setTransactionList(temp)
+
+      const newMemberList = [...memberList]
+      newMemberList[actualIndex][2] = false
+      if (originalUser.name && originalUser.index !== undefined) {
+        newMemberList[originalUser.index][2] = true
+      }
+      setMemberList(newMemberList)
     }
   }
 
@@ -53,8 +70,15 @@ const TransactionNameAmountSection = (props: Props) => {
   const removeRow = (key: number) => {
     return () => {
       var temp: TransactionNameAmountData[] = [...transactionList]
+      let originalUser = temp[key].user
       temp.splice(key, 1)
       setTransactionList(temp)
+
+      if (originalUser.name && originalUser.index !== undefined) {
+        const newMemberList = [...memberList]
+        newMemberList[originalUser.index][2] = true
+        setMemberList(newMemberList)
+      }
     }
   }
 
@@ -67,12 +91,12 @@ const TransactionNameAmountSection = (props: Props) => {
   const renderRow = () => {
     return transactionList.map((element, index) => {
       return (
-      <View style={[styles.container]} key={index}>
+      <View style={[styles.container]} key={element.user.id}>
         <View style={{width: '65%'}}>
           <SelectDropdown 
-            data={memberList}
+            data={memberList.filter(element => element[2])}
             onSelect={onMemberSelect(index)}
-            defaultButtonText={'Select member'}
+            defaultButtonText={transactionList[index].user.name || 'Select member'}
             buttonTextAfterSelection={(selectedItem, index) => selectedItem[0]}
             rowTextForSelection={(item, index) => item[0]}
             buttonStyle={styles.dropdownBtnStyle}
@@ -84,6 +108,8 @@ const TransactionNameAmountSection = (props: Props) => {
             dropdownStyle={LayoutStyle.background}
             rowStyle={LayoutStyle.background}
             rowTextStyle={styles.dropdownRowTxtStyle}
+            search={true}
+            searchPlaceHolder={"Search member"}
           />
         </View>
         <View style={[styles.amountView]}>

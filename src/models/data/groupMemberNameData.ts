@@ -1,6 +1,7 @@
 export type UserNameData = {
     id: string,
-    name: string
+    name: string,
+    index?: number
 }
 
 export type GroupMemberNameData = {
