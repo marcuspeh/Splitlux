@@ -48,5 +48,6 @@ Installation: `pip install virtualenv`
 |  |  |  |
 |/transaction/create/ | POST | Creates a new transaction |
 |/transaction/<uuid:id>/ | GET | Gets the specified transaction |
+|/transaction/update/<uuid:id>/ | PATCH | Updates the specified transaction |
 |/transaction/delete/<uuid:id>/ | DELETE | Delete the specified transaction |
 

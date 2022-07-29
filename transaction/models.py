@@ -49,6 +49,40 @@ class Transaction(models.Model):
 
         return obj
 
+    def update(self, title, amount, payers, expenses):
+        self.title = title
+        self.amount = amount
+
+        originalPayers = {pair.user: pair for pair in self.payers.all()}
+        originalExpenses = {pair.user: pair for pair in self.expenses.all()}
+
+        self.payers.clear()
+        self.expenses.clear()
+
+        for pair in payers:
+            user = pair['user']
+            amount = pair['amount']
+            if user in originalPayers:
+                obj = originalPayers[user]
+                obj.amount = amount
+            else:
+                obj = Pair.create(user, amount)
+            self.payers.add(obj)
+
+        for pair in expenses:
+            user = pair['user']
+            amount = pair['amount']
+            if user in originalExpenses:
+                obj = originalExpenses[user]
+                obj.amount = amount
+            else:
+                obj = Pair.create(user, amount)
+            self.payers.add(obj)
+
+        self.save()
+
+        return obj
+
     """
     Returns the surplus of the transaction, ie the debit/credit of each person
     for this transaction.

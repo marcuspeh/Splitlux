@@ -23,8 +23,15 @@ class PairSerializerOutgoing(serializers.ModelSerializer):
 #=============================== Incoming ===============================#
 
 # For creating transaction
-class TransactionIncomingSerializer(serializers.Serializer):
+class TransactionCreateIncomingSerializer(serializers.Serializer):
     group_id = serializers.UUIDField(format='hex')
+    title = serializers.CharField(validators=[MaxLengthValidator(CHAR_LENGTH)])
+    amount = serializers.FloatField(validators=[MinValueValidator(0)])
+    payers = PairSerializerIncoming(many=True)
+    expenses = PairSerializerIncoming(many=True)
+
+# For updating transaction
+class TransactionUpdateIncomingSerializer(serializers.Serializer):
     title = serializers.CharField(validators=[MaxLengthValidator(CHAR_LENGTH)])
     amount = serializers.FloatField(validators=[MinValueValidator(0)])
     payers = PairSerializerIncoming(many=True)
