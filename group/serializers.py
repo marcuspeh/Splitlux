@@ -8,8 +8,8 @@ from transaction.serializers import SimpleTransactionSerializer
 
 # Payment serializer - for nested serializer
 class PaymentSerializer(serializers.ModelSerializer):
-    payer = SimpleUserSerializer()
-    payee = SimpleUserSerializer()
+    payer = UserNameSerializer()
+    payee = UserNameSerializer()
 
     class Meta:
         model = Payment
