@@ -118,10 +118,9 @@ class Group(models.Model):
             temp_surplus = transaction.get_surplus()
 
             for user, amount in temp_surplus.items():
-                if user in surplus:
-                    surplus[user] += amount
-                else:
-                    surplus[user] = amount
+                if user not in surplus:
+                    surplus[user] = 0
+                surplus[user] += amount
 
         return surplus
 

@@ -93,11 +93,13 @@ class Transaction(models.Model):
         surplus = {}
 
         for pair in self.payers.all():
-            surplus[pair.user.id] = pair.amount
+            if pair.user.id not in surplus:
+                surplus[pair.user.id] = 0
+            surplus[pair.user.id] += pair.amount
 
         for pair in self.expenses.all():
-            if pair.user.id in surplus:
-                surplus[pair.user.id] -= pair.amount
-            else:
-                surplus[pair.user.id] = -pair.amount
+            if pair.user.id not in surplus:
+                surplus[pair.user.id] = 0
+            surplus[pair.user.id] -= pair.amount
+
         return surplus
