@@ -77,7 +77,7 @@ class Transaction(models.Model):
                 obj.amount = amount
             else:
                 obj = Pair.create(user, amount)
-            self.payers.add(obj)
+            self.expenses.add(obj)
 
         self.save()
 
