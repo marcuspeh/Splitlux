@@ -23,7 +23,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
   const [totalAmount, setTotalAmount] = useState("")
   const [totalAmountError, setTotalAmountError] = useState(" ")
   const [paymentDetails, setPaymentDetails] = useState<TransactionNameAmountData[]>([])
-  const [paymentDetailsError, setPaymentDetailsError] = useState(" ")
+  const [paymentDetailsError, setPaymentDetailsError] = useState("")
   const [expenseDetails, setExpenseDetails] = useState<TransactionNameAmountData[]>([])
   const [expenseDetailsError, setExpenseDetailsError] = useState("")
 
@@ -38,6 +38,16 @@ const GroupTransactions = ({ navigation, route }: any) => {
     </>
   )}
 
+    const getTransactionData = async (transactionId: string) => {
+      const response = await TransactionService.getTransaction(transactionId)
+      if (response.isSuccess && response.data) {
+        setDescription(response.data?.title || "")
+        setTotalAmount(String(response.data?.amount || ""))
+        setPaymentDetails(response.data?.payers as TransactionNameAmountData[])
+        setExpenseDetails(response.data?.expenses as TransactionNameAmountData[])
+      }
+    }
+
   const getGroupMemberNameData = async () => {
     const response = await GroupService.getGroupMembersName(route.params?.id)
     if (response.isSuccess) {
@@ -48,11 +58,13 @@ const GroupTransactions = ({ navigation, route }: any) => {
   useEffect(() => {
     if (!groupData) {
       getGroupMemberNameData()
+      if (route.params.transactionId) getTransactionData(route.params.transactionId)
     }
     
     const willFocusSubscription = navigation.addListener('focus', () => {
         getGroupMemberNameData()
-    })
+        if (route.params.transactionId) getTransactionData(route.params.transactionId)
+      })
     return willFocusSubscription
   })
 
@@ -75,8 +87,8 @@ const GroupTransactions = ({ navigation, route }: any) => {
   }
   
   const onSubmitClick = async () => {
-    setPaymentDetailsError(" ")
-    setExpenseDetailsError(" ")
+    setPaymentDetailsError("")
+    setExpenseDetailsError("")
 
     const paymentMap = new Map<string, number>()
     const paymentToBalance = new Set<string>()
@@ -114,7 +126,6 @@ const GroupTransactions = ({ navigation, route }: any) => {
     }
 
     // Verify expenses amount
-    console.log(expenseDetails)
     for (var i = 0; i < expenseDetails.length; i++) {
       const userId = expenseDetails[i].user.id
       if (expenseDetails[i].amount === "") {
@@ -154,10 +165,8 @@ const GroupTransactions = ({ navigation, route }: any) => {
       const paymentSplit = paymentRemainder / paymentToBalance.size
       paymentToBalance.forEach((member) => {paymentMap.set(member, paymentSplit)})
 
-      console.log(expenseMap)
       const expenseSplit = expenseRemainder / expenseToBalance.size
       expenseToBalance.forEach((member) => {expenseMap.set(member, expenseSplit)})
-      console.log(expenseMap)
 
       const parsedPayers = []
       for (const [key, value] of paymentMap.entries()) {
@@ -183,7 +192,118 @@ const GroupTransactions = ({ navigation, route }: any) => {
     }
   }
 
+  const onUpdateClick = async () => {
+    setPaymentDetailsError("")
+    setExpenseDetailsError("")
+
+    const paymentMap = new Map<string, number>()
+    const paymentToBalance = new Set<string>()
+    var paymentRemainder: number = Number(totalAmount)
+
+    const expenseMap = new Map<string, number>()
+    const expenseToBalance = new Set<string>()
+    var expenseRemainder: number = Number(totalAmount)
+
+    var isPaymentError = false
+    var isExpenseError = false
+    
+    // Verify payments amount
+    for (var i = 0; i < paymentDetails.length; i++) {
+      const userId = paymentDetails[i].user.id
+      if (paymentDetails[i].amount === "") {
+        if (userId !== "") {
+          paymentToBalance.add(userId)
+        }
+      } else {
+        const amount = Number(paymentDetails[i].amount)
+        if (isNaN(amount)) {
+          setPaymentDetailsError("Amount must be a number")
+          isPaymentError = true
+          break
+        } else if (userId === "") {
+          setPaymentDetailsError("Member field(s) is/are unselected")
+          isPaymentError = true
+          break
+        }
+        
+        paymentMap.set(userId, amount)
+        paymentRemainder -= amount
+      }
+    }
+
+    // Verify expenses amount
+    for (var i = 0; i < expenseDetails.length; i++) {
+      const userId = expenseDetails[i].user.id
+      if (expenseDetails[i].amount === "") {
+        if (userId !== "") {
+          expenseToBalance.add(userId)
+        }
+      } else {
+        const amount = Number(expenseDetails[i].amount)
+        if (isNaN(amount)) {
+          setExpenseDetailsError("Amount must be a number")
+          isExpenseError = true
+          break
+        } else if (userId === "") {
+          setExpenseDetailsError("Member field(s) is/are unselected")
+          isExpenseError = true
+          break
+        } 
+        expenseMap.set(userId, amount)
+        expenseRemainder -= amount
+      }
+    }
+
+
+    const isPaymentTotalError = paymentRemainder < 0 || (paymentRemainder > 0 && paymentToBalance.size === 0)
+    if (isPaymentTotalError && !isPaymentError) {
+      setPaymentDetailsError("Total amount does not tally")
+      isPaymentError = true
+    }
+
+    const isExpenseTotalError = expenseRemainder < 0 || (expenseRemainder > 0 && expenseToBalance.size === 0)
+    if (isExpenseTotalError && !isExpenseError) {
+      setExpenseDetailsError("Total amount does not tally")
+      isExpenseError = true
+    }
+
+    if (!isExpenseError && !isPaymentError) {
+      const paymentSplit = paymentRemainder / paymentToBalance.size
+      paymentToBalance.forEach((member) => {paymentMap.set(member, paymentSplit)})
+
+      const expenseSplit = expenseRemainder / expenseToBalance.size
+      expenseToBalance.forEach((member) => {expenseMap.set(member, expenseSplit)})
+
+      const parsedPayers = []
+      for (const [key, value] of paymentMap.entries()) {
+        parsedPayers.push({
+          user: key,
+          amount: value
+        })
+      }
+
+      const parsedExpenses = []
+      for (const [key, value] of expenseMap.entries()) {
+        parsedExpenses.push({
+          user: key,
+          amount: value
+        })
+      }
+
+      const response = await TransactionService.updateTransaction(route.params?.transactionId, description, Number(totalAmount), parsedPayers, parsedExpenses)
+      if (response.isSuccess) {
+        navigation.goBack()
+      }
+
+    }
+  }
+
+
   if (!groupData) {
+    return <Loading />
+  }
+
+  if (route.params.transactionId && (expenseDetails.length === 0 || paymentDetails.length === 0)) {
     return <Loading />
   }
 
@@ -227,7 +347,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
         ) : (
           <Text style={[FontStyle.error, styles.messageRow]}>{paymentDetailsError}</Text>
         )}   
-        <TransactionNameAmountSection members={groupData.members} onChange={setPaymentDetails} />
+        <TransactionNameAmountSection members={groupData.members} onChange={setPaymentDetails} transactionData={paymentDetails} />
 
         <Text style={[FontStyle.header6, styles.formRow]}>Expenses</Text>       
         {expenseDetailsError.length === 0 ? (
@@ -235,8 +355,12 @@ const GroupTransactions = ({ navigation, route }: any) => {
         ) : (
           <Text style={[FontStyle.error, styles.messageRow]}>{expenseDetailsError}</Text>
         )}    
-        <TransactionNameAmountSection members={groupData.members} onChange={setExpenseDetails} />
-        <LargeButton label={'Save'} onPress={onSubmitClick} />
+        <TransactionNameAmountSection members={groupData.members} onChange={setExpenseDetails} transactionData={expenseDetails}/>
+        {route.params.transactionId ? (
+          <LargeButton label={'Update'} onPress={onUpdateClick} />
+        ) : (
+          <LargeButton label={'Save'} onPress={onSubmitClick} />
+        )}
       </View>
     </>
   )

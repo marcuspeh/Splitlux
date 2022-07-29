@@ -8,23 +8,29 @@ import LayoutStyle from "../style/layoutStyle"
 
 interface Props {
     transaction: SimplifiedTransactionData
+    navigation: any
+    groupId: string
     style?: {}
 }
 
 const TransactionCard = (props: Props) => {
-    return (
-      <View style={[LayoutStyle.background, styles.container, props.style]}>
-        <View style={styles.row}>
-          <View>
-            <Text style={FontStyle.body1}>{props.transaction.title}</Text>
-            <Text style={FontStyle.caption}>{moment(props.transaction.created_at).format('DD MMM YYYY')}</Text>
-          </View>
-          <View style={styles.amountView}>
-            <Text style={[FontStyle.body1, styles.amountText]}>${' '}{props.transaction.amount}</Text>
-          </View>
+  const cardClick = () => {
+    props.navigation.navigate('GroupTransactions', { id: props.groupId, transactionId: props.transaction.id })
+  }
+
+  return (
+    <View style={[LayoutStyle.background, styles.container, props.style]} onTouchEnd={cardClick}>
+      <View style={styles.row}>
+        <View>
+          <Text style={FontStyle.body1}>{props.transaction.title}</Text>
+          <Text style={FontStyle.caption}>{moment(props.transaction.created_at).format('DD MMM YYYY')}</Text>
+        </View>
+        <View style={styles.amountView}>
+          <Text style={[FontStyle.body1, styles.amountText]}>${' '}{props.transaction.amount}</Text>
         </View>
       </View>
-    )
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({

@@ -72,7 +72,7 @@ const GroupDetails = ({ navigation, route }: any) => {
         margin: 1,
         marginBottom: 15
       }}>
-    <TransactionCard transaction={item} />
+    <TransactionCard transaction={item} navigation={navigation} groupId={route.params?.id} />
     </View>
   )
 

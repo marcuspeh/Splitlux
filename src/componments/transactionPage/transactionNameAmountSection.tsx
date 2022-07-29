@@ -25,7 +25,12 @@ const newTransactionData = () => ({
 
 const TransactionNameAmountSection = (props: Props) => {
   const [memberList, setMemberList] = useState(props.members.map(member => [member.name, member.id, true]))
-  const [transactionList, setTransactionList] = useState<TransactionNameAmountData[]>(props.transactionData || [newTransactionData()])
+  const [transactionList, setTransactionList] = useState<TransactionNameAmountData[]>(
+    props.transactionData && props.transactionData.length > 0 ? 
+      props.transactionData 
+    : 
+      [newTransactionData()]
+    )
 
   useEffect(() => {
     props.onChange(transactionList)
@@ -49,6 +54,7 @@ const TransactionNameAmountSection = (props: Props) => {
         index: actualIndex
       }
       setTransactionList(temp)
+      props.onChange(transactionList)
 
       const newMemberList = [...memberList]
       newMemberList[actualIndex][2] = false
@@ -64,6 +70,7 @@ const TransactionNameAmountSection = (props: Props) => {
       var temp: TransactionNameAmountData[] = transactionList
       temp[key].amount = amount
       setTransactionList(temp)
+      props.onChange(transactionList)
     }
   }
 
@@ -118,7 +125,7 @@ const TransactionNameAmountSection = (props: Props) => {
             style = {[FontStyle.body1]}
             underlineColorAndroid = "transparent"
             placeholder = {"Enter amount"}
-            defaultValue = {""}
+            defaultValue = {transactionList[index].amount}
             keyboardType={'decimal-pad'}
             onChangeText={amountInput(index)}
           />
