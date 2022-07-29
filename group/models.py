@@ -82,9 +82,9 @@ class Group(models.Model):
         surplus_list = [ (User.objects.get(id=user), amount) for user, amount in surplus_dict.items()]
         surplus_list.sort(key=lambda x: x[1])
 
+        self.to_pay_list.clear()
         while surplus_list:
             minimum = surplus_list.pop(0)
-    
             if not minimum[1]:
                 continue
 
