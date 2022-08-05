@@ -84,6 +84,7 @@ class GetGroup(APIView):
         if user in group.members.all():
             data = GroupSerializer(group).data
             data['is_owner'] = user == group.owner
+            data['transactions'].sort(key=lambda x: x['created_at'], reverse=True)
             return Response(data=data, status=status.HTTP_200_OK)
         else:
             return Response(data={"error": f"{user.email} is not in group"}, status=status.HTTP_400_BAD_REQUEST)

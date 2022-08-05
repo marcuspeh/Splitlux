@@ -53,7 +53,7 @@ class GroupMembersNameOutgoingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('name', 'members', 'code_id')
+        fields = ('name', 'members', 'code_id', 'is_closed')
 
 # To display payments of group
 class GroupPaymentsListOutgoingSerializer(serializers.ModelSerializer):
