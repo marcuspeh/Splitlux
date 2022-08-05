@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import DeleteTransactionModal from '../componments/deleteModal'
 import { ErrorComponment } from '../componments/error'
 import GroupDetailsHeader from '../componments/groupDetailsHeader'
 import HeaderNavigation from '../componments/headerNavigation'
@@ -26,6 +27,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
   const [paymentDetailsError, setPaymentDetailsError] = useState("")
   const [expenseDetails, setExpenseDetails] = useState<TransactionNameAmountData[]>([])
   const [expenseDetailsError, setExpenseDetailsError] = useState("")
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   if (!route.params?.id) {
     return (
@@ -357,10 +359,19 @@ const GroupTransactions = ({ navigation, route }: any) => {
         )}    
         <TransactionNameAmountSection members={groupData.members} onChange={setExpenseDetails} transactionData={expenseDetails}/>
         {route.params.transactionId ? (
-          <LargeButton label={'Update'} onPress={onUpdateClick} />
+          <>
+            <LargeButton label={'Update'} onPress={onUpdateClick} style={styles.updateBtn}/>
+            <Text style={[FontStyle.subtitle2, styles.deleteText]} onPress={() => setIsDeleteModalOpen(true)}>Delete</Text>
+          </>
         ) : (
-          <LargeButton label={'Save'} onPress={onSubmitClick} />
+          <LargeButton label={'Save'} onPress={onSubmitClick} style={styles.updateBtn}/>
         )}
+        <DeleteTransactionModal 
+          isActive={isDeleteModalOpen} 
+          navigation={navigation} 
+          onClose={() => setIsDeleteModalOpen(false)} 
+          transactionId={route.params?.transactionId} 
+        />
       </View>
     </>
   )
@@ -399,6 +410,13 @@ const styles = StyleSheet.create({
   characterCount: {
     width: '100%',
     textAlign: "right"
+  },
+  updateBtn: {
+    marginTop: 30,
+    marginBottom: 10
+  },
+  deleteText: {
+    color: 'red'
   }
 })
 

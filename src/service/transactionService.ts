@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import { UserNameData } from '../models/data/groupMemberNameData';
 import { CreateTransactionResponse } from '../models/response/createTransactionResposne';
+import { DeleteTransactionResponse } from '../models/response/deleteTransactionResponse';
 import { GetTransactionResponse } from '../models/response/getTransactionResponse';
 import customAxios from './utilities/customAxios';
 import getHeader from './utilities/headerUtilities';
@@ -87,8 +88,26 @@ const updateTransaction = async (transactionId: string, title: string, amount: n
   }
 }
 
+const deleteTransaction = async (transactionId: string): Promise<DeleteTransactionResponse> => {
+  try {
+    var uri: string = `${API_URL}/transaction/delete/${transactionId}/`
+    await customAxios.delete(uri, {headers: await getHeader()})
+
+    return {
+      isSuccess: true,
+    }
+  } catch (error: AxiosError | any) {
+    console.log(error.response.data)
+
+    return {
+      isSuccess: false,
+      errorMessage: error.response.data
+    }
+  }
+}
 export const TransactionService = {
     addTransaction,
     getTransaction,
-    updateTransaction
+    updateTransaction,
+    deleteTransaction
 };
