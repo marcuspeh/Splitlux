@@ -330,6 +330,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
           placeHolder={"Enter the description"}
           errorMessage={descriptionError}
           isError={descriptionError.length > 1}
+          isEditable={!groupData.is_closed}
         />
         <Text style={[FontStyle.caption, styles.characterCount]}>Characters: {description.length}/255</Text>
         <UserInput 
@@ -341,6 +342,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
           errorMessage={totalAmountError}
           isError={totalAmountError.length > 1}
           style={{marginTop: 20}}
+          isEditable={!groupData.is_closed}
         />
 
         <Text style={[FontStyle.header6, styles.formRow]}>Payers</Text>          
@@ -349,7 +351,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
         ) : (
           <Text style={[FontStyle.error, styles.messageRow]}>{paymentDetailsError}</Text>
         )}   
-        <TransactionNameAmountSection members={groupData.members} onChange={setPaymentDetails} transactionData={paymentDetails} />
+        <TransactionNameAmountSection members={groupData.members} onChange={setPaymentDetails} transactionData={paymentDetails} isClosed={groupData.is_closed}/>
 
         <Text style={[FontStyle.header6, styles.formRow]}>Expenses</Text>       
         {expenseDetailsError.length === 0 ? (
@@ -357,21 +359,23 @@ const GroupTransactions = ({ navigation, route }: any) => {
         ) : (
           <Text style={[FontStyle.error, styles.messageRow]}>{expenseDetailsError}</Text>
         )}    
-        <TransactionNameAmountSection members={groupData.members} onChange={setExpenseDetails} transactionData={expenseDetails}/>
-        {route.params.transactionId ? (
-          <>
-            <LargeButton label={'Update'} onPress={onUpdateClick} style={styles.updateBtn}/>
-            <Text style={[FontStyle.subtitle2, styles.deleteText]} onPress={() => setIsDeleteModalOpen(true)}>Delete</Text>
-          </>
-        ) : (
-          <LargeButton label={'Save'} onPress={onSubmitClick} style={styles.updateBtn}/>
-        )}
-        <DeleteTransactionModal 
-          isActive={isDeleteModalOpen} 
-          navigation={navigation} 
-          onClose={() => setIsDeleteModalOpen(false)} 
-          transactionId={route.params?.transactionId} 
-        />
+        <TransactionNameAmountSection members={groupData.members} onChange={setExpenseDetails} transactionData={expenseDetails} isClosed={groupData.is_closed}/>
+        {!groupData.is_closed &&
+          (route.params.transactionId ? (
+            <>
+              <LargeButton label={'Update'} onPress={onUpdateClick} style={styles.updateBtn}/>
+              <Text style={[FontStyle.subtitle2, styles.deleteText]} onPress={() => setIsDeleteModalOpen(true)}>Delete</Text>
+              <DeleteTransactionModal 
+                isActive={isDeleteModalOpen} 
+                navigation={navigation} 
+                onClose={() => setIsDeleteModalOpen(false)} 
+                transactionId={route.params?.transactionId} 
+              />
+            </>
+          ) : (
+            <LargeButton label={'Save'} onPress={onSubmitClick} style={styles.updateBtn}/>
+          ))
+        }
       </View>
     </>
   )

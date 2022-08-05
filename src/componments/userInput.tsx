@@ -13,6 +13,7 @@ interface Props {
   keyboardType?: KeyboardTypeOptions
   onChange?: (text: string) => void
   placeHolder?: string
+  isEditable?: boolean
   style?: {}
 }
 
@@ -45,6 +46,7 @@ const UserInput = (props: Props) => {
             secureTextEntry = {isCencored}
             keyboardType={props.keyboardType || 'default'}
             onChangeText={onChange}
+            editable={props.isEditable}
           />
           </View>
         : 
@@ -57,6 +59,7 @@ const UserInput = (props: Props) => {
               secureTextEntry = {isCencored}
               keyboardType={props.keyboardType || 'default'}
               onChangeText={onChange}
+              editable={props.isEditable}
             />
             {props.isPassword && 
               <View onTouchStart={passwordViewClick} onTouchEnd={passwordViewClick}>

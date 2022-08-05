@@ -7,5 +7,6 @@ export type UserNameData = {
 export type GroupMemberNameData = {
     name: string, 
     code_id: string, 
-    members: UserNameData[]
+    members: UserNameData[],
+    is_closed: boolean
 }

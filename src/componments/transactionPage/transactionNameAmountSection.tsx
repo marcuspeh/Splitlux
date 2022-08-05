@@ -11,6 +11,7 @@ import { TransactionNameAmountData } from "../../models/data/transactionNameAmou
 interface Props {
   members: UserNameData[]
   onChange: (data: TransactionNameAmountData[]) => void
+  isClosed: boolean
   style?: {}
   transactionData?: TransactionNameAmountData[]
 }
@@ -109,7 +110,9 @@ const TransactionNameAmountSection = (props: Props) => {
             buttonStyle={styles.dropdownBtnStyle}
             buttonTextStyle={styles.dropdownBtnTxtStyle}
             renderDropdownIcon={isOpened => {
-              return <FontAwesomeIcon icon={isOpened ? faChevronUp : faChevronDown} />;
+              if (!props.isClosed) {
+                return <FontAwesomeIcon icon={isOpened ? faChevronUp : faChevronDown} />
+              }
             }}
             dropdownIconPosition={'right'}
             dropdownStyle={LayoutStyle.background}
@@ -117,6 +120,7 @@ const TransactionNameAmountSection = (props: Props) => {
             rowTextStyle={styles.dropdownRowTxtStyle}
             search={true}
             searchPlaceHolder={"Search member"}
+            disabled={props.isClosed}
           />
         </View>
         <View style={[styles.amountView]}>
@@ -128,11 +132,14 @@ const TransactionNameAmountSection = (props: Props) => {
             defaultValue = {transactionList[index].amount}
             keyboardType={'decimal-pad'}
             onChangeText={amountInput(index)}
+            editable={!props.isClosed}
           />
         </View>
-        <View onTouchStart={removeRow(index)}>
-          <FontAwesomeIcon icon={faClose} />
-        </View>
+        {!props.isClosed &&
+          <View onTouchStart={removeRow(index)}>
+            <FontAwesomeIcon icon={faClose} />
+          </View>
+        }
       </View>
     )})
   }
@@ -140,10 +147,16 @@ const TransactionNameAmountSection = (props: Props) => {
   return (
     <>
       { renderRow() }
-      <Text 
-        style={[FontStyle.caption, LayoutStyle.linkText, styles.addModeText]}
-        onPress={addRow}
-      >Add more</Text>
+      {
+        !props.isClosed && 
+          <Text 
+            style={[FontStyle.caption, LayoutStyle.linkText, styles.addModeText]}
+            onPress={addRow}
+          >
+            Add more
+          </Text>
+      }
+      
     </>    
   )
 }
