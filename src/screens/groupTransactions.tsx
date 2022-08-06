@@ -18,6 +18,7 @@ import LayoutStyle from '../style/layoutStyle'
 
 const GroupTransactions = ({ navigation, route }: any) => {
   const [groupData, setGroupData] = useState<GroupMemberNameData>()
+  const [isTransactionLoaded, setIsTransactionLoaded] = useState(false)
 
   const [description, setDescription] = useState("")
   const [descriptionError, setDescriptionError] = useState(" ")
@@ -47,6 +48,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
         setTotalAmount(String(response.data?.amount || ""))
         setPaymentDetails(response.data?.payers as TransactionNameAmountData[])
         setExpenseDetails(response.data?.expenses as TransactionNameAmountData[])
+        setIsTransactionLoaded(true)
       }
     }
 
@@ -93,11 +95,11 @@ const GroupTransactions = ({ navigation, route }: any) => {
     setExpenseDetailsError("")
 
     const paymentMap = new Map<string, number>()
-    const paymentToBalance = new Set<string>()
+    const paymentToBalance = new Array<string>()
     var paymentRemainder: number = Number(totalAmount)
 
     const expenseMap = new Map<string, number>()
-    const expenseToBalance = new Set<string>()
+    const expenseToBalance = new Array<string>()
     var expenseRemainder: number = Number(totalAmount)
 
     var isPaymentError = false
@@ -108,7 +110,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
       const userId = paymentDetails[i].user.id
       if (paymentDetails[i].amount === "") {
         if (userId !== "") {
-          paymentToBalance.add(userId)
+          paymentToBalance.push(userId)
         }
       } else {
         const amount = Number(paymentDetails[i].amount)
@@ -122,7 +124,8 @@ const GroupTransactions = ({ navigation, route }: any) => {
           break
         }
         
-        paymentMap.set(userId, amount)
+        paymentMap.set(userId, paymentMap.get(userId) || 0 + amount)
+
         paymentRemainder -= amount
       }
     }
@@ -132,7 +135,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
       const userId = expenseDetails[i].user.id
       if (expenseDetails[i].amount === "") {
         if (userId !== "") {
-          expenseToBalance.add(userId)
+          expenseToBalance.push(userId)
         }
       } else {
         const amount = Number(expenseDetails[i].amount)
@@ -145,30 +148,35 @@ const GroupTransactions = ({ navigation, route }: any) => {
           isExpenseError = true
           break
         } 
-        expenseMap.set(userId, amount)
+        
+        expenseMap.set(userId, expenseMap.get(userId) || 0 + amount)
         expenseRemainder -= amount
       }
     }
 
 
-    const isPaymentTotalError = paymentRemainder < 0 || (paymentRemainder > 0 && paymentToBalance.size === 0)
+    const isPaymentTotalError = paymentRemainder < 0 || (paymentRemainder > 0 && paymentToBalance.length === 0)
     if (isPaymentTotalError && !isPaymentError) {
       setPaymentDetailsError("Total amount does not tally")
       isPaymentError = true
     }
 
-    const isExpenseTotalError = expenseRemainder < 0 || (expenseRemainder > 0 && expenseToBalance.size === 0)
+    const isExpenseTotalError = expenseRemainder < 0 || (expenseRemainder > 0 && expenseToBalance.length === 0)
     if (isExpenseTotalError && !isExpenseError) {
       setExpenseDetailsError("Total amount does not tally")
       isExpenseError = true
     }
 
     if (!isExpenseError && !isPaymentError) {
-      const paymentSplit = paymentRemainder / paymentToBalance.size
-      paymentToBalance.forEach((member) => {paymentMap.set(member, paymentSplit)})
+      const paymentSplit = paymentRemainder / paymentToBalance.length
+      paymentToBalance.forEach((member) => {
+        paymentMap.set(member, paymentMap.get(member) || 0 + paymentSplit)
+      })
 
-      const expenseSplit = expenseRemainder / expenseToBalance.size
-      expenseToBalance.forEach((member) => {expenseMap.set(member, expenseSplit)})
+      const expenseSplit = expenseRemainder / expenseToBalance.length
+      expenseToBalance.forEach((member) => {
+        expenseMap.set(member, expenseMap.get(member) || 0 + expenseSplit)
+      })
 
       const parsedPayers = []
       for (const [key, value] of paymentMap.entries()) {
@@ -300,12 +308,11 @@ const GroupTransactions = ({ navigation, route }: any) => {
     }
   }
 
-
   if (!groupData) {
     return <Loading />
   }
 
-  if (route.params.transactionId && (expenseDetails.length === 0 || paymentDetails.length === 0)) {
+  if (route.params.transactionId && !isTransactionLoaded) {
     return <Loading />
   }
 
@@ -353,7 +360,7 @@ const GroupTransactions = ({ navigation, route }: any) => {
         )}   
         <TransactionNameAmountSection members={groupData.members} onChange={setPaymentDetails} transactionData={paymentDetails} isClosed={groupData.is_closed}/>
 
-        <Text style={[FontStyle.header6, styles.formRow]}>Expenses</Text>       
+        <Text style={[FontStyle.header6, styles.formRow]}>Expenses Split</Text>       
         {expenseDetailsError.length === 0 ? (
           <Text style={[FontStyle.caption, styles.messageRow]}>Leave amount blank to auto calculate</Text>
         ) : (

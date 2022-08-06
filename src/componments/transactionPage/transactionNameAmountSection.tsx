@@ -25,9 +25,20 @@ const newTransactionData = () => ({
 })
 
 const TransactionNameAmountSection = (props: Props) => {
-  const [memberList, setMemberList] = useState(props.members.map(member => [member.name, member.id, true]))
+  const [memberList, setMemberList] = useState(props.members.map((member, index) => {
+    if (props.transactionData && props.transactionData.length > 0) {
+      for (var i = 0; i < props.transactionData.length; i++) {
+        const data = props.transactionData[i]
+        if (data.user.id === member.id) {
+          data.user.index = index
+          return [member.name, member.id, false]
+        }
+      }
+    }
+    return [member.name, member.id, true]
+  }))
   const [transactionList, setTransactionList] = useState<TransactionNameAmountData[]>(
-    props.transactionData && props.transactionData.length > 0 ? 
+    props.transactionData && props.transactionData.length > 0 ?
       props.transactionData 
     : 
       [newTransactionData()]
@@ -97,12 +108,13 @@ const TransactionNameAmountSection = (props: Props) => {
   }
 
   const renderRow = () => {
+    const filteredPersonList = memberList.filter(element => element[2])
     return transactionList.map((element, index) => {
       return (
       <View style={[styles.container]} key={element.user.id}>
         <View style={{width: '65%'}}>
           <SelectDropdown 
-            data={memberList.filter(element => element[2])}
+            data={filteredPersonList}
             onSelect={onMemberSelect(index)}
             defaultButtonText={transactionList[index].user.name || 'Select member'}
             buttonTextAfterSelection={(selectedItem, index) => selectedItem[0]}
@@ -110,7 +122,7 @@ const TransactionNameAmountSection = (props: Props) => {
             buttonStyle={styles.dropdownBtnStyle}
             buttonTextStyle={styles.dropdownBtnTxtStyle}
             renderDropdownIcon={isOpened => {
-              if (!props.isClosed) {
+              if (!props.isClosed && filteredPersonList.length > 0) {
                 return <FontAwesomeIcon icon={isOpened ? faChevronUp : faChevronDown} />
               }
             }}
@@ -120,7 +132,7 @@ const TransactionNameAmountSection = (props: Props) => {
             rowTextStyle={styles.dropdownRowTxtStyle}
             search={true}
             searchPlaceHolder={"Search member"}
-            disabled={props.isClosed}
+            disabled={props.isClosed || filteredPersonList.length == 0}
           />
         </View>
         <View style={[styles.amountView]}>
