@@ -65,6 +65,7 @@ class Transaction(models.Model):
             if user in originalPayers:
                 obj = originalPayers[user]
                 obj.amount = amount
+                obj.save()
             else:
                 obj = Pair.create(user, amount)
             self.payers.add(obj)
@@ -75,6 +76,7 @@ class Transaction(models.Model):
             if user in originalExpenses:
                 obj = originalExpenses[user]
                 obj.amount = amount
+                obj.save()
             else:
                 obj = Pair.create(user, amount)
             self.expenses.add(obj)
