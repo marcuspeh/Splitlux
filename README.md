@@ -30,24 +30,24 @@ Installation: `pip install virtualenv`
 |/auth/users/reset_password/ | POST | Sends an email to reset password|
 |/auth/users/reset_password_confirm/ | POST | Confirm reset password |
 |/auth/jwt/verify/ | POST | Verify if token is valid |
-|/auth/updateProfilePic/ | POST | Update profile pic |
-|/auth/updateProfile/ | POST | Update profile |
+|/auth/updateProfilePic | POST | Update profile pic |
+|/auth/updateProfile | POST | Update profile |
 | | | |
-|/group/list/ | GET | Returns a simplified list of groups |
-|/group/list/?n=3 | GET | Returns a simplified list of 3 groups |
-|/group/list/?q=jap | GET | Returns a simplified list of groups with 'jap' in name |
-|/group/list/?n=3&q=jap | GET | Returns a simplified list of 3 groups with 'jap' in name |
-|/group/create/ | POST | Creates a new group |
-|/group/join/ | PUT | Join a group with group_id |
-|/group/reopen/ | PUT | Reopen a group with group_id |
-|/group/members/<uuid:id>/ | GET | Retrieves the group members of a group |
-|/group/membersName/<uuid:id>/ | GET | Retrieves the group members name of a group |
-|/group/<uuid:id>/ | GET | Retrieves the data of a group |
-|/group/calculatepayment/<uuid:id>/ | GET | Calculates the payments and closes the group |
-|/group/payment/<uuid:id>/ | GET | Gets the payments |
+|/group/list | GET | Returns a simplified list of groups |
+|/group/list?n=3 | GET | Returns a simplified list of 3 groups |
+|/group/list?q=jap | GET | Returns a simplified list of groups with 'jap' in name |
+|/group/list?n=3&q=jap | GET | Returns a simplified list of 3 groups with 'jap' in name |
+|/group/create | POST | Creates a new group |
+|/group/join | PUT | Join a group with group_id |
+|/group/reopen | PUT | Reopen a group with group_id |
+|/group/members/<uuid:id> | GET | Retrieves the group members of a group |
+|/group/membersName/<uuid:id> | GET | Retrieves the group members name of a group |
+|/group/<uuid:id> | GET | Retrieves the data of a group |
+|/group/calculatepayment/<uuid:id> | GET | Calculates the payments and closes the group |
+|/group/payment/<uuid:id> | GET | Gets the payments |
 |  |  |  |
-|/transaction/create/ | POST | Creates a new transaction |
-|/transaction/<uuid:id>/ | GET | Gets the specified transaction |
-|/transaction/update/<uuid:id>/ | PATCH | Updates the specified transaction |
-|/transaction/delete/<uuid:id>/ | DELETE | Delete the specified transaction |
+|/transaction/create | POST | Creates a new transaction |
+|/transaction/<uuid:id> | GET | Gets the specified transaction |
+|/transaction/update/<uuid:id> | PATCH | Updates the specified transaction |
+|/transaction/delete/<uuid:id> | DELETE | Delete the specified transaction |
 

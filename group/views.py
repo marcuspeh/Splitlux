@@ -151,8 +151,8 @@ class ReopenGroup(APIView):
         elif user == obj.owner:
             if obj.is_closed:
                 obj.set_is_closed(False)
-                data = GroupSerializer(obj).data
-                data['is_owner'] = user == obj.owner
+            data = GroupSerializer(obj).data
+            data['is_owner'] = user == obj.owner
             return Response(data=data, status=status.HTTP_200_OK)
         else:
             return Response(data={"error": f"{user.email} is not the owner of the group"}, status=status.HTTP_400_BAD_REQUEST)
