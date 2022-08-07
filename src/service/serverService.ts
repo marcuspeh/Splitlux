@@ -6,7 +6,7 @@ const API_URL="http://10.0.2.2:8000"
 
 const checkServer = async (n?: number, searchTerm?: string): Promise<GenericResponse> => {
   try {
-    var uri: string = `${API_URL}/auth/checkServer/`
+    var uri: string = `${API_URL}/auth/checkServer`
     await customAxios.get(uri)
 
     return {

@@ -14,7 +14,7 @@ const API_URL="http://10.0.2.2:8000"
 
 const getGroupList = async (n?: number): Promise<GroupListResponse> => {
   try {
-    var uri: string = n ? `${API_URL}/group/list/?n=${n}` :  `${API_URL}/group/list/`
+    var uri: string = n ? `${API_URL}/group/list?n=${n}` :  `${API_URL}/group/list`
 
     const result = await customAxios.get(uri, {headers: await getHeader()})
 
@@ -34,7 +34,7 @@ const getGroupList = async (n?: number): Promise<GroupListResponse> => {
   
 const createGroup = async (name: string): Promise<CreateGroupResponse> => {
   try {
-    var uri: string = `${API_URL}/group/create/`
+    var uri: string = `${API_URL}/group/create`
 
     const result = await customAxios.post(uri, {name: name}, {headers: await getHeader()})
 
@@ -54,7 +54,7 @@ const createGroup = async (name: string): Promise<CreateGroupResponse> => {
   
 const joinGroup = async (groupCode: string): Promise<JoinGroupResponse> => {
   try {
-    var uri: string = `${API_URL}/group/join/`
+    var uri: string = `${API_URL}/group/join`
 
     const result = await customAxios.put(uri, {group_id: groupCode.toUpperCase()}, {headers: await getHeader()})
 
@@ -74,7 +74,7 @@ const joinGroup = async (groupCode: string): Promise<JoinGroupResponse> => {
 
 const getGroupData = async (groupId: string): Promise<GroupDataResponse> => {
   try {
-    var uri: string = `${API_URL}/group/${groupId}/`
+    var uri: string = `${API_URL}/group/${groupId}`
 
     const result = await customAxios.get(uri, {headers: await getHeader()})
 
@@ -94,7 +94,7 @@ const getGroupData = async (groupId: string): Promise<GroupDataResponse> => {
 
 const getGroupMembers = async (groupId: string): Promise<GetGroupMembersResponse> => {
   try {
-    var uri: string = `${API_URL}/group/members/${groupId}/`
+    var uri: string = `${API_URL}/group/members/${groupId}`
 
     const result = await customAxios.get(uri, {headers: await getHeader()})
 
@@ -114,7 +114,7 @@ const getGroupMembers = async (groupId: string): Promise<GetGroupMembersResponse
 
 const getGroupMembersName = async (groupId: string): Promise<GetGroupMembersNameResponse> => {
   try {
-    var uri: string = `${API_URL}/group/membersName/${groupId}/`
+    var uri: string = `${API_URL}/group/membersName/${groupId}`
 
     const result = await customAxios.get(uri, {headers: await getHeader()})
 
@@ -134,7 +134,7 @@ const getGroupMembersName = async (groupId: string): Promise<GetGroupMembersName
 
 const calculatePayments = async (groupId: string): Promise<GroupDataResponse> => {
   try {
-    var uri: string = `${API_URL}/group/calculatepayment/${groupId}/`
+    var uri: string = `${API_URL}/group/calculatepayment/${groupId}`
 
     const result = await customAxios.get(uri, {headers: await getHeader()})
 
@@ -154,7 +154,7 @@ const calculatePayments = async (groupId: string): Promise<GroupDataResponse> =>
 
 const reopenGroup = async (groupId: string): Promise<GroupDataResponse> => {
   try {
-    var uri: string = `${API_URL}/group/reopen/${groupId}/`
+    var uri: string = `${API_URL}/group/reopen/${groupId}`
 
     const result = await customAxios.put(uri, {}, {headers: await getHeader()})
 
@@ -174,7 +174,7 @@ const reopenGroup = async (groupId: string): Promise<GroupDataResponse> => {
 
 const getPayments = async (groupId: string): Promise<GetPaymentResponse> => {
   try {
-    var uri: string = `${API_URL}/group/payment/${groupId}/`
+    var uri: string = `${API_URL}/group/payment/${groupId}`
 
     const result = await customAxios.get(uri, {headers: await getHeader()})
 

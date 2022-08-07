@@ -8,7 +8,7 @@ const API_URL="http://10.0.2.2:8000"
 
 const getProfile = async (): Promise<UserProfileResponse> => {
   try {
-    var uri: string = `${API_URL}/auth/users/`
+    var uri: string = `${API_URL}/auth/users`
     const result = await customAxios.get(uri, {headers: await getHeader()})
 
     return {
@@ -27,7 +27,7 @@ const getProfile = async (): Promise<UserProfileResponse> => {
 
 const updateProfile = async (name: string, email: string): Promise<GenericResponse> => {
   try {
-    var uri: string = `${API_URL}/auth/updateProfile/`
+    var uri: string = `${API_URL}/auth/updateProfile`
     await customAxios.post(uri, {name: name, email: email},{headers: await getHeader()})
 
     return {
@@ -45,7 +45,7 @@ const updateProfile = async (name: string, email: string): Promise<GenericRespon
 
 const updateProfilePic = async (picture: string): Promise<GenericResponse> => {
   try {
-    var uri: string = `${API_URL}/auth/updateProfilePic/`
+    var uri: string = `${API_URL}/auth/updateProfilePic`
     await customAxios.post(uri, {pic: picture},{headers: await getHeader()})
 
     return {

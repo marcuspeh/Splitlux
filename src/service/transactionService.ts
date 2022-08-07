@@ -10,7 +10,7 @@ const API_URL="http://10.0.2.2:8000"
 
 const addTransaction = async (groupId: string, title: string, amount: number, payers: any, expenses: any): Promise<CreateTransactionResponse> => {
   try {
-    var uri: string = `${API_URL}/transaction/create/`
+    var uri: string = `${API_URL}/transaction/create`
     await customAxios.post(uri, {
       group_id: groupId, 
       title, 
@@ -34,7 +34,7 @@ const addTransaction = async (groupId: string, title: string, amount: number, pa
 
 const getTransaction = async (transactionId: string): Promise<GetTransactionResponse> => {
   try {
-    var uri: string = `${API_URL}/transaction/${transactionId}/`
+    var uri: string = `${API_URL}/transaction/${transactionId}`
     const result = await customAxios.get(uri, {headers: await getHeader()})
 
     result.data.expenses.forEach((obj: { user: UserNameData; amount: number; }, index: number, arr: any[]) => {
@@ -67,7 +67,7 @@ const getTransaction = async (transactionId: string): Promise<GetTransactionResp
 
 const updateTransaction = async (transactionId: string, title: string, amount: number, payers: any, expenses: any): Promise<CreateTransactionResponse> => {
   try {
-    var uri: string = `${API_URL}/transaction/update/${transactionId}/`
+    var uri: string = `${API_URL}/transaction/update/${transactionId}`
     await customAxios.patch(uri, {
       title, 
       amount, 
@@ -90,7 +90,7 @@ const updateTransaction = async (transactionId: string, title: string, amount: n
 
 const deleteTransaction = async (transactionId: string): Promise<DeleteTransactionResponse> => {
   try {
-    var uri: string = `${API_URL}/transaction/delete/${transactionId}/`
+    var uri: string = `${API_URL}/transaction/delete/${transactionId}`
     await customAxios.delete(uri, {headers: await getHeader()})
 
     return {
