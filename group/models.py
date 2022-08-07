@@ -93,15 +93,14 @@ class Group(models.Model):
             if -minimum[1] < maximum[1]:
                 payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=-minimum[1])
                 temp = (maximum[0], maximum[1] + minimum[1])
-                if round(temp[1], 3) >= 0.01:
+                if round(temp[1], 3) <= -0.01 or round(temp[1], 3) >= 0.01:
                     GroupHelper.insertInOrder(surplus_list, temp, key=lambda x: x[1]) 
 
             elif -minimum[1] > maximum[1]:
                 payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=maximum[1])
-                if round(temp[1], 3) >= 0.01:
-                    temp = (minimum[0], minimum[1] + maximum[1])
-
-                GroupHelper.insertInOrder(surplus_list, temp, key=lambda x: x[1]) 
+                temp = (minimum[0], minimum[1] + maximum[1])
+                if round(temp[1], 3) <= -0.01 or round(temp[1], 3) >= 0.01:
+                    GroupHelper.insertInOrder(surplus_list, temp, key=lambda x: x[1]) 
 
             else:
                 payment = Payment.create(payer=minimum[0], payee=maximum[0], amount=maximum[1])
