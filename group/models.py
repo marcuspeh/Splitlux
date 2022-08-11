@@ -17,7 +17,6 @@ class Payment(models.Model):
 
     amount = models.FloatField()
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -39,7 +38,6 @@ class Group(models.Model):
     code_id = models.CharField(max_length=6, unique=True, default=uuid.uuid4)
     owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="group_owner")
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(default=timezone.now)
     last_updated = models.DateTimeField(auto_now=True)
 
