@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { AuthData } from "../models/data/authData";
 import { RegisterResponse } from "../models/response/registerResponse";
 import customAxios from './utilities/customAxios';
-import API_URL from '../common'
+import { API_URL } from '../common'
 
 
 const signIn = async (email: string, password: string): Promise<AuthData> => {

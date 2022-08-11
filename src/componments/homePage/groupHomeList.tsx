@@ -30,12 +30,12 @@ const GroupHomeList = (props: Props) => {
   }
 
   useEffect(() => {
-    if (!groupList || groupList.length === 0) {
-      getGroupList()
+    if (isLoading) {
+      getGroupList() 
     }
 
     const willFocusSubscription = props.navigation.addListener('focus', () => {
-        getGroupList()
+      getGroupList()
     })
     return willFocusSubscription
   })

@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { GenericResponse } from '../models/response/genericResponse';
 import customAxios from './utilities/customAxios';
-import API_URL from '../common'
+import { API_URL } from '../common'
 
 
 const checkServer = async (n?: number, searchTerm?: string): Promise<GenericResponse> => {

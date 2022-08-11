@@ -8,7 +8,7 @@ import { GroupListResponse } from '../models/response/groupListResponse';
 import { JoinGroupResponse } from '../models/response/joinGroupResponse';
 import customAxios from './utilities/customAxios';
 import getHeader from './utilities/headerUtilities';
-import API_URL from '../common'
+import { API_URL } from '../common'
 
 
 const getGroupList = async (n?: number): Promise<GroupListResponse> => {

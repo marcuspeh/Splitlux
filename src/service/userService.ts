@@ -3,7 +3,7 @@ import { GenericResponse } from '../models/response/genericResponse';
 import { UserProfileResponse } from '../models/response/userProfileResponse';
 import customAxios from './utilities/customAxios';
 import getHeader from './utilities/headerUtilities';
-import API_URL from '../common'
+import { API_URL } from '../common'
 
 
 const getProfile = async (): Promise<UserProfileResponse> => {
