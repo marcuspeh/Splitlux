@@ -103,5 +103,6 @@ class Transaction(models.Model):
             if pair.user.id not in surplus:
                 surplus[pair.user.id] = 0
             surplus[pair.user.id] -= pair.amount
-
+        if sum(surplus.values()) != 0.0:
+            return {}
         return surplus
