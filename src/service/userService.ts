@@ -3,8 +3,8 @@ import { GenericResponse } from '../models/response/genericResponse';
 import { UserProfileResponse } from '../models/response/userProfileResponse';
 import customAxios from './utilities/customAxios';
 import getHeader from './utilities/headerUtilities';
+import API_URL from '../common'
 
-const API_URL="http://10.0.2.2:8000"
 
 const getProfile = async (): Promise<UserProfileResponse> => {
   try {

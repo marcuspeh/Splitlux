@@ -1,5 +1,4 @@
 import axios, { AxiosError } from 'axios';
-import { GroupMembersData } from '../models/data/getMembersData';
 import { CreateGroupResponse } from '../models/response/createGroupResponse';
 import { GetGroupMembersNameResponse } from '../models/response/getGroupMembersNameResponse';
 import { GetGroupMembersResponse } from '../models/response/getGroupMembersResponse';
@@ -9,8 +8,8 @@ import { GroupListResponse } from '../models/response/groupListResponse';
 import { JoinGroupResponse } from '../models/response/joinGroupResponse';
 import customAxios from './utilities/customAxios';
 import getHeader from './utilities/headerUtilities';
+import API_URL from '../common'
 
-const API_URL="http://10.0.2.2:8000"
 
 const getGroupList = async (n?: number): Promise<GroupListResponse> => {
   try {

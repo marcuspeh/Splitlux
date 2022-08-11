@@ -5,8 +5,8 @@ import { DeleteTransactionResponse } from '../models/response/deleteTransactionR
 import { GetTransactionResponse } from '../models/response/getTransactionResponse';
 import customAxios from './utilities/customAxios';
 import getHeader from './utilities/headerUtilities';
+import API_URL from '../common'
 
-const API_URL="http://10.0.2.2:8000"
 
 const addTransaction = async (groupId: string, title: string, amount: number, payers: any, expenses: any): Promise<CreateTransactionResponse> => {
   try {
